@@ -1,0 +1,28 @@
+# Large directories (bind-mounted at runtime)
+buildroot/
+kernel/
+Extra/
+output/
+.ccache/
+.git/
+RTL8733BU/
+mali-bifrost/
+libmali/
+
+# Exclude everything except what we COPY in Dockerfile
+*
+
+# Build scripts and config
+!build-*.sh
+!rebuild-dtb-for-uboot.sh
+!docker-entrypoint.sh
+!rk3566-miyoo-flip.dts
+!dbus-users.table
+!patches/
+!patches/*.patch
+!Dockerfile
+!.dockerignore
+!Makefile
+
+# Documentation (small)
+!*.md

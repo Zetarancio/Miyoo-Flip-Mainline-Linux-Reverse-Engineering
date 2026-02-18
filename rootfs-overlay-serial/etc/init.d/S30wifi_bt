@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# S30wifi_bt - Load RTL8733BU WiFi driver and reinitialize Bluetooth
+#
+# The RTL8733BU is a combo WiFi/BT chip. The WiFi out-of-tree driver
+# downloads the unified firmware (WiFi + BT coexistence) to the chip.
+#
+# Problem: btusb is built into the kernel and probes the BT interface
+# at ~1s (before rootfs is mounted), so btrtl fails to load firmware.
+#
+# Solution (matching stock kernel behavior):
+#   1. Load WiFi module (downloads firmware to chip)
+#   2. Unbind/rebind btusb so it re-probes with firmware available
+#   3. Bring up hci0
+
+WIFI_MODULE="/lib/modules/$(uname -r)/extra/rtl8733bu.ko"
+
+# Find the btusb-claimed USB interface (e.g. "2-1:1.2")
+find_bt_iface() {
+    for f in /sys/bus/usb/drivers/btusb/*/bInterfaceClass; do
+        [ -f "$f" ] && dirname "$f" | xargs basename
+    done 2>/dev/null
+}
+
+start() {
+    # 1. Load WiFi module
+    if [ -f "$WIFI_MODULE" ]; then
+        printf "Loading RTL8733BU WiFi driver: "
+        insmod "$WIFI_MODULE"
+        if [ $? -eq 0 ]; then
+            echo "OK"
+        else
+            echo "FAIL"
+            return 1
+        fi
+        # Give driver time to download firmware to chip
+        sleep 2
+    else
+        echo "WiFi module not found: $WIFI_MODULE"
+        return 1
+    fi
+
+    # 2. Rebind btusb so it re-probes (firmware now on chip)
+    BT_IFACE=$(find_bt_iface)
+    if [ -n "$BT_IFACE" ]; then
+        printf "Reinitializing Bluetooth (rebind %s): " "$BT_IFACE"
+        echo "$BT_IFACE" > /sys/bus/usb/drivers/btusb/unbind 2>/dev/null
+        sleep 1
+        echo "$BT_IFACE" > /sys/bus/usb/drivers/btusb/bind 2>/dev/null
+        sleep 1
+        echo "OK"
+    else
+        echo "No btusb interface found to rebind"
+    fi
+
+    # 3. Bring up hci0
+    if command -v hciconfig >/dev/null 2>&1; then
+        hciconfig hci0 up 2>/dev/null
+    fi
+}
+
+stop() {
+    # Bring down interfaces
+    if command -v hciconfig >/dev/null 2>&1; then
+        hciconfig hci0 down 2>/dev/null
+    fi
+    ip link set wlan0 down 2>/dev/null
+
+    # Unload WiFi module
+    rmmod rtl8733bu 2>/dev/null
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start|stop|restart)
+        "$1";;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac

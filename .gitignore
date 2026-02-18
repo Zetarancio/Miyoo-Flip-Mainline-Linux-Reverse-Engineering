@@ -1,0 +1,45 @@
+# Build outputs
+output/
+*.dtb
+*.dtbo
+*.squashfs
+*.tar
+Image
+boot.img
+empty_ramdisk
+
+# Downloaded / large directories (populated by setup-extra.sh and download scripts)
+Extra/
+kernel/
+buildroot/
+RTL8733BU/
+mali-bifrost/
+libmali/
+
+# Buildroot downloads
+buildroot-*.tar.xz
+
+# Docker
+.docker/
+
+# Build cache
+.ccache/
+
+# IDE / editor
+.cursor/
+*.code-workspace
+.cursorignore
+
+# Temporary / logs
+*.tmp
+*.log
+boot_log.txt
+
+# Module build artifacts
+modules/*/*.o
+modules/*/*.ko
+modules/*/*.mod
+modules/*/*.mod.c
+modules/*/*.cmd
+modules/*/Module.symvers
+modules/*/modules.order

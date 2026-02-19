@@ -14,27 +14,24 @@
 #include "rk3566.dtsi"
 
 / {
-	model = "MIYOO RK3566 355 V10 Board";
-	compatible = "rockchip,rk3566-miyoo-355-v10-linux", "rockchip,rk3566";
+	model = "Miyoo Flip";
+	compatible = "miyoo,flip", "rockchip,rk3566";
 
-	chosen {
-		/* Serial console: kernel and bootloader use UART2 @ 0xfe660000 (ttyS2, 1500000 8n1). No console=tty0 until display works. */
-		/* root: Kernel 6.1 creates 6 MTD block devices (mtdblock0=whole/other, 1=vnvm, 2=uboot, 3=boot, 4=rootfs, 5=userdata), so rootfs is mtdblock4. For 6.6/6.11 (5 partitions) rootfs is mtdblock3 — override in U-Boot if needed. See docs/PARTITION-LAYOUT.md. */
-		/* To find hang: add " initcall_debug loglevel=8" after earlycon (see docs/STOCK-VS-MAINLINE-BOOT.md). */
-		/* Debug: to trace sync_state/deferred-probe issues, add:
-		 *   fw_devlink.sync_state=strict deferred_probe_timeout=15
-		 * To trace init-call ordering: add  initcall_debug loglevel=8  */
+	chosen: chosen {
 		bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyS2,1500000n8 root=/dev/mtdblock3 rootfstype=squashfs rootwait fw_devlink=permissive";
 		stdout-path = "serial2:1500000n8";
-		linux,stdout-path = "serial2:1500000n8";
 	};
 
+	/* adc-keys DISABLED: volume buttons are on GPIO, not ADC.
+	 * The adc-keys driver polls saradc ch0 which is floating on Miyoo Flip,
+	 * causing phantom KEY_VOLUMEDOWN and triggering recovery_mode in init. */
 	adc_keys: adc-keys {
 		compatible = "adc-keys";
 		io-channels = <&saradc 0>;
 		io-channel-names = "buttons";
 		keyup-threshold-microvolt = <1800000>;
 		poll-interval = <100>;
+		status = "disabled";
 
 		vol-up-key {
 			label = "volume up";
@@ -48,25 +45,6 @@
 			press-threshold-microvolt = <297500>;
 		};
 	};
-
-/*
-#define RETRO_DEVICE_ID_JOYPAD_B        0
-#define RETRO_DEVICE_ID_JOYPAD_Y        1
-#define RETRO_DEVICE_ID_JOYPAD_SELECT   2
-#define RETRO_DEVICE_ID_JOYPAD_START    3
-#define RETRO_DEVICE_ID_JOYPAD_UP       4
-#define RETRO_DEVICE_ID_JOYPAD_DOWN     5
-#define RETRO_DEVICE_ID_JOYPAD_LEFT     6
-#define RETRO_DEVICE_ID_JOYPAD_RIGHT    7
-#define RETRO_DEVICE_ID_JOYPAD_A        8
-#define RETRO_DEVICE_ID_JOYPAD_X        9
-#define RETRO_DEVICE_ID_JOYPAD_L       10
-#define RETRO_DEVICE_ID_JOYPAD_R       11
-#define RETRO_DEVICE_ID_JOYPAD_L2      12
-#define RETRO_DEVICE_ID_JOYPAD_R2      13
-#define RETRO_DEVICE_ID_JOYPAD_L3      14
-#define RETRO_DEVICE_ID_JOYPAD_R3      15
-*/
 
 	gpio-keys {
 		compatible = "gpio-keys";
@@ -209,9 +187,12 @@
 	};
 
 	/* WiFi/BT power control: RTL8733BU combo chip, USB-attached.
-	 * BSP used wireless-wlan { compatible = "wlan-platdata"; WIFI,poweren_gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>; }
-	 * Mainline: regulator-fixed that is always-on, powering the WiFi/BT module at boot.
-	 * GPIO0_A0 active-low means the chip is enabled when GPIO is LOW (enable-active-low). */
+	 * regulator-always-on is REQUIRED: without it, the regulator framework
+	 * disables the regulator at ~33s (no DTS consumer holds it), the WiFi
+	 * USB device disconnects, and the 8733bu driver enters a broken Runtime
+	 * PM state that deadlocks the suspend path.
+	 * The driver has rtw_suspend()/rtw_resume() USB callbacks that handle
+	 * system suspend properly when the chip remains powered. */
 	vcc_wifi: vcc-wifi {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_wifi";
@@ -224,8 +205,6 @@
 		regulator-boot-on;
 		regulator-always-on;
 	};
-
-	/* hdmi-sound: use definition from rk356x-base.dtsi (codec/cpu order, mclk-fs 256); only enable via &hdmi_sound below */
 
 	/* Speaker amplifier enable: GPIO4_PC2 (same pin as BSP spk-ctl-gpios).
 	 * In mainline, use simple-audio-amplifier + aux-devs instead of BSP codec driver GPIO.
@@ -265,14 +244,30 @@
 		};
 	};
 
-	/* Panel init sequence (BSP: panel-init-sequence) and timings are in the
-	 * miyoo,flip-panel entry in panel-simple.c. The panel is a child of &dsi0. */
+	battery: battery {
+		compatible = "simple-battery";
+		charge-full-design-microamp-hours = <3000000>;
+		charge-term-current-microamp = <300000>;
+		constant-charge-current-max-microamp = <2000000>;
+		constant-charge-voltage-max-microvolt = <4300000>;
+		factory-internal-resistance-micro-ohms = <117000>;
+		voltage-max-design-microvolt = <4227000>;
+		voltage-min-design-microvolt = <3400000>;
+
+		ocv-capacity-celsius = <20>;
+		ocv-capacity-table-0 =  <4227000 100>, <4186000 95>, <3970000 90>, <3920000 85>,
+					<3873000 80>, <3836000 75>, <3790000 70>, <3759000 65>,
+					<3727000 60>, <3685000 55>, <3655000 50>, <3622000 45>,
+					<3585000 40>, <3566000 35>, <3540000 30>, <3516000 25>,
+					<3495000 20>, <3470000 15>, <3450000 10>, <3420000 5>,
+					<3400000 0>;
+	};
 
 	hall_sensor: hall-mh248 {
 		compatible = "hall-mh248";
 		irq-gpio = <&gpio0 RK_PC6 IRQ_TYPE_EDGE_BOTH>;
 		hall-active = <1>;
-		status = "okay";
+		wakeup-source;
 	};
 
 	leds: leds {
@@ -297,34 +292,32 @@
 		regulator-max-microvolt = <3800000>;
 	};
 
-	vcc5v0_usb: vcc5v0-usb {
-		compatible = "regulator-fixed";
-		regulator-name = "vcc5v0_usb";
-		regulator-always-on;
-		regulator-boot-on;
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
-	};
+	/* vcc5v0_usb: removed — was an intermediate always-on 5V regulator
+	 * between dcdc_boost and vcc5v0_host. Unnecessary on this board;
+	 * vcc5v0_host now sources directly from dcdc_boost. */
 
+	/* USB host 5V power: GPIO-controlled via GPIO4_PC5.
+	 * Removed always-on/boot-on so this rail powers off during suspend.
+	 * vin-supply changed from vcc5v0_usb to dcdc_boost (direct path). */
 	vcc5v0_host: vcc5v0-host-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_host";
-		regulator-boot-on;
-		regulator-always-on;
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
 		enable-active-high;
 		gpio = <&gpio4 RK_PC5 GPIO_ACTIVE_HIGH>;	/*USB_HOST_PWREN2_H*/
-		vin-supply = <&vcc5v0_usb>;
+		vin-supply = <&dcdc_boost>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vcc5v0_host_en>;
+		regulator-state-mem {
+			regulator-off-in-suspend;
+		};
 	};
 	
+	/* LCD panel 3.3V power: GPIO-controlled via GPIO0_PC7.
+	 * The panel driver requests this regulator on demand via iovcc/vdd supply.
+	 * Not always-on so it powers off during suspend. */
 	vcc3v3_lcd0_n: vcc3v3-lcd0-n {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_lcd0_n";
-		regulator-boot-on;
-		regulator-always-on;
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		enable-active-high;
@@ -336,33 +329,10 @@
 		};
 	};
 	
-/*
-	wifi_usb: wifi-usb {
-		compatible = "regulator-fixed";
-		regulator-name = "wifi_usb";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-boot-on;
-		enable-active-low;
-		gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
-	};
-*/
-
-	wireless-wlan {
-		compatible = "wlan-platdata";
-		rockchip,grf = <&grf>;
-		wifi_chip_type = "rtl8733bu";
-		pinctrl-names = "default";
-		/* pinctrl-0 = <&wifi_host_wake_irq>; */
-		/* WIFI,host_wake_irq = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>; */
-		WIFI,poweren_gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;	/*WIFI_PWREN_L*/
-		status = "okay";
-	};
-
 	vcc_sd: vcc-sd {
 		compatible = "regulator-fixed";
 		enable-active-low;
-		enable-gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;	/*SDMMC_PWREN_L*/
+		enable-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;	/*SDMMC_PWREN_L*/
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		pinctrl-names = "default";
@@ -373,7 +343,7 @@
 	vcc_sd2: vcc-sd2 {
 		compatible = "regulator-fixed";
 		enable-active-low;
-		enable-gpio = <&gpio2 RK_PB1 GPIO_ACTIVE_LOW>;	/*SDMMC1_PWREN_L*/
+		enable-gpios = <&gpio2 RK_PB1 GPIO_ACTIVE_LOW>;	/*SDMMC1_PWREN_L*/
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		pinctrl-names = "default";
@@ -386,12 +356,13 @@
 		status = "okay";
 	};
 
-	/* DMC: DDR Memory Controller devfreq node.
-	 * The out-of-tree rk3568_dmc.ko module probes this node and uses the
-	 * TF-A SIP v2 shared-memory interface for DDR frequency scaling.
-	 * devfreq-events = DFI for DDR bandwidth monitoring.
-	 * center-supply = vdd_logic (shared logic supply, handles voltage).
-	 * OPP table: frequencies from TF-A boot log (dfs DDR fsp_param). */
+	/* DMC + DFI: DDR Memory Controller devfreq + DDR bandwidth monitor.
+	 * CONFIG_ARM_RK3568_DMC_DEVFREQ is not available for RK3566 yet.
+	 * Without the DMC driver, this node is never probed. Keeping it here
+	 * (disabled) for future mainline DMC support on RK3566.
+	 * When DMC was "okay" it held a reference on vdd_logic, preventing
+	 * it from powering off during suspend. */
+	/*
 	dmc: dmc {
 		compatible = "rockchip,rk3568-dmc";
 		devfreq-events = <&dfi>;
@@ -420,22 +391,17 @@
 			opp-microvolt = <900000>;
 		};
 	};
+	*/
 };
 
-/* Display pipeline (stock: dsi0 + route_dsi0 connect vp1_out_dsi0 + dsi0_in_vp1; mainline: OF graph vp1->dsi0_in, dsi0_out->panel). DPHY required for DSI. */
+/* Display pipeline: VP1 -> DSI0 -> panel (MIPI DSI).
+ * DPHY0 is required for the DSI link; DPHY1 is unused. */
 &dsi_dphy0 {
 	status = "okay";
 };
 
 &dsi_dphy1 {
 	status = "disabled";
-};
-
-/* VOP2 -> DSI0 pipeline: use VP1 (matches BSP stock DTS; BSP uses dsi0_in_vp1 + route_dsi0 connect = vp1_out_dsi0) */
-&dsi0_in {
-	dsi0_in_vp1: endpoint {
-		remote-endpoint = <&vp1_out_dsi0>;
-	};
 };
 
 &vp1 {
@@ -461,12 +427,16 @@
 	};
 };
 
-/* DFI: DDR bandwidth monitor — provides devfreq-event data for DDR utilization.
- * Already in mainline rk356x-base.dtsi (compatible "rockchip,rk3568-dfi").
- * Used by the rk3568_dmc module for DDR frequency scaling decisions. */
+/* DFI: DDR bandwidth monitor (devfreq-event source for DMC).
+ * CONFIG_DEVFREQ_EVENT_ROCKCHIP_DFI=y is set in kernel config but
+ * without DMC there is no consumer. Disabled to avoid an orphan
+ * devfreq-event device. Re-enable together with DMC when mainline
+ * RK3566 DMC support is added. */
+/*
 &dfi {
 	status = "okay";
 };
+*/
 
 &cpu0 {
 	cpu-supply = <&vdd_cpu_rk860>;
@@ -475,48 +445,42 @@
 
 &dsi0 {
 	status = "okay";
-	/* Avoid deferred probe: CRU apb reset can defer; remove so DSI probes. */
-	/delete-property/ resets;
-	/delete-property/ reset-names;
-
-	/* DSI child addressing: virtual-channel number (1 cell, no size). */
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	/* Panel MUST be a child of the DSI host: mipi_dsi_host_register()
-	 * scans children to create MIPI DSI devices. fw_devlink cycles
-	 * (dsi↔panel) are auto-relaxed ("Fixed dependency cycle(s)").
-	 * BSP uses "simple-panel-dsi" + panel-init-sequence (Rockchip patch);
-	 * mainline has no such driver, so we use a panel-simple.c entry.
-	 *
-	 * The panel ALSO needs an OF graph connection from dsi0 port@1
-	 * because mainline dw_mipi_dsi_host_attach() calls
-	 * devm_drm_of_get_bridge(dev, node, 1, 0) to find the panel
-	 * bridge BEFORE calling pdata->host_ops->attach (component_add).
-	 * Without this endpoint, the attach aborts with -ENODEV. */
+	ports {
+		dsi0_in: port@0 {
+			reg = <0>;
+			dsi0_in_vp1: endpoint {
+				remote-endpoint = <&vp1_out_dsi0>;
+			};
+		};
+
+		dsi0_out: port@1 {
+			reg = <1>;
+			mipi_out_panel: endpoint {
+				remote-endpoint = <&mipi_in_panel>;
+			};
+		};
+	};
+
+	/* Panel init sequence and timings are in the miyoo,flip-panel
+	 * entry in panel-simple.c (kernel patch). */
 	panel@0 {
 		compatible = "miyoo,flip-panel";
 		reg = <0>;
-		status = "okay";
 		power-supply = <&vcc3v3_lcd0_n>;
 		backlight = <&backlight>;
 
 		port {
-			panel_in_dsi: endpoint {
-				remote-endpoint = <&dsi0_out_panel>;
+			mipi_in_panel: endpoint {
+				remote-endpoint = <&mipi_out_panel>;
 			};
 		};
 	};
 };
 
-/* Connect DSI output port to the panel (required by mainline dw-mipi-dsi). */
-&dsi0_out {
-	dsi0_out_panel: endpoint {
-		remote-endpoint = <&panel_in_dsi>;
-	};
-};
-
-/* route_dsi0, dsi0_in_vp0, dsi0_in_vp1, hdmi_in_vp0, hdmi_in_vp1, route_hdmi are BSP display-subsystem nodes; not in mainline rk356x */
+/* GPU: Mali G52 (Panfrost/kbase). mali-supply is the GPU voltage rail. */
 
 &gpu {
 	mali-supply = <&vdd_gpu>;
@@ -581,13 +545,9 @@
 		interrupt-parent = <&gpio0>;
 		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
 
-		pinctrl-names = "default", "pmic-sleep",
-				"pmic-power-off", "pmic-reset";
+		pinctrl-names = "default";
 		pinctrl-0 = <&pmic_int>, <&i2s1m0_mclk>;
-		pinctrl-1 = <&soc_slppin_slp>, <&rk817_slppin_slp>;
-		pinctrl-2 = <&soc_slppin_gpio>, <&rk817_slppin_pwrdn>;
-		pinctrl-3 = <&soc_slppin_gpio>, <&rk817_slppin_rst>;
-		rockchip,system-power-controller;
+		system-power-controller;
 		wakeup-source;
 		#clock-cells = <1>;
 		#sound-dai-cells = <0>;
@@ -613,31 +573,6 @@
 			status = "okay";
 		};
 
-		pinctrl_rk8xx: pinctrl_rk8xx {
-			gpio-controller;
-			#gpio-cells = <2>;
-
-			rk817_slppin_null: rk817_slppin_null {
-				pins = "gpio_slp";
-				function = "pin_fun0";
-			};
-
-			rk817_slppin_slp: rk817_slppin_slp {
-				pins = "gpio_slp";
-				function = "pin_fun1";
-			};
-
-			rk817_slppin_pwrdn: rk817_slppin_pwrdn {
-				pins = "gpio_slp";
-				function = "pin_fun2";
-			};
-
-			rk817_slppin_rst: rk817_slppin_rst {
-				pins = "gpio_slp";
-				function = "pin_fun3";
-			};
-		};
-
 		regulators {
 			vdd_logic: DCDC_REG1 {
 				regulator-always-on;
@@ -648,8 +583,11 @@
 				regulator-ramp-delay = <6001>;
 				regulator-initial-mode = <0x2>;
 				regulator-name = "vdd_logic";
+				/* off-in-suspend: TF-A handles vdd_logic power
+				 * sequencing during deep sleep entry/exit. */
 				regulator-state-mem {
 					regulator-off-in-suspend;
+					regulator-suspend-microvolt = <900000>;
 				};
 			};
 
@@ -684,6 +622,9 @@
 				regulator-max-microvolt = <3300000>;
 				regulator-initial-mode = <0x2>;
 				regulator-name = "vcc_3v3";
+				/* off-in-suspend: powers off the main 3.3V rail during
+				 * deep sleep for maximum battery savings. Confirmed
+				 * working — TF-A restores the rail on resume. */
 				regulator-state-mem {
 					regulator-off-in-suspend;
 					regulator-suspend-microvolt = <3300000>;
@@ -771,8 +712,6 @@
 			};
 
 			vcc1v8_dvp: LDO_REG8 {
-				regulator-always-on;
-				regulator-boot-on;
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
 				regulator-name = "vcc1v8_dvp";
@@ -782,8 +721,6 @@
 			};
 
 			vcc2v8_dvp: LDO_REG9 {
-				regulator-always-on;
-				regulator-boot-on;
 				regulator-min-microvolt = <2800000>;
 				regulator-max-microvolt = <2800000>;
 				regulator-name = "vcc2v8_dvp";
@@ -793,8 +730,8 @@
 			};
 
 			dcdc_boost: BOOST {
-				regulator-always-on;
-				regulator-boot-on;
+				/* Not always-on: BOOST (5V step-up for USB host power)
+				 * must be allowed to power off during suspend. */
 				regulator-min-microvolt = <5000000>;
 				regulator-max-microvolt = <5000000>;
 				regulator-name = "boost";
@@ -811,37 +748,11 @@
 			};
 		};
 
-		battery {
-			compatible = "rk817,battery";
-			ocv_table = <3400 3420 3450 3470 3495 3516 3540
-			          3566 3585 3622 3655 3685 3727 3759
-					  3790 3836 3873 3920 3970 4186 4227>;
-			design_capacity = <3000>;
-			design_qmax = <3300>;
-			bat_res = <100>;
-			sleep_enter_current = <150>;
-			sleep_exit_current = <180>;
-			sleep_filter_current = <100>;
-			power_off_thresd = <3350>;
-			zero_algorithm_vol = <3850>;
-			max_soc_offset = <60>;
-			monitor_sec = <5>;
-			sample_res = <10>;
-			virtual_power = <0>;
-		};
-
-		charger {
-			compatible = "rk817,charger";
-			min_input_voltage = <4500>;
-			max_input_current = <1800>;
-			max_chrg_current = <1800>;
-			max_chrg_voltage = <4300>;
-			chrg_term_mode = <0>;
-			chrg_finish_cur = <300>;
-			virtual_power = <0>;
-			dc_det_adc = <0>;
-			extcon = <&usb2phy0>;
-			gate_function_disable = <1>;
+		rk817_charger: charger {
+			monitored-battery = <&battery>;
+			rockchip,resistor-sense-micro-ohms = <10000>;
+			rockchip,sleep-enter-current-microamp = <150000>;
+			rockchip,sleep-filter-current-microamp = <100000>;
 		};
 
 		/*
@@ -919,23 +830,18 @@
 	status = "okay";
 };
 
-/* BSP-specific nodes not in mainline: rkvdec, rkvdec_mmu, rkvenc, rkvenc_mmu,
- * rknpu, rknpu_mmu.  Mainline equivalents: Hantro driver for VPU/VEPU,
- * rockchip-rga driver for RGA (see nodes below). */
+/* SARADC: vref-supply sets the ADC reference voltage. */
 
 &saradc {
 	status = "okay";
 	vref-supply = <&vcc_1v8>;
 };
 
+/* sdhci (fc000000): eMMC controller — disabled.
+ * The Miyoo Flip has no eMMC; internal storage is SPI-NAND (via SFC).
+ * The two SD card slots use sdmmc0 and sdmmc1. */
 &sdhci {
-	bus-width = <8>;
-	no-sdio;
-	no-sd;
-	non-removable;
-	max-frequency = <200000000>;
-	full-pwr-cycle-in-suspend;
-	status = "okay";
+	status = "disabled";
 };
 
 &sdmmc0 {
@@ -978,7 +884,8 @@
 	flash@0 {
 		compatible = "spi-nand";
 		reg = <0>;
-		/* Lower 24 MHz + single-line RX: avoid "unknown raw ID c8017f7f" if ID read is wrong at 50MHz/quad. Chip is ESMT (0xc8); mainline has no ESMT SPI-NAND table—only config/DTS tweak. */
+		/* Lower 24 MHz + single-line RX: avoid wrong ID read at 50MHz/quad.
+		 * Chip is ESMT (0xc8). */
 		spi-max-frequency = <24000000>;
 		spi-rx-bus-width = <1>;
 		spi-tx-bus-width = <1>;
@@ -988,7 +895,6 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 
-			/* Layout matches stock / mtdparts; root is mtdblock3 (rootfs); mtdblock0-4 = vnvm,uboot,boot,rootfs,userdata */
 			partition@200000 {
 				label = "vnvm";
 				reg = <0x200000 0x100000>;
@@ -1048,9 +954,10 @@
 	status = "okay";
 };
 
+/* usb2phy1_otg: PHY for usb_host0_ehci/ohci (fd800000) which is disabled.
+ * No need to power this PHY. Maxwell doesn't define it at all. */
 &usb2phy1_otg {
-	phy-supply = <&vcc5v0_host>;
-	status = "okay";
+	status = "disabled";
 };
 
 &usb2phy0 {
@@ -1061,12 +968,17 @@
 	status = "okay";
 };
 
+/* usb_host0_ehci/ohci (fd800000/fd840000): USB2 host via usb2phy1_otg.
+ * This is a separate USB2 port from the OTG (usb_host0_xhci/usb2phy0_otg)
+ * and from the host port where WiFi lives (usb_host1_ehci/usb2phy1_host).
+ * Nothing is physically routed to this port on the Miyoo Flip PCB.
+ * Disabled to save power — re-enable if a USB device is found on this port. */
 &usb_host0_ehci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host0_ohci {
-	status = "okay";
+	status = "disabled";
 };
 
 &usb_host1_ehci {
@@ -1077,20 +989,22 @@
 	status = "okay";
 };
 
-/* BSP names → mainline names:
- *   usbdrd30 + usbdrd_dwc3  → usb_host0_xhci (OTG, 0xfcc00000)
- *   usbhost30 + usbhost_dwc3 → usb_host1_xhci (Host, 0xfd000000)
- * rk3566-base.dtsi already sets usb_host0_xhci to USB2-only (no USB3 on RK3566 OTG).
- * OTG port: charging detection via extcon = <&usb2phy0>, USB data, etc.
- * Host port: nothing on this board uses USB3 (WiFi is USB2 via EHCI).
+/* USB topology:
+ *   usb_host0_xhci (fcc00000) = OTG port — peripheral mode (charging/gadget)
+ *   usb_host1_xhci (fd000000) = Host port — USB2-only (WiFi chip via EHCI)
+ *   usb_host0_ehci/ohci (fd800000) = unused USB2 port — disabled
+ *   usb_host1_ehci/ohci (fd880000) = WiFi USB2 host — enabled
  *
- * usb_host1_xhci in rk356x-base.dtsi references <&combphy1 PHY_TYPE_USB3>
- * but the Miyoo Flip has no USB3 signal routing on the host port.
- * DWC3 "failed to initialize core" occurs when the USB3 PHY can't power up.
- * Override to USB2-only (same approach as rk3566-base.dtsi uses for OTG). */
+ * No USB3 signals are routed on this board; combphy1/2 are disabled.
+ * usb_host1_xhci is overridden to USB2-only to avoid DWC3 init failure. */
 
+/* OTG port: peripheral-only mode (charging + USB gadget).
+ * Disabling host-side hardware saves power when nothing is plugged in. */
 &usb_host0_xhci {
 	status = "okay";
+	dr_mode = "peripheral";
+	phys = <&usb2phy0_otg>;
+	phy-names = "usb2-phy";
 };
 
 &usb_host1_xhci {
@@ -1100,17 +1014,8 @@
 	maximum-speed = "high-speed";
 };
 
-/* VPU (Hantro video decoder @ fdea0000) and VEPU (H.264 encoder @ fdee0000):
- * Both are handled by the Hantro/Verisilicon driver (CONFIG_VIDEO_HANTRO).
- * The driver matches "rockchip,rk3568-vpu" and "rockchip,rk3568-vepu".
- *
- * RGA (2D blitter @ fdeb0000): handled by CONFIG_VIDEO_ROCKCHIP_RGA.
- * Its DTS compatible "rockchip,rk3568-rga" falls back to "rockchip,rk3288-rga".
- *
- * All three sit in separate power domains (PD_VPU, PD_RGA, PD_RKVENC).
- * The drivers implement runtime PM, so power domains gate when idle.
- * Without the drivers compiled, these nodes become orphaned power-domain
- * consumers that keep PD_* permanently ON — wasting power. */
+/* VPU (video decoder), VEPU (H.264 encoder), RGA (2D blitter):
+ * All use mainline drivers with runtime PM — power domains gate when idle. */
 &vpu {
 	status = "okay";
 };
@@ -1127,7 +1032,8 @@
 	status = "okay";
 };
 
-/* VOP must be "okay" or display-subsystem fails with "No available vop found". Enable so DRM can bind; display may still need DSI/panel fixes. */
+/* VOP2: display controller. Must be enabled for DRM to bind.
+ * Clock parents: DCLK_VOP0 -> HPLL, DCLK_VOP1 -> VPLL. */
 &vop {
 	status = "okay";
 	assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>;
@@ -1138,6 +1044,7 @@
 	status = "okay";
 };
 
+/* uart1: Miyoo serial protocol for analog stick calibration (9600 8N1). */
 &uart1 {
 	status = "okay";
 	dma-names = "tx", "rx";
@@ -1178,20 +1085,6 @@
 				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 
-		soc_slppin_gpio: soc_slppin_gpio {
-			rockchip,pins =
-				<0 RK_PA2 RK_FUNC_GPIO &pcfg_output_low>;
-		};
-
-		soc_slppin_slp: soc_slppin_slp {
-			rockchip,pins =
-				<0 RK_PA2 1 &pcfg_pull_none>;
-		};
-
-		soc_slppin_rst: soc_slppin_rst {
-			rockchip,pins =
-				<0 RK_PA2 2 &pcfg_pull_none>;
-		};
 	};
 
 	usb {

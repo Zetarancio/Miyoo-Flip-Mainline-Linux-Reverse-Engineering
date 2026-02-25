@@ -56,6 +56,7 @@ wrong baud rate.
 ls /dev/ttyUSB*
 
 # minicom (with capture to file)
+# Reference copies in this repo: boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt (stock), boot_log_ROCKNIX.txt (mainline/ROCKNIX)
 sudo minicom -D /dev/ttyUSB0 -b 1500000 -C boot_log.txt
 
 # picocom

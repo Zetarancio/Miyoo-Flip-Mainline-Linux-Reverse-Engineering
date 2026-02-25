@@ -3,10 +3,15 @@
 Reverse engineering notes, mainline kernel port, and build system for the
 **Miyoo Flip** handheld gaming device (Rockchip RK3566 SoC).
 
+> **Project status:** The **build system and scripts in this repo are outdated**.
+> Active development (DTS, drivers, suspend, joypad, VPU/RGA, DMC, etc.) happens in
+> **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`) — ROCKNIX.
+> This repo is kept for **documentation and wiki**; the wiki will be updated as the
+> reference for the device. For a working image and current code, use the ROCKNIX
+> distribution.
+
 This repository documents the process of bringing **mainline Linux** to
-the Miyoo Flip, replacing the stock Rockchip BSP 5.10 kernel. The work
-here was used to create a [ROCKNIX](https://rocknix.org/) device port:
-[Zetarancio/distribution](https://github.com/Zetarancio/distribution).
+the Miyoo Flip, replacing the stock Rockchip BSP 5.10 kernel.
 
 ## Hardware
 
@@ -48,6 +53,13 @@ These are the main reverse engineering findings that made mainline Linux work:
   voltage negotiation (most need 50-250 ms). Zeroing the SPI NAND preloader
   forces the bootrom to fall through to SD card boot.
 
+- **DDR on mainline**: The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ).
+  An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is
+  confirmed working (see [docs/ddr/](docs/ddr/)).
+
+- **U-Boot and OP-TEE**: Any U-Boot for this board must include OP-TEE (BL32) in
+  the FIT image; the boot chain expects ATF + OP-TEE + U-Boot.
+
 ## Project Structure
 
 ```
@@ -60,10 +72,16 @@ Makefile                       Docker-based build orchestration
 Dockerfile                     Build environment container
 rootfs-overlay-serial/         Buildroot overlay (serial getty, WiFi/BT init)
 modules/rk3568_dmc/            DDR devfreq module (requires BSP headers)
-boot_log_STOCK.txt             Stock OS serial UART capture
-docs/                          Documentation wiki
+boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt   Stock OS serial UART capture (sleep/poweroff; in this repo)
+boot_log_ROCKNIX.txt                        Current mainline/ROCKNIX boot log (in this repo)
+STEWARD-FU-NOT STOCK.txt                    **Outdated** — past project state; lacks ROCKNIX drivers (see notice below)
+docs/                          Documentation wiki (maintained)
 Extra/                         Downloaded assets (populated by setup-extra.sh)
 ```
+
+**Boot logs:** Stock (BSP) capture with sleep/poweroff: `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt`. Current mainline/ROCKNIX: `boot_log_ROCKNIX.txt` (both in this repo).
+
+**Outdated project files:** `STEWARD-FU-NOT STOCK.txt` is a historical boot log / project snapshot. It does **not** reflect current status and does **not** include the drivers and work done in ROCKNIX (DMC devfreq, rk356x-suspend, joypad/rumble, VPU/RGA, DTS, etc.). For current behaviour and builds, use [Zetarancio/distribution](https://github.com/Zetarancio/distribution).
 
 ## Quick Start
 
@@ -90,16 +108,25 @@ See [docs/building.md](docs/building.md) for the full build guide and
 
 ## Documentation
 
+**Part I — This project:** build, flash, structure.
+
 | Guide | Contents |
 |-------|----------|
 | [Hardware & UART](docs/hardware.md) | Specs, serial console wiring, pinout, baud rate |
 | [Building](docs/building.md) | Full build guide, kernel config, Docker workflow |
 | [Flashing](docs/flashing.md) | xrock flashing, MASKROM mode, partition layout |
+| [ROCKNIX](docs/rocknix.md) | SD card boot via GammaOS loader, ROCKNIX integration |
+
+**Part II — Device wiki:** distro-agnostic hardware and driver notes.
+
+| Guide | Contents |
+|-------|----------|
 | [DTS Porting](docs/dts-porting.md) | BSP-to-mainline device tree translation table |
 | [Display](docs/display.md) | DSI panel bring-up, backlight, init sequence |
 | [Drivers](docs/drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU |
 | [Troubleshooting](docs/troubleshooting.md) | Boot log issues, kernel version notes, debugging |
-| [ROCKNIX](docs/rocknix.md) | SD card boot via GammaOS loader, ROCKNIX integration |
+| [DDR exploration](docs/ddr/README.md) | DDR init, DMC, boot chain, out-of-tree mainline driver |
+| [Boot chain](docs/boot-chain.md) | FIT layout, OP-TEE requirement (optional read) |
 
 ## External References
 
@@ -122,28 +149,29 @@ See [docs/building.md](docs/building.md) for the full build guide and
 
 ### Related Projects
 
+- **Current ongoing project:** [Zetarancio/distribution](https://github.com/Zetarancio/distribution) — ROCKNIX-style distribution with Miyoo Flip support (branch `flip`).
 - [ROCKNIX](https://rocknix.org/) — immutable Linux for handheld gaming
-- [ROCKNIX Miyoo Flip port](https://github.com/Zetarancio/distribution) — distribution with this device support
 - [GammaOS Core](https://github.com/TheGammaSqueeze/GammaOSCore) — alternative OS with bootloader installer
 
 ## Status
 
 | Subsystem | Status | Notes |
 |-----------|--------|-------|
-| Boot (U-Boot + kernel) | Working | Mainline 6.19, boots from SPI NAND or SD |
-| Display (DSI panel) | Working | 640x480, init sequence in panel-simple.c |
+| Boot (U-Boot + kernel) | Working | Mainline 6.18+, boots from SPI NAND or SD |
+| Display (DSI panel) | Working | 640x480, init sequence in panel driver |
 | Backlight (PWM) | Working | PWM4, CONFIG_BACKLIGHT_PWM=y |
 | Audio (RK817 codec) | Working | simple-audio-card, speaker amplifier |
-| WiFi (RTL8733BU) | Working | Out-of-tree driver, kernel 6.19 compat patch |
+| WiFi (RTL8733BU) | Working | Out-of-tree driver, kernel 6.18+ compat |
 | Bluetooth | Working | Unified firmware, btusb re-probe |
 | GPU (Mali-G52) | Working | mali_kbase + libmali, DVFS 200-800 MHz |
 | Storage (SPI NAND) | Working | MTD partitions, squashfs root |
 | SD cards | Working | Both slots |
-| HDMI | Working | VOP2 → HDMI with audio |
-| DMC (DDR devfreq) | Not working | Requires BSP-only closed-source headers |
-| IEP/VPU/RGA | Not working | BSP-only, no mainline driver |
-| Suspend | Not tested | |
-| Input (buttons) | Needs testing | miyoo_inputd (stock daemon) |
+| HDMI | Untested | Should work; disabled in DTS to save power (no connector on device) |
+| DMC (DDR devfreq) | Working (out-of-tree) | Mainline 6.18+; see [docs/ddr/](docs/ddr/) |
+| VPU / RGA | Working | Mainline hantro-vpu (dec/enc), rockchip-rga |
+| IEP | Not working | BSP-only (MPP), no mainline driver |
+| Suspend | Working | rk356x-suspend (BL31 deep sleep), regulator-state-mem |
+| Input (buttons + rumble) | Working | All 17 GPIO buttons, volume, lid; joypad + rumble (PWM5) |
 
 ## License
 

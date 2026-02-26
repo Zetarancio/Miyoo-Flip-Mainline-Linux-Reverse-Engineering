@@ -2,57 +2,53 @@
 
 ## Overview
 
-An out-of-tree kernel driver (`rk356x-suspend`) was implemented to configure
-BL31 (ARM Trusted Firmware) deep-sleep flags via SIP SMC calls. This enables
-the deepest suspend states on RK3566, matching the stock BSP firmware behavior.
+An out-of-tree kernel driver named **rk3568-suspend** (formerly referred to as rk356x in some docs) configures BL31 (ARM Trusted Firmware) **deep-sleep** flags via SIP SMC calls. This enables the deepest suspend states on RK3568/RK3566 SoCs, matching the behavior of stock BSP firmware.
 
-Combined with `vdd_logic` set to `regulator-off-in-suspend`, the system achieves
-significantly lower power consumption during sleep.
+**The driver is required for `vdd_logic` off-in-suspend to work.** It tells BL31 to use `ARMOFF_LOGOFF` so the logic domain is saved and restored across suspend. Without it, turning off vdd_logic in suspend causes the system to hang on resume. With the driver and vdd_logic configured with `regulator-off-in-suspend`, the device achieves **deep sleep**: the logic domain (and optionally center domain, oscillator, PMIC low-power mode) is powered down, greatly reducing sleep current.
+
+The driver and Kconfig use the **rk3568** namespace (`rk3568-suspend` node, `CONFIG_RK3568_SUSPEND_MODE`) to avoid collisions with BSP `rockchip_pm_config` if that code is ever merged upstream.
 
 ---
 
 ## 1. Problem Statement
 
-The mainline kernel on RK3566 does not include Rockchip's BSP `rockchip_pm_config`
-driver. Without it, BL31 uses compiled-in default sleep flags, which typically
-do not enable the deepest power modes (oscillator off, PMIC low-power, center
-power domain off, etc.).
+Mainline kernel on RK3568/RK3566 does not include Rockchip's BSP `rockchip_pm_config` driver. Without a substitute:
 
-Additionally, turning off `vdd_logic` during suspend without first telling BL31
-to expect `ARMOFF_LOGOFF` mode causes the system to hang on resume — BL31 does
-not save/restore the logic domain state if it doesn't know it will be powered off.
+- BL31 uses compiled-in default sleep flags, which usually do **not** enable the deepest power modes (oscillator off, PMIC low-power, center power domain off, etc.).
+- Turning off **vdd_logic** during suspend without first telling BL31 to expect `ARMOFF_LOGOFF` mode causes the system to hang on resume — BL31 does not save/restore the logic domain state unless it has been configured for that mode.
+
+So both **deep sleep** and **vdd_logic off in suspend** depend on a driver that programs BL31 via SIP. The rk3568-suspend driver is for **deep sleep**, not for generic “sleep” (e.g. idle or light suspend).
 
 ---
 
 ## 2. Implementation
 
-### Patch
+### Source (ROCKNIX)
 
-In the [ROCKNIX distribution](https://github.com/Zetarancio/distribution): `projects/ROCKNIX/devices/RK3566/patches/linux/1013-soc-rockchip-add-suspend-mode-configuration-driver.patch`
+The rk3568-suspend driver is available in [ROCKNIX](https://rocknix.org/) via [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`).
 
-### Files Added by the Patch
+### Patch (distribution-agnostic)
 
-| File | Purpose |
-|------|---------|
-| `drivers/soc/rockchip/rk356x_suspend_config.c` | Platform driver: reads DTS config and sends SMC calls |
-| `include/dt-bindings/suspend/rockchip-rk3568.h` | `RKPM_SLP_*` and `RKPM_*_WKUP_EN` flag definitions |
+The driver is added by a kernel patch that creates:
+
+- `drivers/soc/rockchip/rk3568_suspend_config.c` — platform driver that reads DTS and sends SMC calls.
+- `include/dt-bindings/suspend/rockchip-rk3568.h` — `RKPM_SLP_*` and `RKPM_*_WKUP_EN` flag definitions.
+
+Typical path in a source tree: e.g. `patches/linux/1013-soc-rockchip-add-suspend-mode-configuration-driver.patch` (or equivalent, depending on the distribution).
 
 ### Kconfig
 
 ```
-config RK356X_SUSPEND_MODE
-    bool "RK356x suspend mode configuration"
+config RK3568_SUSPEND_MODE
+    bool "RK3568 suspend mode configuration"
     depends on HAVE_ARM_SMCCC && SUSPEND && ARCH_ROCKCHIP
 ```
 
-Enabled in `linux.aarch64.conf` with `CONFIG_RK356X_SUSPEND_MODE=y`.
+Enabled in the kernel config with `CONFIG_RK3568_SUSPEND_MODE=y`.
 
-### Naming Convention
+### Naming
 
-The driver uses the `rk356x` namespace (`rk356x-suspend`, `rk356x,pm-config`)
-to avoid collisions with Rockchip's BSP `rockchip_pm_config` driver, which uses
-`rockchip-suspend` / `rockchip,pm-rk3568`. This ensures no conflicts if BSP code
-is ever merged upstream.
+The driver uses the **rk3568** namespace (`rk3568-suspend` node, `rk3568,pm-config` compatible, `rk3568-suspend-config` as driver name) so it does not conflict with BSP `rockchip-suspend` / `rockchip,pm-rk3568`.
 
 ---
 
@@ -60,17 +56,17 @@ is ever merged upstream.
 
 ### Boot Sequence
 
-1. Driver probes via `late_initcall_sync` (compatible = `rk356x,pm-config`)
-2. Reads `rockchip,sleep-mode-config` and `rockchip,wakeup-config` from DTS
-3. Sends config to BL31 via `SIP_SUSPEND_MODE` (SMC 0x82000003)
-4. BL31 stores the flags for use during subsequent suspend cycles
+1. Driver probes via `late_initcall_sync` (compatible = `rk3568,pm-config`).
+2. Reads `rockchip,sleep-mode-config` and `rockchip,wakeup-config` from the `rk3568-suspend` DTS node.
+3. Sends config to BL31 via `SIP_SUSPEND_MODE` (SMC 0x82000003).
+4. BL31 stores the flags for use during subsequent suspend cycles.
 
 ### Suspend Sequence
 
-1. Kernel calls `rk356x_suspend_prepare()` (PM `.prepare` callback)
-2. Driver re-sends sleep config to BL31 (ensures flags are current)
-3. Kernel proceeds with normal PSCI suspend
-4. BL31 uses the configured flags to enter deep sleep:
+1. Kernel calls `rk3568_suspend_prepare()` (PM `.prepare` callback).
+2. Driver re-sends sleep config to BL31 (ensures flags are current).
+3. Kernel proceeds with normal PSCI suspend.
+4. BL31 uses the configured flags to enter **deep sleep**:
    - Powers off ARM cores
    - Powers off logic domain (`ARMOFF_LOGOFF`)
    - Powers off center power domain
@@ -79,23 +75,22 @@ is ever merged upstream.
 
 ### Resume Sequence
 
-1. GPIO wakeup interrupt triggers
-2. BL31 restores logic domain state (because `ARMOFF_LOGOFF` was set)
-3. ARM cores reinitialize
-4. OP-TEE secondary CPUs reinitialize
-5. Kernel resumes normally
+1. GPIO (or other configured) wakeup triggers.
+2. BL31 restores logic domain state (because `ARMOFF_LOGOFF` was set).
+3. ARM cores and OP-TEE secondary CPUs reinitialize.
+4. Kernel resumes normally.
 
 ---
 
 ## 4. DTS Configuration
 
-### rk356x-suspend Node
+### rk3568-suspend Node
 
 ```dts
 #include <dt-bindings/suspend/rockchip-rk3568.h>
 
-rk356x-suspend {
-    compatible = "rk356x,pm-config";
+rk3568-suspend {
+    compatible = "rk3568,pm-config";
     status = "okay";
     rockchip,sleep-debug-en = <0>;
     rockchip,sleep-mode-config = <
@@ -113,7 +108,7 @@ rk356x-suspend {
 };
 ```
 
-**sleep-mode-config = 0x5ec** matches stock firmware flags:
+**sleep-mode-config = 0x5ec** (example) matches typical stock deep-sleep flags:
 
 | Flag | Bit | Effect |
 |------|-----|--------|
@@ -136,9 +131,12 @@ vdd_logic: DCDC_REG1 {
 };
 ```
 
-`regulator-off-in-suspend` is safe **only** when the suspend driver is active
-and has sent `RKPM_SLP_ARMOFF_LOGOFF` to BL31. Without this flag, BL31 does
-not save/restore the logic domain state, and the system hangs on resume.
+**vdd_logic and the suspend driver**
+
+- **vdd_logic** supplies the SoC logic domain. Turning it off in suspend (`regulator-off-in-suspend`) is only safe if BL31 has been told to use `ARMOFF_LOGOFF` and will save/restore that domain.
+- The **rk3568-suspend** driver is what sends that configuration to BL31. So:
+  - **Without** the rk3568-suspend driver: do **not** use `regulator-off-in-suspend` on vdd_logic, or the device will hang on resume.
+  - **With** the driver and the correct `rockchip,sleep-mode-config` (including `RKPM_SLP_ARMOFF_LOGOFF`), vdd_logic can be turned off in suspend and the device achieves much lower sleep power (deep sleep).
 
 ---
 
@@ -159,76 +157,56 @@ not save/restore the logic domain state, and the system hangs on resume.
 ## 6. Confirmed Working — Boot Log Evidence
 
 ```
-[    3.077330] rk356x-suspend-config rk356x-suspend: sleep-mode-config=0x5ec wakeup-config=0x10 (smc ret=0)
+rk3568-suspend-config rk3568-suspend: sleep-mode-config=0x5ec wakeup-config=0x10 (smc ret=0)
 ```
 
-Driver probes successfully and BL31 accepts the configuration (`smc ret=0`).
+Driver probes and BL31 accepts the configuration (`smc ret=0`).
 
 ### Suspend/Resume Cycle
 
-```
-[   54.188462] PM: suspend entry (deep)
-[   65.289629] Enabling non-boot CPUs ...
-[   66.830750] PM: suspend exit
-```
+With vdd_logic off-in-suspend and the rk3568-suspend driver:
 
-Full deep sleep cycle confirmed (with vdd_logic off-in-suspend):
-- `abcdeghijsramwfi` — BL31 suspend sequence letters
-- `ABCDEFGHIJKLM` — BL31 resume sequence letters
-- OP-TEE secondary CPUs reinitialize
-- All 4 ARM cores come back up
-- USB bus re-enumerates (expected after deep sleep)
-- Total suspend duration ~12 seconds in test
-
-**Status: CONFIRMED WORKING** — committed and pushed (2026-02-25).
+- Suspend: `PM: suspend entry (deep)` then BL31 sequence (e.g. `abcdeghijsramwfi`).
+- Resume: BL31 resume sequence (e.g. `ABCDEFGHIJKLM`), OP-TEE and cores come up, then `PM: suspend exit`.
+- USB and other buses may re-enumerate after deep sleep; that is expected.
 
 ---
 
 ## 7. Debugging Tips
 
-### Enable BL31 Sleep Debug
+### BL31 sleep debug
 
-Set `rockchip,sleep-debug-en = <1>` in the DTS node. BL31 will print
-detailed power domain and register state over serial during suspend/resume.
+Set `rockchip,sleep-debug-en = <1>` in the `rk3568-suspend` node. BL31 will print detailed power-domain and register state over serial during suspend/resume.
 
-### Serial Console
+### Serial console
 
-Ensure `uart2` is enabled in DTS and `systemd.debug_shell=ttyS2` is in
-the kernel command line for serial debug access.
+Use a serial port (e.g. uart2) and a kernel command line that keeps the console available (e.g. `no_console_suspend` and, if used, `systemd.debug_shell=ttyS2`).
 
-### If Device Does Not Wake
+### If the device does not wake
 
-1. Verify driver loaded: `dmesg | grep rk356x-suspend`
-2. Check SMC return code is 0
-3. Temporarily revert `vdd_logic` to `regulator-on-in-suspend` with
-   `regulator-suspend-microvolt = <900000>` to test without logic power-off
-4. Check wakeup source — `RKPM_GPIO_WKUP_EN` must match actual wakeup GPIO
+1. Confirm driver load: `dmesg | grep rk3568-suspend`
+2. Check SMC return code is 0 in the probe message.
+3. To test without logic power-off: temporarily use `regulator-on-in-suspend` or `regulator-suspend-microvolt` for vdd_logic instead of `regulator-off-in-suspend`.
+4. Verify wakeup source: `RKPM_GPIO_WKUP_EN` (or other flags) must match the actual wakeup source (e.g. GPIO) used by the board.
 
 ---
 
-## 8. Kconfig Dependency Note
+## 8. Kconfig Dependency
 
-The Kconfig dependency must be `HAVE_ARM_SMCCC` (not `ARM_SMCCC`).
-`HAVE_ARM_SMCCC` is the boolean that arm64 sets; `ARM_SMCCC` does not exist
-as a standalone Kconfig option. Using the wrong symbol causes `make olddefconfig`
-to silently drop the config option.
+The Kconfig option must depend on `HAVE_ARM_SMCCC` (not `ARM_SMCCC`). On arm64, `HAVE_ARM_SMCCC` is the symbol that indicates SMCCC support. Using a non-existent or wrong symbol can cause `make olddefconfig` to drop the option.
 
 ---
 
 ## 9. Relationship to DDR Frequency Scaling
 
-The suspend driver and the DDR DMC devfreq driver
-(`1012-devfreq-rockchip-add-rk3568-dmc-devfreq-driver.patch`) are independent
-but complementary:
+The suspend driver and the DDR DMC devfreq driver (rk3568-dmc) are independent but complementary. Both are available in ROCKNIX [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`).
 
-| Feature | DMC Devfreq (1012) | Suspend Driver (1013) |
-|---------|-------------------|----------------------|
-| Purpose | DDR frequency scaling during runtime | Deep sleep configuration |
-| SIP Function | `SIP_DRAM_CONFIG` (0x82000008) | `SIP_SUSPEND_MODE` (0x82000003) |
-| Active during | Normal operation | Suspend/resume |
-| Power saving | Reduces DDR power at idle | Reduces total SoC power during sleep |
-| vdd_logic | Uses vdd_logic as center-supply | Enables vdd_logic power-off in suspend |
+| Feature | DMC devfreq | rk3568-suspend |
+|---------|-------------|-----------------|
+| Purpose | DDR frequency scaling at runtime | **Deep sleep** configuration |
+| SIP function | `SIP_DRAM_CONFIG` (0x82000008) | `SIP_SUSPEND_MODE` (0x82000003) |
+| Active when | Normal operation | Suspend/resume |
+| Power saving | Lower DDR power at idle | Lower total SoC power in sleep |
+| vdd_logic | May use vdd_logic as center-supply | Required for vdd_logic off-in-suspend |
 
-Together they provide comprehensive power management: DDR scales to 324 MHz
-at idle (saving runtime power), and during suspend the entire logic domain
-powers off (saving sleep power).
+Together they give both runtime power savings (DDR scaling) and much better suspend (logic/center/oscillator off with vdd_logic off).

@@ -1,60 +1,63 @@
-# Flashing & Partition Layout
+# Flashing and partition layout
 
-## MTD Partition Table
+Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For how to **obtain** images and flash them in the Steward-fu workflow, see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md). For **booting from SD** (e.g. after erasing internal boot), see [Boot from SD](boot-from-sd.md).
 
-The Miyoo Flip's 128 MB SPI NAND is divided into 5 partitions:
+---
 
-| Partition | Byte Offset | Size | Sector | Purpose |
+## MTD partition table
+
+The 128 MB SPI NAND is divided into five partitions:
+
+| Partition | Byte offset | Size | Sector | Purpose |
 |-----------|-------------|------|--------|---------|
 | vnvm | 0x200000 | 1 MB | 4096 | Non-volatile storage |
 | uboot | 0x300000 | 4 MB | 6144 | U-Boot FIT (ATF + OP-TEE + U-Boot) |
 | boot | 0x700000 | 38 MB | 14336 | Kernel + DTB (Android boot.img) |
-| rootfs | 0x2d00000 | 64 MB | 92160 | Root filesystem (squashfs) |
+| rootfs | 0x2d00000 | 64 MB | 92160 | Root filesystem (e.g. squashfs) |
 | userdata | 0x6d00000 | ~18 MB | 110592 | Writable user data |
 
-The area 0x0-0x200000 (2 MB) is the **preloader** (IDBLOCK: DDR init + SPL),
-read directly by the RK3566 bootrom.
+The area **0x0–0x200000 (2 MB)** is the **preloader** (IDBLOCK: DDR init + SPL), read directly by the RK3566 bootrom. Sectors are 512 bytes; sector = byte_offset / 512.
 
-Sectors are 512 bytes. Sector = byte_offset / 512.
+### Partition source
 
-### Partition Source
-
-| Source | Description | Used By |
+| Source | Description | Used by |
 |--------|-------------|---------|
 | cmdlinepart | `mtdparts=` in kernel command line | Stock (BSP) kernel |
 | fixed-partitions | DTS node under `&sfc flash@0` | Mainline kernel |
 
-Both produce 5 partitions with rootfs at `mtdblock3`. If you see 6
-partitions instead of 5, the kernel is using cmdlinepart with different
-parsing -- set `root=/dev/mtdblock4` or switch to DTS fixed-partitions.
+Both yield five partitions with rootfs at `mtdblock3`. If you see six partitions, the kernel may be using cmdlinepart with different parsing — use `root=/dev/mtdblock4` or switch to DTS fixed-partitions.
 
-## xrock Setup
+---
 
-[xrock](https://github.com/xboot/xrock) is the tool for reading/writing
-SPI NAND via USB in MASKROM mode. Build it from source or use
-[steward-fu's build guide](https://steward-fu.github.io/website/handheld/miyoo_flip_build_xrock.htm).
+## xrock setup
 
-## Entering MASKROM Mode
+[xrock](https://github.com/xboot/xrock) reads and writes SPI NAND over USB in MASKROM mode. Build from source or follow [steward-fu’s xrock build guide](https://steward-fu.github.io/website/handheld/miyoo_flip_build_xrock.htm).
+
+---
+
+## Entering MASKROM mode
 
 1. Power off the device completely.
-2. Hold the MASKROM button (see [steward-fu's guide](https://steward-fu.github.io/website/handheld/miyoo_flip_maskrom.htm)
-   for the exact button / solder point).
-3. While holding, insert USB cable to host PC.
-4. Verify: `lsusb` should show a Rockchip USB device.
+2. Hold the MASKROM button (see [steward-fu’s MASKROM guide](https://steward-fu.github.io/website/handheld/miyoo_flip_maskrom.htm) for button or solder point).
+3. While holding, connect USB to the host.
+4. Confirm with `lsusb` (Rockchip USB device).
 
-## Loading the Loader
+---
 
-Before xrock can access flash, the RK3566 needs DDR init and a USB
-flash protocol handler. Two options:
+## Loading the loader
 
-**Option A -- Combined loader** (from U-Boot build):
+Before xrock can access flash, the RK3566 needs DDR init and a USB flash protocol. Two options:
+
+**Option A — Combined loader** (from U-Boot build):
+
 ```bash
-xrock download output/rk356x_spl_loader_v1.23.114.bin
+xrock download <path-to-rk356x_spl_loader_*.bin>
 sleep 1
 xrock flash
 ```
 
-**Option B -- DDR + usbplug** (from rkbin):
+**Option B — DDR + usbplug** (from rkbin):
+
 ```bash
 xrock extra maskrom \
     --rc4 off --sram rk3566_ddr_1056MHz_v1.18.bin --delay 10 \
@@ -63,7 +66,9 @@ sleep 1
 xrock flash
 ```
 
-## Backup (Before Flashing)
+---
+
+## Backup (before flashing)
 
 ```bash
 # Preloader (2 MB)
@@ -79,84 +84,88 @@ xrock flash read 14336 77824 boot_backup.img
 xrock flash read 92160 131072 rootfs_backup.img
 ```
 
-The stock firmware `Extra/spi_20241119160817.img` (128 MB, from
-`setup-extra.sh --all`) is a complete SPI NAND dump for full restore.
+A full 128 MB SPI NAND dump (e.g. from steward-fu releases) can be used for full restore.
+
+---
 
 ## Flashing U-Boot
 
+Only when you need to update U-Boot:
+
 ```bash
-xrock flash write 6144 output/uboot.img
+xrock flash write 6144 <your-uboot.img>
 ```
 
-Only flash U-Boot when you need to update it. Normally you only flash
-boot + rootfs.
+---
 
-## Flashing Boot + Rootfs
+## Flashing boot and rootfs
+
+After entering MASKROM and loading the loader:
 
 ```bash
-# Enter MASKROM, load loader, connect flash (see above), then:
-xrock flash write 14336 output/boot.img
-xrock flash write 92160 output/rootfs.squashfs
+xrock flash write 14336 <your-boot.img>
+xrock flash write 92160 <your-rootfs.squashfs>
 ```
 
-### One-liner
+Replace with your actual boot image and rootfs image paths (from your build or distro).
+
+---
+
+## Restoring stock firmware
+
+From a backup:
 
 ```bash
-xrock download output/rk356x_spl_loader_v1.23.114.bin && \
-  sleep 1 && xrock flash && sleep 1 && \
-  xrock flash write 14336 output/boot.img && \
-  xrock flash write 92160 output/rootfs.squashfs
-```
-
-## Restoring Stock Firmware
-
-```bash
-# From backup
 xrock flash write 0 preloader_backup.img
 xrock flash write 6144 uboot_backup.img
-
-# From stock dump (full restore)
-xrock flash write 0 Extra/spi_20241119160817.img
-
-# From individual partition images
-xrock flash write 6144 Extra/spi_20241119160817_uboot.img
 ```
 
-## Boot Flow
+From a full stock dump (128 MB):
 
-1. **Bootrom** finds IDBLOCK on SPI NAND, loads DDR init + SPL.
-2. **SPL** tries boot sources: MMC2 -> MMC1 -> MTD1. Loads U-Boot.
-3. **U-Boot** runs `boot_android`: reads boot partition, finds Android
-   boot image with kernel + DTB.
-4. **Kernel** mounts rootfs from `/dev/mtdblock3` (squashfs).
+```bash
+xrock flash write 0 <stock-full-dump.img>
+```
 
-## boot.img Format
+---
 
-U-Boot expects an **Android-format boot image** on the boot partition.
-The `build-boot-img.sh` script creates this using `mkbootimg` from the
-steward-fu U-Boot sources (`Extra/miyoo-flip-main/u-boot/scripts/mkbootimg`).
+## Boot flow
 
-Layout (matching stock):
+1. **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL.
+2. **SPL** tries boot sources (e.g. MMC2 → MMC1 → MTD). Loads U-Boot.
+3. **U-Boot** typically runs `boot_android`: reads boot partition, finds Android boot image (kernel + DTB).
+4. **Kernel** mounts rootfs from `/dev/mtdblock3` (squashfs or your rootfs type).
+
+---
+
+## boot.img format
+
+U-Boot expects an **Android-format boot image** on the boot partition. Common layout (match your distro):
+
 - Header v0, page size 2048
 - Kernel at offset 0x00008000
-- DTB as "second" at offset 0x00f00000
+- DTB as “second” at offset 0x00f00000
 - Base address 0x10000000
 
-The boot partition is 38 MB. If the uncompressed kernel exceeds ~36 MB,
-use LZ4 compression (the build script handles this automatically).
+The boot partition is 38 MB. If the kernel is large, use LZ4 compression so it fits.
 
-## Notes on `xrock flash erase`
+---
 
-- Works for uboot, boot, and rootfs partitions.
-- Does **NOT** work for the preloader (IDBLOCK area, sectors 0-4095).
-  The IDBLOCK is at the raw NAND level, below xrock's logical erase.
-- To destroy the preloader, write zeros:
-  ```bash
-  dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096
-  xrock flash write 0 /tmp/zeros.img
-  ```
+## Erasing and the preloader
 
-## mtdparts String
+- **uboot, boot, rootfs:** `xrock flash erase` works. Example (boot):  
+  `xrock flash erase 14336 77824`
+- **Preloader (sectors 0–4095):** `xrock flash erase` does **not** clear the IDBLOCK (it is at raw NAND level). To remove the preloader (e.g. to force boot from SD), **write zeros**:
+
+```bash
+dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096
+xrock flash write 0 /tmp/zeros.img
+```
+
+See [Boot from SD](boot-from-sd.md) for the full procedure.
+
+---
+
+## mtdparts string
 
 For kernel bootargs or U-Boot:
 

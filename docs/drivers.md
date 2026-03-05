@@ -1,13 +1,17 @@
 # Drivers: WiFi/Bluetooth & GPU
 
+Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware and driver behaviour** are distro-agnostic. **Building:** for this repo's Makefile and targets see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md); other distros use their own build flow.
+
 ## RTL8733BU WiFi/Bluetooth
 
 ### Overview
 
 The Miyoo Flip uses a Realtek RTL8733BU USB combo module for WiFi
-(802.11ac) and Bluetooth. The driver is built out-of-tree from
-[ROCKNIX/RTL8733BU](https://github.com/ROCKNIX/RTL8733BU) (branch
-`v5.15.12-126-wb`).
+(802.11ac) and Bluetooth. **WiFi works** with the out-of-tree 8733bu driver (built from [ROCKNIX/RTL8733BU](https://github.com/ROCKNIX/RTL8733BU), branch `v5.15.12-126-wb`). The driver handles USB, WiFi, and Bluetooth; rfkill provides software on/off for the radios.
+
+### Optional: GPIO-level power-off
+
+The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. If you want to **shut down the combo at the GPIO level** (full hardware power-off when both radios are off, for maximum battery savings), you can use an **optional separate driver** that owns the enable GPIO and ties it to rfkill. See [WiFi/BT power-off](wifi-bt-power-off.md) for the rationale and typical implementation.
 
 ### Architecture
 

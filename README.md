@@ -26,25 +26,26 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **[Full index → docs/README.md](docs/README.md)**
 
-**Part I — This project:** build and flash using this repo’s Makefile/Docker (outdated; instructions kept as reference).
+**Steward-fu:** one page for obtain and flash. **Device wiki:** serial, flashing, boot from SD, hardware, drivers, reference.
 
 | Guide | Contents |
 | ----- | -------- |
-| [Hardware & UART](docs/hardware.md) | Specs, serial console wiring, baud rate, SD slots |
-| [Building](docs/building.md) | This repo’s Docker build: kernel, rootfs, Make targets |
-| [Flashing](docs/flashing.md) | xrock, MASKROM, partition layout; this repo’s output paths |
-| [ROCKNIX](docs/rocknix.md) | SD boot procedure, GammaOS loader |
-
-**Part II — Device wiki:** distro-agnostic hardware and driver reference (no dependency on this repo).
-
-| Guide | Contents |
-| ----- | -------- |
-| [DTS porting](docs/dts-porting.md) | BSP-to-mainline device tree translation |
+| [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md) | Obtain images, flash with xrock, historical build (Docker, Makefile) |
+| [Serial](docs/serial.md) | How to obtain serial: wiring, baud, getty, SD slots |
+| [Flashing](docs/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
+| [Boot from SD](docs/boot-from-sd.md) | Erase partition and zero preloader to boot from SD |
+| [Hardware](docs/hardware.md) | Device specs |
 | [Display](docs/display.md) | DSI panel bring-up, backlight, init sequence |
 | [Drivers](docs/drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU |
+| [DTS porting](docs/dts-porting.md) | BSP-to-mainline device tree translation |
 | [Troubleshooting](docs/troubleshooting.md) | Boot hangs, kernel notes, debug bootargs |
-| [DDR exploration](docs/ddr/README.md) | DDR init, DMC, boot chain, deep sleep, WiFi power-off |
 | [Boot chain](docs/boot-chain.md) | FIT layout, OP-TEE requirement |
+| [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) | Deep sleep, vdd_logic off-in-suspend |
+| [WiFi/BT power-off](docs/wifi-bt-power-off.md) | Full poweroff of RTL8733BU via GPIO |
+| [Unused pins](docs/unused-pins-power-saving.md) | Pins to tie for power saving |
+| [BSP and DDR findings](docs/bsp-and-ddr-findings.md) | BSP sources, DMC location, mainline status |
+| [SPI and boot chain](docs/spi-and-boot-chain.md) | SPI layout, FIT, BL31, DDR scaling |
+| [TRM part 1](docs/trm-part1-registers-dpll.md), [TRM part 2](docs/trm-part2-dmc-hwffc-dcf.md), [RK3566 datasheet](docs/rk3566-datasheet-specs.md) | Registers, DMC, voltage/DDR specs |
 
 Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; includes DMC after deep-sleep resume); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
 
@@ -58,15 +59,16 @@ Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; includes DMC
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
 | Audio (RK817)            | Working               | simple-audio-card, speaker amp |
-| WiFi (RTL8733BU)         | Working               | Out-of-tree, 6.18+ |
+| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu, 6.18+. Optionally a separate driver can shut down the combo at GPIO level when both radios are off; see [WiFi/BT power-off](docs/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
 | GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
 | Storage                  | Working               | SPI NAND MTD, both SD slots |
-| HDMI                     | Untested              | Disabled in DTS to save power |
-| DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; [docs/ddr/](docs/ddr/) |
+| HDMI                     | Working               | Video and audio (when enabled in DTS) |
+| HDMI audio               | Working               | With HDMI output |
+| DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md), [SPI and boot chain](docs/spi-and-boot-chain.md) |
 | VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
 | IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** for BL31 deep sleep; see [docs/ddr/06](docs/ddr/06-suspend-driver-and-vdd-logic.md) |
+| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** for BL31 deep sleep; see [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) |
 | Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
 
 ---
@@ -81,13 +83,13 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and sleep pinctrl states create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and removing sleep pinctrl on RK817.
 
-- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [docs/ddr/](docs/ddr/).
+- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
 
-- **Suspend:** Out-of-tree **rk3568-suspend** (not rk356x) configures BL31 **deep sleep**; required for `vdd_logic` off-in-suspend. See [docs/ddr/06-suspend-driver-and-vdd-logic.md](docs/ddr/06-suspend-driver-and-vdd-logic.md).
+- **Suspend:** Out-of-tree **rk3568-suspend** (not rk356x) configures BL31 **deep sleep**; required for `vdd_logic` off-in-suspend. See [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md).
 
-- **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [docs/ddr/07-wifi-bt-combo-power.md](docs/ddr/07-wifi-bt-combo-power.md).
+- **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/wifi-bt-power-off.md).
 
-- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL32) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [docs/boot-chain.md](docs/boot-chain.md) and [docs/ddr/](docs/ddr/).
+- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL32) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot chain](docs/boot-chain.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
 
 ---
 
@@ -108,7 +110,7 @@ rk3566-miyoo-flip.dts          Mainline DTS (reference; current in distribution)
 
 **Boot logs:** In repo root — `boot_log_ROCKNIX.txt` (mainline, DMC after resume); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
 
-**Build system:** Scripts and layout in this repo are **outdated**. For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). Historical build and flash steps are in [docs/building.md](docs/building.md) and [docs/flashing.md](docs/flashing.md).
+**Build system:** Scripts and layout in this repo are **outdated**. For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). How to obtain, build, and flash is in [docs/steward-fu-obtain-and-flash.md](docs/steward-fu-obtain-and-flash.md); partition layout and generic flashing in [docs/flashing.md](docs/flashing.md).
 
 ---
 
@@ -132,7 +134,7 @@ make build
 # xrock download ... ; xrock flash write ...
 ```
 
-See [docs/building.md](docs/building.md) for the full build guide and [docs/flashing.md](docs/flashing.md) for flashing details.
+See [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md).
 
 ---
 

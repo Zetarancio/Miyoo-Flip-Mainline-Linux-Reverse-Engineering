@@ -63,9 +63,12 @@ The display pipeline was the hardest subsystem to port. See
 
 | BSP | Mainline | Status |
 |-----|----------|--------|
-| `&bus_npu`, `&dfi`, `&dmc` | -- | BSP-only, no mainline equivalent |
-| `&iep`, `&jpegd`, `&mpp_srv` | -- | BSP-only multimedia |
-| `&rk_rga`, `&rkvdec`, `&rkvenc`, `&rknpu` | -- | BSP-only, no mainline driver |
+| `&bus_npu` | -- | BSP-only, no mainline |
+| `&dfi`, `&dmc` | `&dfi`, `&dmc` + out-of-tree DMC devfreq | DMC: out-of-tree driver for mainline 6.18+ (see [BSP and DDR findings](bsp-and-ddr-findings.md), [SPI and boot chain](spi-and-boot-chain.md)) |
+| `&iep`, `&jpegd`, `&mpp_srv` | -- | BSP-only multimedia (MPP framework) |
+| `&rk_rga` | `rockchip-rga` | Mainline driver; working in ROCKNIX |
+| `&rkvdec`, `&rkvenc` (VPU/vepu) | `hantro-vpu` (dec/enc) | Mainline hantro driver; working in ROCKNIX |
+| `&rknpu` | -- | BSP-only, no mainline |
 | `&pmu_io_domains` | Same | |
 | `&saradc`, `&tsadc` | Same | |
 | `&uart1` | Same | Mainline needs `dma-names = "tx", "rx"` |
@@ -75,6 +78,5 @@ The display pipeline was the hardest subsystem to port. See
 
 - `charge-animation` -- no mainline driver
 - `vad` -- voice activity detection
-- BSP multimedia: `rk_rga`, `rkvdec`, `rkvenc`, `rknpu`, `iep`, `jpegd`, `mpp_srv`
-- DMC/DFI -- DDR frequency scaling (closed-source dependencies)
+- BSP-only multimedia: `iep`, `jpegd`, `mpp_srv`, `rknpu`
 - `bus_npu` -- NPU not in mainline

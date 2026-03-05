@@ -103,8 +103,8 @@ VDD_LOGIC powers: DDR controller, VOP2, interconnect, and other logic blocks.
 ### VDD_LOGIC in Suspend — RESOLVED
 
 vdd_logic is now set to `regulator-off-in-suspend` in the Miyoo Flip DTS, matching
-stock firmware behavior. The `rk356x-suspend` driver (patch 1013) configures BL31
-with `RKPM_SLP_ARMOFF_LOGOFF` so TF-A properly saves/restores the logic domain.
+stock firmware behavior. The **rk3568-suspend** driver configures BL31
+with `RKPM_SLP_ARMOFF_LOGOFF` so TF-A properly saves/restores the logic domain (deep sleep).
 
 See `06-suspend-driver-and-vdd-logic.md` for details.
 

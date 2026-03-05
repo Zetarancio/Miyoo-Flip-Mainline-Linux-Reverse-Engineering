@@ -2,16 +2,8 @@
 
 ## Complete file listing
 
-### `/home/ale/Downloads/Steward-fu-FLIP/docs` (9 files)
-- `rocknix.md`
-- `dts-porting.md`
-- `display.md`
-- `README.md`
-- `troubleshooting.md`
-- `drivers.md`
-- `flashing.md`
-- `building.md`
-- `hardware.md`
+### `docs/` (device wiki and reference)
+- `steward-fu-obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
 
 ### `/home/ale/Downloads/Steward-fu-FLIP/Extra` (9865+ files)
 Notable directories:
@@ -38,7 +30,7 @@ Notable directories:
 - Usage: `xrock extra maskrom --rc4 off --dram rk356x_usbplug_v1.17.bin --delay 10`
 
 **ROCKNIX DDR:**
-- From `rocknix.md`: Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
+- From `boot-from-sd.md` / ROCKNIX boot: Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
 
 ### 2. DMC (Dynamic Memory Controller) configuration
 
@@ -94,7 +86,7 @@ From `flashing.md`:
 - U-Boot (0x300000): U-Boot FIT (ATF + OP-TEE + U-Boot)
 
 **GammaOS bootloader:**
-From `rocknix.md`:
+From `boot-from-sd.md` (boot from SD procedure):
 - Preloader: Updated DDR init + GammaOS SPL
 - U-Boot: GammaOS U-Boot with ATF + OP-TEE
 
@@ -166,7 +158,7 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 - U-Boot sources in `miyoo-flip-main/u-boot/` contain ATF memory reservation code
 
 **Flashing scripts:**
-- References to DDR init in `flashing.md` and `rocknix.md`
+- References to DDR init in `flashing.md` and `boot-from-sd.md`
 - xrock tool usage for loading DDR init binaries
 
 ---
@@ -203,8 +195,8 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 **Documentation:**
 - `dts-porting.md`: notes DMC/DFI as BSP-only
 - `flashing.md`: DDR init process for MASKROM mode
-- `rocknix.md`: DDR init in bootloader chain
-- `building.md`: mentions `make build-dmc` target (requires BSP headers)
+- `boot-from-sd.md`: DDR init in bootloader chain
+- `steward-fu-obtain-and-flash.md`: mentions `make build-dmc` target (requires BSP headers)
 
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via
 `rockchip_dmc.c` (CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ). It uses the proprietary

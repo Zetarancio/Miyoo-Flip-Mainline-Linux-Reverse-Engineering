@@ -46,11 +46,11 @@ to `panel@0` in the DTS.
 
 ### 5. Missing panel timing delays
 
-The BSP uses `init-delay-ms = 200` and `enable-delay-ms = 200`. Our
-panel descriptor had zero delays.
+The BSP uses `init-delay-ms = 200` and `enable-delay-ms = 200`. A
+mainline panel descriptor without these delays can fail.
 
-**Fix:** Added `.delay = { .prepare = 200, .enable = 200, .disable = 20,
-.unprepare = 20 }` to the panel descriptor.
+**Fix:** Add `.delay = { .prepare = 200, .enable = 200, .disable = 20,
+.unprepare = 20 }` to the panel descriptor (or equivalent in your driver).
 
 ## Display Pipeline (Mainline)
 

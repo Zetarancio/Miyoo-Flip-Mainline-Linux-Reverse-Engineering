@@ -1,12 +1,49 @@
-# Documentation Index
+# Documentation index
 
-| Guide | Contents |
-|-------|----------|
-| [Hardware & UART](hardware.md) | Specs, serial console wiring, baud rate, SD slot mapping |
-| [Building](building.md) | Docker build system, kernel config, Make targets, patches |
-| [Flashing](flashing.md) | xrock flashing, MASKROM mode, MTD partition layout, boot.img format |
-| [DTS Porting](dts-porting.md) | BSP-to-mainline device tree translation table |
+Reference boot logs (mainline, stock) are in the repo root.
+
+---
+
+## Steward-fu project
+
+| Page | Content |
+|------|---------|
+| [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md) | How to obtain and flash the software: current images (Zetarancio/distribution, ROCKNIX), flashing with xrock, and historical build from this repo (Docker, Makefile). **Only page that describes Steward-fu build and flash.** |
+
+---
+
+## Device wiki (distro-agnostic)
+
+Hardware and software reference for the Miyoo Flip. No dependency on this repo’s scripts.
+
+### Serial, flashing, boot from SD
+
+| Page | Content |
+|------|---------|
+| [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |
+| [Flashing](flashing.md) | MTD layout, xrock, MASKROM, backup, flash boot/rootfs/uboot, restore stock, preloader erase note |
+| [Boot from SD](boot-from-sd.md) | How to erase partitions and zero the preloader to boot from SD (e.g. ROCKNIX) |
+
+### Hardware and drivers
+
+| Page | Content |
+|------|---------|
+| [Hardware](hardware.md) | Device specs table |
 | [Display](display.md) | DSI panel bring-up: init sequence, backlight, timing, pipeline |
-| [Drivers](drivers.md) | RTL8733BU WiFi/BT driver and Mali-G52 GPU (mali_kbase + libmali) |
-| [Troubleshooting](troubleshooting.md) | Boot hangs, kernel version issues, debug bootargs, known warnings |
-| [ROCKNIX](rocknix.md) | SD card boot via GammaOS loader, ROCKNIX integration |
+| [Drivers](drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU; full poweroff note |
+| [DTS porting](dts-porting.md) | BSP-to-mainline device tree translation |
+| [Troubleshooting](troubleshooting.md) | Boot hangs, kernel notes, debug bootargs |
+
+### Boot chain, suspend, DMC, power, reference
+
+| Page | Content |
+|------|---------|
+| [Boot chain](boot-chain.md) | FIT layout, OP-TEE requirement |
+| [SPI image and boot chain (detailed)](spi-and-boot-chain.md) | SPI layout, FIT, BL31/OP-TEE, DDR scaling, V2 SIP |
+| [Suspend and vdd_logic](suspend-and-vdd-logic.md) | rk3568-suspend, deep sleep, vdd_logic off-in-suspend |
+| [BSP and DDR findings](bsp-and-ddr-findings.md) | BSP sources, DMC driver location, mainline status |
+| [TRM part 1 (registers, DPLL)](trm-part1-registers-dpll.md) | TRM: DDR registers, DPLL, CRU |
+| [TRM part 2 (DMC, HWFFC, DCF)](trm-part2-dmc-hwffc-dcf.md) | TRM: DMC, hardware FSP, DCF |
+| [RK3566 datasheet specs](rk3566-datasheet-specs.md) | DDR timing, electrical, voltage domains |
+| [WiFi/BT power-off](wifi-bt-power-off.md) | Full poweroff of RTL8733BU via GPIO driver |
+| [Unused pins and battery saving](unused-pins-power-saving.md) | Pins to tie for power saving; pins to exclude |

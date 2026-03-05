@@ -1,5 +1,7 @@
 # Troubleshooting
 
+Distro-agnostic notes on boot failures, display hangs, and kernel debugging for the Miyoo Flip.
+
 ## Boot Hang: fan53555 / VDD_CPU (Kernel 6.4+)
 
 **Symptom:** Hard hang immediately after:
@@ -11,7 +13,7 @@ fan53555-regulator 0-0040: FAN53555 Option[8] Rev[1] Detected!
 driver reads `fcs,suspend-voltage-selector`. Wrong name causes wrong VSEL
 register selection, dropping VDD_CPU.
 
-**Fix (applied in our DTS):**
+**Fix (in mainline DTS):**
 ```dts
 vdd_cpu_rk860: rk8600@40 {
     fcs,suspend-voltage-selector = <1>;  /* NOT rockchip,... */
@@ -50,11 +52,9 @@ cannot run because init never starts.
 
 ## No Login Prompt (Kernel Boots, No Shell)
 
-1. Confirm rootfs was built with serial overlay (`rootfs-overlay-serial/`).
-2. Rebuild rootfs: `make clean-rootfs && make build-rootfs && make rootfs-img`.
-3. Flash **both** boot and rootfs partitions.
-4. Look for `=== init: serial inittab active ===` in serial output.
-5. Verify overlay is in image: `unsquashfs -d /tmp/rootfs output/rootfs.squashfs && cat /tmp/rootfs/etc/inittab`
+1. Confirm rootfs was built with serial getty (inittab or equivalent).
+2. Rebuild rootfs and reflash **both** boot and rootfs partitions.
+3. Look for init messages on serial; verify rootfs contains getty config for ttyS2.
 
 ## PMIC Dependency Cycles
 
@@ -77,13 +77,13 @@ resolve:
 | Fixed | GPU power domain resolved (mali_kbase binds) |
 | Fixed | GPU devfreq active (200-800 MHz) |
 | Cosmetic | fan53555 ghost probe at 0x1c (TCS4525 not populated) |
-| Low priority | VPU/RGA/VEPU sync_state pending (no drivers) |
+| Low priority | VPU/RGA/VEPU sync_state pending until first use (mainline drivers: hantro-vpu, rockchip-rga) |
 
 ## Remaining Boot Log Warnings
 
 | Message | Impact |
 |---------|--------|
-| `rockchip-pm-domain: sync_state() pending due to video-codec/rga/vepu` | None. No userspace consumer; domains eventually powered down |
+| `rockchip-pm-domain: sync_state() pending due to video-codec/rga/vepu` | Harmless. Mainline VPU/RGA drivers present; domains power down when idle; sync_state clears when a consumer opens the device |
 | `fan53555-regulator 0-001c: error -ENXIO: Failed to get chip ID!` | Cosmetic. TCS4525 at 0x1c not populated; RK8600 at 0x40 works |
 | `gpio gpiochip0: Static allocation of GPIO base is deprecated` | None. Upstream will fix |
 | `Waiting for interface eth0... timeout!` | Harmless. No Ethernet on handheld |

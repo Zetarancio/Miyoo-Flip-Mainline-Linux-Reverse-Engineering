@@ -156,7 +156,7 @@ See [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md).
 | Specs     | [miyoo_flip_spec.htm](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm) |
 | Pin mapping | [miyoo_flip_pin.htm](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm) |
 | MTD       | [miyoo_flip_mtd.htm](https://steward-fu.github.io/website/handheld/miyoo_flip_mtd.htm) |
-| Assets    | [GitHub release (miyoo-flip)](https://github.com/steward-fu/website/releases/tag/miyoo-flip) |
+- **Release (many useful files):** [steward-fu/website — miyoo-flip](https://github.com/steward-fu/website/releases/tag/miyoo-flip) — toolchain, U-Boot, xrock, SPI dumps, firmware, etc.
 
 **Related projects**
 

@@ -30,7 +30,7 @@ Notable directories:
 - Usage: `xrock extra maskrom --rc4 off --dram rk356x_usbplug_v1.17.bin --delay 10`
 
 **ROCKNIX DDR:**
-- From `boot-from-sd.md` / ROCKNIX boot: Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
+- From ROCKNIX boot (see [Boot from SD](boot-from-sd.md), [Flashing](flashing.md#booting-from-sd)): Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
 
 ### 2. DMC (Dynamic Memory Controller) configuration
 
@@ -86,7 +86,7 @@ From `flashing.md`:
 - U-Boot (0x300000): U-Boot FIT (ATF + OP-TEE + U-Boot)
 
 **GammaOS bootloader:**
-From `boot-from-sd.md` (boot from SD procedure):
+From boot-from-SD procedure (see [Boot from SD](boot-from-sd.md), [Flashing](flashing.md#booting-from-sd)):
 - Preloader: Updated DDR init + GammaOS SPL
 - U-Boot: GammaOS U-Boot with ATF + OP-TEE
 
@@ -195,7 +195,7 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 **Documentation:**
 - `dts-porting.md`: notes DMC/DFI as BSP-only
 - `flashing.md`: DDR init process for MASKROM mode
-- `boot-from-sd.md`: DDR init in bootloader chain
+- `boot-from-sd.md` / `flashing.md`: DDR init in bootloader chain
 - `steward-fu-obtain-and-flash.md`: mentions `make build-dmc` target (requires BSP headers)
 
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via

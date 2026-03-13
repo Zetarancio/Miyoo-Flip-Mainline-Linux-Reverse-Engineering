@@ -47,7 +47,7 @@ If you build from this repo (see §3), run `./setup-extra.sh` to download stewar
    - U-Boot: sector 6144, size 8192 sectors (4 MB).  
      Example: `xrock flash write 6144 <your-uboot.img>`.
 
-Partition layout, backup, restore stock, and boot flow are in [Flashing](flashing.md). To **boot from SD** (e.g. ROCKNIX) instead of internal storage, see [Boot from SD](boot-from-sd.md).
+Partition layout, backup, restore stock, and boot flow are in [Flashing](flashing.md). To **boot from SD**, see [Boot from SD](boot-from-sd.md).
 
 ### If you use this repo’s build (historical)
 

@@ -21,8 +21,8 @@ Hardware and software reference for the Miyoo Flip. No dependency on this repoâ€
 | Page | Content |
 |------|---------|
 | [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |
-| [Flashing](flashing.md) | MTD layout, xrock, MASKROM, backup, flash boot/rootfs/uboot, restore stock, preloader erase note |
-| [Boot from SD](boot-from-sd.md) | How to erase partitions and zero the preloader to boot from SD (e.g. ROCKNIX) |
+| [Flashing](flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
+| [Boot from SD](boot-from-sd.md) | Brief xrock procedure; full details in Flashing |
 
 ### Hardware and drivers
 

@@ -68,6 +68,14 @@ resolve:
 | BOOST | `vcc9-supply = <&dcdc_boost>` | Use `<&vccsys>` |
 | Pinctrl | `pinctrl-1/2/3` (sleep/reset states) | Only use `pinctrl-0 = <&pmic_int>` |
 
+## Power-off / battery drain: do not use system-power-controller
+
+**Symptom:** Device does not fully power off, or battery drains while "off".
+
+**Cause:** With `system-power-controller` on the RK817 PMIC node, mainline rk8xx-core writes DEV_OFF, which **races with PSCI SYSTEM_OFF**. The PMIC can end up partially on, causing battery drain. The BSP kernel does not use DEV_OFF for RK817.
+
+**Fix (in mainline DTS):** Do **not** add `system-power-controller` to the RK817 node. Without it, `rk8xx_shutdown()` still sets SLPPIN_DN_FUN and BL31 performs a clean power-down via PSCI — matching upstream Powkiddy X55 and fixing full power-off. See [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c).
+
 ## Power/Battery Status
 
 | Status | Item |

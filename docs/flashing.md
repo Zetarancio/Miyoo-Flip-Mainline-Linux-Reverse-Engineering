@@ -1,6 +1,6 @@
 # Flashing and partition layout
 
-Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For how to **obtain** images and flash them in the Steward-fu workflow, see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md). For **booting from SD** (e.g. after erasing internal boot), see [Boot from SD](boot-from-sd.md).
+Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For **booting from SD** with xrock, see [Boot from SD](boot-from-sd.md). For how to **obtain** images and flash them, see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md).
 
 ---
 
@@ -161,7 +161,26 @@ dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096
 xrock flash write 0 /tmp/zeros.img
 ```
 
-See [Boot from SD](boot-from-sd.md) for the full procedure.
+- **Whole 128 MB:** To erase everything (preloader + all partitions), write zeros to the full SPI NAND. After this the device will not boot from internal storage until you reflash (e.g. from SD or a full dump).
+
+```bash
+dd if=/dev/zero of=/tmp/zero_128mb.img bs=1M count=128
+xrock flash write 0 /tmp/zero_128mb.img
+```
+
+---
+
+## Booting from SD
+
+See [Boot from SD](boot-from-sd.md) for a brief xrock procedure. Below: scenarios, why write zeros, and restore.
+
+To boot from an SD card (e.g. ROCKNIX) instead of internal SPI NAND: zero the preloader so the bootrom falls through to SD. Optionally erase boot and uboot so internal storage is unused.
+
+**Boot scenarios:** With **zeroed preloader** + mainline SD → device boots from SD. With zeroed preloader and no SD → device stays in bootrom/MASKROM (not a brick). With stock/GammaOS preloader, U-Boot usually boots internal first.
+
+**Why write zeros:** `xrock flash erase 0 4096` does not clear the preloader (IDBLOCK is at raw NAND level). Use `dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096` then `xrock flash write 0 /tmp/zeros.img`.
+
+**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. SPL often loads from MMC2 (left slot), U-Boot from MMC1 (right) — see [Serial — SD slot mapping](serial.md). **GammaOS:** Same steps apply; zeroing preloader avoids SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
 
 ---
 

@@ -33,7 +33,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md) | Obtain images, flash with xrock, historical build (Docker, Makefile) |
 | [Serial](docs/serial.md) | How to obtain serial: wiring, baud, getty, SD slots |
 | [Flashing](docs/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
-| [Boot from SD](docs/boot-from-sd.md) | Erase partition and zero preloader to boot from SD |
+| [Boot from SD](docs/boot-from-sd.md) | Brief xrock procedure to boot from SD; details in Flashing |
 | [Hardware](docs/hardware.md) | Device specs |
 | [Display](docs/display.md) | DSI panel bring-up, backlight, init sequence |
 | [Drivers](docs/drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU |
@@ -47,7 +47,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | [SPI and boot chain](docs/spi-and-boot-chain.md) | SPI layout, FIT, BL31, DDR scaling |
 | [TRM part 1](docs/trm-part1-registers-dpll.md), [TRM part 2](docs/trm-part2-dmc-hwffc-dcf.md), [RK3566 datasheet](docs/rk3566-datasheet-specs.md) | Registers, DMC, voltage/DDR specs |
 
-Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; includes DMC after deep-sleep resume); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
+Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
 
 ---
 
@@ -90,6 +90,8 @@ Findings that made mainline work on this device (details in the wiki).
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/wifi-bt-power-off.md).
 
 - **Boot chain:** Any U-Boot for this board must include OP-TEE (BL32) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot chain](docs/boot-chain.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
+
+- **Full power-off:** Do **not** set `system-power-controller` on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c).
 
 ---
 

@@ -1,12 +1,5 @@
 # SPI Image Analysis & Boot Chain DDR Scaling Investigation
 
-## Source
-- SPI dump: project `Extra/` (e.g. `Extra/spi_*.img`, 128 MB)
-- BSP U-Boot source: `Extra/miyoo-flip-main/u-boot/`
-- Stock kernel DTB: `Extra/rockchip/rk3566-miyoo-355-v10-linux.dtb`
-
----
-
 ## 1. SPI Image Layout
 
 | Region | SPI Offset | Size | Content |

@@ -177,8 +177,6 @@ From Section 7.3.2 and 7.6.1:
 
 ### Summary / Implications for DDR Frequency Scaling
 
-This TRM Part 1 documents the **hardware registers** but **not the DDR frequency change protocol itself**. The critical missing pieces that would be in BL31/TF-A source code (not this TRM) are:
-
 1. **SIP function IDs** for DDR frequency change SMC calls
 2. **The SHARE_MEM structure** used to pass DDR timing parameters between Linux and BL31
 3. **The actual frequency change sequence** (put DRAM in self-refresh, switch clock, retrain PHY, exit self-refresh)

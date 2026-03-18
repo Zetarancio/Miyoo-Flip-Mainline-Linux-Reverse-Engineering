@@ -3,16 +3,7 @@
 ## Complete file listing
 
 ### `docs/` (device wiki and reference)
-- `firmware-dumps.md`, `board-dts-pmic-ddr-updates.md`, plus `steward-fu-obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
-
-### `/home/ale/Downloads/Steward-fu-FLIP/Extra` (9865+ files)
-Notable directories:
-- `miyoo-flip-main/` (U-Boot sources)
-- `XROCK/` (xrock flashing tool)
-- `flip-sysroot/` (stock system root)
-- `rockchip/` (device tree files)
-- `System.map-5.10` (kernel symbol map)
-- `kernel_config` (kernel configuration)
+- `firmware-dumps.md`, `board-dts-pmic-ddr-updates.md`, plus `obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
 
 ---
 
@@ -90,9 +81,6 @@ From boot-from-SD procedure (see [Boot from SD](boot-from-sd.md), [Flashing](fla
 - Preloader: Updated DDR init + GammaOS SPL
 - U-Boot: GammaOS U-Boot with ATF + OP-TEE
 
-**BL31 binary reference:**
-- Found: `miyoo-flip-main/rkbin/bin/rv11/rv1126_mcu.bin` (RV11, not RK3566)
-
 ### 4. Power management
 
 **Regulators (DTS):**
@@ -114,8 +102,7 @@ From boot-from-SD procedure (see [Boot from SD](boot-from-sd.md), [Flashing](fla
 ### 5. Device tree files
 
 **BSP DTS:**
-- `/home/ale/Downloads/Steward-fu-FLIP/Extra/rk3566-miyoo-355-v10-linux.dts`
-- `/home/ale/Downloads/Steward-fu-FLIP/Extra/rockchip/rk3566-miyoo-355-v10-linux.dts`
+- `miyoo355_fw_20250509213001/unpack/miyoo355_2025.dts`
 
 **Key DTS nodes:**
 ```dts
@@ -151,18 +138,6 @@ CONFIG_MALI_DEVFREQ=y
 CONFIG_MALI_BIFROST_DEVFREQ=y
 ```
 
-### 7. Build scripts and references
-
-**U-Boot build:**
-- `miyoo-flip-main/README.md` mentions DDR init binaries
-- U-Boot sources in `miyoo-flip-main/u-boot/` contain ATF memory reservation code
-
-**Flashing scripts:**
-- References to DDR init in `flashing.md` and `boot-from-sd.md`
-- xrock tool usage for loading DDR init binaries
-
----
-
 ## Summary
 
 **DDR frequency scaling:**
@@ -188,15 +163,14 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 - Thermal integration for devfreq
 
 **Firmware binaries:**
-- DDR init: `rk3566_ddr_1056MHz_v1.18.bin` (referenced, not present)
-- USB plug: `rk356x_usbplug_v1.17.bin` (referenced, not present)
-- Found: `rv1126_mcu.bin` (RV11, not RK3566)
+- DDR init: `rk3566_ddr_1056MHz_v1.18.bin` 
+- USB plug: `rk356x_usbplug_v1.17.bin` 
 
 **Documentation:**
 - `dts-porting.md`: notes DMC/DFI as BSP-only
 - `flashing.md`: DDR init process for MASKROM mode
 - `boot-from-sd.md` / `flashing.md`: DDR init in bootloader chain
-- `steward-fu-obtain-and-flash.md`: mentions `make build-dmc` target (requires BSP headers)
+- `obtain-and-flash.md`: obtain/flash guidance; legacy local build scripts are on branch `buildroot`
 
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via
 `rockchip_dmc.c` (CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ). It uses the proprietary

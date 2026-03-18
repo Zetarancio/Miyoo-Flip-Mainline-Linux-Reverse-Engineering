@@ -1,6 +1,6 @@
 # Flashing and partition layout
 
-Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For **booting from SD** with xrock, see [Boot from SD](boot-from-sd.md). For how to **obtain** images and flash them, see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md).
+Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For **booting from SD** with xrock, see [Boot from SD](boot-from-sd.md). For how to **obtain** images and flash them, see [Obtain and flash](obtain-and-flash.md).
 
 ---
 

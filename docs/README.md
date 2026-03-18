@@ -8,7 +8,7 @@ Reference boot logs (mainline, stock) are in the repo root.
 
 | Page | Content |
 |------|---------|
-| [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md) | How to obtain and flash the software: current images (Zetarancio/distribution, ROCKNIX), flashing with xrock, and historical build from this repo (Docker, Makefile). **Only page that describes Steward-fu build and flash.** |
+| [Obtain and flash](obtain-and-flash.md) | How to obtain/test images and flash with xrock. Legacy local build scripts are in branch `buildroot`. |
 
 ---
 

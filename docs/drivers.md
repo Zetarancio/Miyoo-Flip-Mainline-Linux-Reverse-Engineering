@@ -1,6 +1,6 @@
 # Drivers: WiFi/Bluetooth & GPU
 
-Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware and driver behaviour** are distro-agnostic. **Building:** for this repo's Makefile and targets see [Steward-fu: obtain and flash](steward-fu-obtain-and-flash.md); other distros use their own build flow.
+Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware and driver behaviour** are distro-agnostic. Build/test flows are distribution-specific; for current images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch `flip`.
 
 ## RTL8733BU WiFi/Bluetooth
 
@@ -30,42 +30,7 @@ init script handles load ordering:
 
 ### Building
 
-```bash
-make download-wifi        # Clone driver + apply kernel 6.19 patch
-make build-wifi           # Build module, install firmware
-```
-
-The build script (`build-rtl8733bu.sh`) handles:
-- Makefile reconfiguration for cross-compilation
-- `EXTRA_CFLAGS` -> `ccflags-y` conversion (kernel 6.19+)
-- Absolute include paths (kbuild `$(src)` unreliable in 6.19)
-- `halmac` symlink fix
-- Firmware installation from stock sysroot
-
-### Kernel Configuration
-
-```
-CONFIG_WIRELESS=y
-CONFIG_CFG80211=y
-CONFIG_MAC80211=y
-CONFIG_BT=y
-CONFIG_BT_HCIBTUSB=y
-CONFIG_BT_HCIBTUSB_RTL=y
-CONFIG_BT_RTL=y
-CONFIG_RFKILL=y
-```
-
-### Kernel 6.19 Compat Patch
-
-`patches/0002-rtl8733bu-linux-6.19-compat.patch` fixes:
-
-| File | Fix |
-|------|-----|
-| `sha256*.c/h` | `hmac_sha256` -> `rtw_hmac_sha256` (symbol conflict) |
-| `osdep_service_linux.h` | Timer API: `del_timer_sync()` -> `timer_delete_sync()` |
-| `halmac_type.h` | Missing enum values |
-| `hal8733b_fw.c/h` | Firmware stub arrays for file-based loading |
-| `ioctl_cfg80211.c` | `radio_idx`/`link_id` params for kernel 6.11+ |
+Clone [ROCKNIX/RTL8733BU](https://github.com/ROCKNIX/RTL8733BU) (branch `v5.15.12-126-wb`) and build against your kernel tree. There are patches avalaible to improve the driver. Legacy build scripts are on branch `buildroot`.
 
 ### Testing
 
@@ -88,7 +53,7 @@ WiFi/BT firmware comes from the stock sysroot
 - `rtl8733bu_fw` -- unified WiFi+BT firmware
 - `rtl8733bu_config` -- configuration blob
 
-The build script copies these to the Buildroot rootfs target.
+Install these to your rootfs firmware directory (e.g. `/usr/lib/firmware/`).
 
 ---
 
@@ -105,8 +70,6 @@ The RK3566 has a **Mali-G52 2EE** (Bifrost architecture) GPU.
 | Performance | Higher | ~70-80% |
 | Kernel driver | `mali_kbase.ko` (out-of-tree) | `panfrost` (mainline) |
 | License | Proprietary (ARM) | MIT/GPL |
-
-This project uses **mali_kbase + libmali** for best GLES performance.
 
 ### Components
 
@@ -126,11 +89,7 @@ Required for IPA (thermal) and devfreq.
 
 ### Building
 
-```bash
-make download-mali        # Clone mali_kbase + libmali (sparse)
-make build-mali           # Build module, install library + headers
-make rootfs-img           # Repack rootfs with GPU driver
-```
+Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. For userspace, fetch `libmali-bifrost-g52-g24p0-gbm.so` from [JeffyCN/mirrors](https://github.com/JeffyCN/mirrors) (branch `libmali`). Legacy build scripts are on branch `buildroot`.
 
 ### GPU OPP Table
 
@@ -146,8 +105,8 @@ make rootfs-img           # Repack rootfs with GPU driver
 ### Panfrost Conflict
 
 Both `panfrost` and `mali_kbase` match `compatible = "arm,mali-bifrost"`.
-The build script:
-- Blacklists panfrost via `/etc/modprobe.d/mali.conf`
+To avoid conflicts:
+- Blacklist panfrost via `/etc/modprobe.d/mali.conf`
 - `CONFIG_DRM_PANFROST` must be `=m` or `=n`, never `=y`
 
 ### Verification

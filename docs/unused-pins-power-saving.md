@@ -28,19 +28,20 @@ On the Miyoo Flip the following blocks are **not** used by hardware or by typica
 |-------|------|---------------|----------------|-------|
 | GPIO0 unclaimed | D2–D7 | _d | pull-down | PMUPLL / GPIO-only or NC |
 | GPIO1 I2C3/UART3 | A0–A1 | _u | pull-up | I2C3/UART3 not used on board |
-| GPIO1 eMMC/Flash | B4–D4 | _u/_d | B4–C4 up; C5–D4 down | No eMMC on Miyoo Flip |
+| GPIO1 eMMC/Flash | B4–D4 | _u/_d | B4–C4 up; C5–D0 down; D1–D4 up | No eMMC on Miyoo Flip |
 | GPIO1 I2S1 extra | A4, A6, B0–B2 | _d | pull-down | I2S1 RX/extra data not used |
-| GPIO0 PMU unused | A6, A7, B0, B3, B5–B7, C0, C1, C5 | _d/_u | per datasheet | GPU_PWREN, FLASH_VOL_SEL, CLK32K, I2C1, I2C2, PWM0–2, PWM6 |
+| GPIO0 PMU unused | A6, A7, B0, B3, B5–B7, C0, C1, C5 | _d/_u | A6 down; A7,B0,B3,B5,B6 up; B7,C0,C1,C5 down | GPU_PWREN, FLASH_VOL_SEL, CLK32K, I2C1, I2C2, PWM0–2, PWM6 |
 | GPIO2 unclaimed | B5, B7, C2–C6 | _u, _d | B5 up; B7,C2–C6 down | **Exclude B6** — UART1_CTSn (Miyoo serial joypad) |
-| GPIO3 unclaimed | A2, B7, C4–D7 | _d | pull-down | BT1120/CIF/EBC/GMAC/SDMMC2 not used |
+| GPIO3 unclaimed | A0, A2, B7, C4–D7 | _d | pull-down | BT1120/CIF/EBC/GMAC/SDMMC2 not used |
 | GPIO4 unclaimed | A1–C1, C3, C4 | _d | pull-down | Camera/EBC/GMAC not used |
 | GPIO2 high | C7–D7 | _d | pull-down | Likely not bonded |
-| GPIO3_A0 | A0 | _d | pull-down | Not in datasheet |
 | GPIO4 high | D2–D7 | _d | pull-down | Not bonded |
 
 **Critical:** **GPIO2_B6** (UART1_CTSn) must **not** be in any unused-pins group. It is used by the Miyoo serial joypad; tying it as unused breaks the joypad.
 
 Disabling entire subsystems (e.g. WiFi, HDMI, debug UART) in the device tree frees more pins; those pins can then be tied if desired.
+
+**Note:** Beyond unused pins, the DTS also disables **combphy1** and **combphy2** (no USB3/SATA/PCIe on this board), which powers down the PD_PIPE domain and further reduces idle power.
 
 ---
 

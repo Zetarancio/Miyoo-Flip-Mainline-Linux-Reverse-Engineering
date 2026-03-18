@@ -36,25 +36,7 @@ is an initcall related to display.
 &dsi_dphy0 { status = "disabled"; };
 ```
 
-Re-enable after display issues are resolved. Use `initcall_debug` in
-bootargs to find the exact hang point.
 
-## No "VFS: Mounted root" (Kernel Never Reaches rootfs)
-
-The kernel is stuck in an initcall before mounting root. Serial getty
-cannot run because init never starts.
-
-1. Add `initcall_debug loglevel=8` to DTS bootargs.
-2. Rebuild: `make build-kernel && make boot-img`.
-3. The last "calling initcall" line in serial output is the culprit.
-4. Try `init=/bin/sh` -- if you get a shell, the hang is in init, not
-   the kernel.
-
-## No Login Prompt (Kernel Boots, No Shell)
-
-1. Confirm rootfs was built with serial getty (inittab or equivalent).
-2. Rebuild rootfs and reflash **both** boot and rootfs partitions.
-3. Look for init messages on serial; verify rootfs contains getty config for ttyS2.
 
 ## PMIC Dependency Cycles
 
@@ -130,13 +112,4 @@ Add these to DTS `chosen` bootargs for debugging:
 
 ## Kernel Version Notes
 
-The project targets **mainline Linux 6.19** (default branch: `linux-6.6.y` LTS).
-The fan53555 VSEL bug affects all kernels **6.4+** and was the primary
-blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug
-but lack other improvements.
-
-Change kernel branch:
-```bash
-KERNEL_BRANCH=linux-6.12.y make download-kernel
-KERNEL_BRANCH=latest make download-kernel
-```
+The DTS targets **mainline Linux 6.18+**. The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. Legacy build helpers live on branch `buildroot`.

@@ -318,4 +318,4 @@ The RK3568 has **two mechanisms** for DDR frequency change:
 
 2. **DCF (DDR Converter of Frequency)** - A programmable sequencer that executes pre-loaded instructions from SRAM without CPU involvement. It directly programs DDRC and PHY registers to perform frequency conversion, including PLL reconfiguration, timing updates, and PHY calibration.
 
-**Note:** There is no mention of SIP (Secure Interface Protocol) calls or SMC (Secure Monitor Call) interface for DRAM in this TRM Part2 document. The SIP/SMC layer is typically implemented in the ARM Trusted Firmware (ATF/BL31) which wraps these hardware mechanisms, but that is not documented in the TRM itself.
+**Note:** SIP (Secure Interface Protocol) calls or SMC (Secure Monitor Call) are typically implemented in the ARM Trusted Firmware (ATF/BL31) which wraps these hardware mechanisms.

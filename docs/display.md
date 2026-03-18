@@ -3,7 +3,7 @@
 ## Status: Working
 
 The Miyoo Flip's 640x480 MIPI DSI panel is fully functional on mainline
-Linux 6.19. This was the most complex subsystem to port.
+Linux 6.19.
 
 ## Problem
 
@@ -94,7 +94,7 @@ the `miyoo_flip_panel` descriptor in `panel-simple.c`.
 |------|--------|
 | `panel-simple.c` (kernel patch) | Panel descriptor with mode, DSI init/exit sequences, timing delays. `panel_simple_dsi_send_one()` with retry logic |
 | `rk3566-miyoo-flip.dts` | `power-supply`, `backlight` on panel; OF graph endpoints for DSI/HDMI/VOP |
-| `build-kernel.sh` | `CONFIG_BACKLIGHT_PWM=y`, `CONFIG_PWM=y`, `CONFIG_PWM_ROCKCHIP=y` |
+| Kernel config | `CONFIG_BACKLIGHT_PWM=y`, `CONFIG_PWM=y`, `CONFIG_PWM_ROCKCHIP=y` |
 
 ## Verification
 

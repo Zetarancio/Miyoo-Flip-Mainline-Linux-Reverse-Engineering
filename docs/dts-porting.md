@@ -42,7 +42,7 @@ The display pipeline was the hardest subsystem to port. See
 | `rk8600@40` with `rockchip,suspend-voltage-selector` | `fcs,suspend-voltage-selector = <1>` | **Critical.** See renames above |
 | `tcs4525@1c` (vdd_cpu alt) | `status = "disabled"` | Not populated; disable to avoid probe noise |
 | `rk817: vcc9-supply = <&dcdc_boost>` | `vcc9-supply = <&vccsys>` | Avoids PMIC->BOOST->PMIC dependency cycle |
-| `rk817: pinctrl-1/2/3` (sleep/reset states) | Only `pinctrl-0 = <&pmic_int>` | Avoids PMIC->pinctrl_rk8xx->PMIC cycle |
+| `rk817: pinctrl-1/2/3` (sleep/reset states) | Only `pinctrl-0 = <&pmic_int>` | Avoids PMIC->pinctrl_rk8xx->PMIC cycle | Requires patch |
 | `rk817 codec` | Add `mclk` on parent node | Required for mainline RK817 codec |
 
 ## Sound

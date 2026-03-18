@@ -2,7 +2,9 @@
 
 This repository is the **maintained wiki and reference** for the **Miyoo Flip** handheld (Rockchip RK3566) on mainline Linux. The documentation is kept up to date as the canonical device reference.
 
-**For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This repo focuses on **docs**; build scripts here are outdated and retained for reference only.
+**For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This `main` branch is wiki-first. Legacy build scripts are kept in branch **`buildroot`**.
+
+**Wiki updated to:** [`18ad3c198c`](https://github.com/Zetarancio/distribution/commit/18ad3c198c) on the `flip` branch (2026-03-18).
 
 ---
 
@@ -26,11 +28,11 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **[Full index → docs/README.md](docs/README.md)**
 
-**Steward-fu:** one page for obtain and flash. **Device wiki:** serial, flashing, boot from SD, hardware, drivers, reference.
+**Obtain and flash:** one page for obtain and flash. **Device wiki:** serial, flashing, boot from SD, hardware, drivers, reference.
 
 | Guide | Contents |
 | ----- | -------- |
-| [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md) | Obtain images, flash with xrock, historical build (Docker, Makefile) |
+| [Obtain and flash](docs/obtain-and-flash.md) | Obtain/test images and flash with xrock; legacy scripts are on branch `buildroot` |
 | [Serial](docs/serial.md) | How to obtain serial: wiring, baud, getty, SD slots |
 | [Flashing](docs/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
 | [Boot from SD](docs/boot-from-sd.md) | Brief xrock procedure to boot from SD; details in Flashing |
@@ -69,7 +71,7 @@ Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after re
 | DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md), [SPI and boot chain](docs/spi-and-boot-chain.md) |
 | VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
 | IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** for BL31 deep sleep; see [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) |
+| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** and **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution) for BL31 deep sleep; see [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) |
 | Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
 
 ---
@@ -82,7 +84,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DSI panel init in command mode:** The stock driver sends init commands via a DT property. On mainline, commands must be sent during `prepare()` (command mode), not `enable()` (video mode), or they collide with the video stream on the shared FIFO.
 
-- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and sleep pinctrl states create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and removing sleep pinctrl on RK817.
+- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and sleep pinctrl states create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and removing sleep pinctrl on RK817. You can then reuse sleep pinctrl + **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution).
 
 - **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
 
@@ -90,9 +92,9 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/wifi-bt-power-off.md).
 
-- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL32) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot chain](docs/boot-chain.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
+- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL31) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot chain](docs/boot-chain.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
 
-- **Full power-off:** Do **not** set `system-power-controller` on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c).
+- **Full power-off:** Do **not** set `system-power-controller` for now on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c). Old stock software was not setting `system-power-controller`, newest reintroduced it, may work in conjunction with **patched rk817 core**.
 
 - **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [firmware dumps](docs/firmware-dumps.md) and [board DTS / PMIC / DDR updates](docs/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
 
@@ -103,21 +105,17 @@ Findings that made mainline work on this device (details in the wiki).
 ```
 docs/                          Documentation wiki (maintained)
 miyoo355_fw_20250509213001/    Unpacked 2025 stock card image (DTS, rootfs) — see docs/firmware-dumps.md
-spi_20241119160817/            Unpacked 2024 SPI dump (full layout, joystick study) — see docs/firmware-dumps.md
+spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick study used to improve the rocknix driver) — see docs/firmware-dumps.md
 boot_log_ROCKNIX.txt           Mainline boot log (DMC after resume confirmed)
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture
-patches/                       Kernel patches (reference; current in distribution)
-build-*.sh                      Build scripts (outdated)
-Makefile, Dockerfile            Docker-based build (outdated)
-rk3566-miyoo-flip.dts          Mainline DTS (reference; current in distribution)
 ```
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
 
 **Boot logs:** In repo root — `boot_log_ROCKNIX.txt` (mainline, DMC after resume); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
 
-**Build system:** Scripts and layout in this repo are **outdated**. For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). How to obtain, build, and flash is in [docs/steward-fu-obtain-and-flash.md](docs/steward-fu-obtain-and-flash.md); partition layout and generic flashing in [docs/flashing.md](docs/flashing.md).
+**Build system:** For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). This `main` branch is documentation-focused; legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/flashing.md](docs/flashing.md).
 
 ---
 
@@ -125,23 +123,9 @@ rk3566-miyoo-flip.dts          Mainline DTS (reference; current in distribution)
 
 For a **current image and build**, use the [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (ROCKNIX, branch `flip`) repo.
 
-For **historical** build and flash (this repo’s Makefile/Docker):
+For legacy local build scripts, see branch **`buildroot`**.
 
-```bash
-# 1. Download steward-fu assets (SDK toolchain, U-Boot, firmware)
-./setup-extra.sh
-
-# 2. Download mainline kernel, WiFi driver, and Mali GPU driver
-make download-kernel download-wifi download-mali
-
-# 3. Build everything in Docker
-make build
-
-# 4. Flash to device via xrock (MASKROM mode)
-# xrock download ... ; xrock flash write ...
-```
-
-See [Steward-fu: obtain and flash](docs/steward-fu-obtain-and-flash.md).
+For flashing and SD boot on this wiki, see [Obtain and flash](docs/obtain-and-flash.md) and [docs/flashing.md](docs/flashing.md).
 
 ---
 

@@ -25,7 +25,7 @@ So both **deep sleep** and **vdd_logic off in suspend** depend on a driver that 
 
 ### Source (ROCKNIX)
 
-The rk3568-suspend driver is available in [ROCKNIX](https://rocknix.org/) via [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`).
+The rk3568-suspend driver is available in [ROCKNIX](https://rocknix.org/) via [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`). **RK817 sleep/resume** in mainline is often extended with rk8xx patches that match BSP ordering (`SLPPIN_SLP_FUN`, etc.); see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
 
 ### Patch (distribution-agnostic)
 

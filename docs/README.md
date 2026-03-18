@@ -29,6 +29,8 @@ Hardware and software reference for the Miyoo Flip. No dependency on this repoâ€
 | Page | Content |
 |------|---------|
 | [Hardware](hardware.md) | Device specs table |
+| [Firmware dumps](firmware-dumps.md) | Stock unpacks: 2025 vs 2024 SPI (`miyoo355_fw_*`, `spi_*`) |
+| [Board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md) | RK817, suspend, DMC, battery OCV, SD â€” vs [flip commits](https://github.com/Zetarancio/distribution/commits/flip/) |
 | [Display](display.md) | DSI panel bring-up: init sequence, backlight, timing, pipeline |
 | [Drivers](drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU; full poweroff note |
 | [DTS porting](dts-porting.md) | BSP-to-mainline device tree translation |

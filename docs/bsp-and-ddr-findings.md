@@ -3,7 +3,7 @@
 ## Complete file listing
 
 ### `docs/` (device wiki and reference)
-- `steward-fu-obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
+- `firmware-dumps.md`, `board-dts-pmic-ddr-updates.md`, plus `steward-fu-obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
 
 ### `/home/ale/Downloads/Steward-fu-FLIP/Extra` (9865+ files)
 Notable directories:
@@ -201,4 +201,4 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via
 `rockchip_dmc.c` (CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ). It uses the proprietary
 BL31 SIP interface (V2 shared-memory protocol with MCU-based DCF completion).
-An out-of-tree `rk3568_dmc.c` driver implementing the same protocol is available in [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) for mainline kernel 6.18+.
+An out-of-tree `rk3568_dmc.c` driver implementing the same protocol is available in [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) for mainline kernel 6.18+. Recent trees also tune that driver (e.g. self-refresh idle, transition ratelimit) — see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md) and [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).

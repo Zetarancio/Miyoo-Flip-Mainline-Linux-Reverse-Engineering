@@ -46,6 +46,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | [BSP and DDR findings](docs/bsp-and-ddr-findings.md) | BSP sources, DMC location, mainline status |
 | [SPI and boot chain](docs/spi-and-boot-chain.md) | SPI layout, FIT, BL31, DDR scaling |
 | [TRM part 1](docs/trm-part1-registers-dpll.md), [TRM part 2](docs/trm-part2-dmc-hwffc-dcf.md), [RK3566 datasheet](docs/rk3566-datasheet-specs.md) | Registers, DMC, voltage/DDR specs |
+| [Firmware dumps](docs/firmware-dumps.md), [Board DTS / PMIC / DDR](docs/board-dts-pmic-ddr-updates.md) | Stock unpacks; RK817, suspend, DMC, battery, SD vs [flip commits](https://github.com/Zetarancio/distribution/commits/flip/) |
 
 Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
 
@@ -93,12 +94,16 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **Full power-off:** Do **not** set `system-power-controller` on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c).
 
+- **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [firmware dumps](docs/firmware-dumps.md) and [board DTS / PMIC / DDR updates](docs/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+
 ---
 
 ## Project structure
 
 ```
 docs/                          Documentation wiki (maintained)
+miyoo355_fw_20250509213001/    Unpacked 2025 stock card image (DTS, rootfs) — see docs/firmware-dumps.md
+spi_20241119160817/            Unpacked 2024 SPI dump (full layout, joystick study) — see docs/firmware-dumps.md
 boot_log_ROCKNIX.txt           Mainline boot log (DMC after resume confirmed)
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture

@@ -1,51 +1,30 @@
 # Documentation index
 
-Reference boot logs (mainline, stock) are in the repo root.
-
----
-
-## Steward-fu project
-
-| Page | Content |
-|------|---------|
-| [Obtain and flash](obtain-and-flash.md) | How to obtain/test images and flash with xrock. Legacy local build scripts are in branch `buildroot`. |
+Reference boot logs (mainline, stock) are in the repo root. **`boot_log_ROCKNIX.txt`** is a **historical capture** (proof of e.g. DMC/resume/power-down) and may **not** match the latest kernel/DTS.
 
 ---
 
 ## Device wiki (distro-agnostic)
 
-Hardware and software reference for the Miyoo Flip. No dependency on this repo’s scripts.
-
-### Serial, flashing, boot from SD
-
 | Page | Content |
 |------|---------|
-| [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |
-| [Flashing](flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
-| [Boot from SD](boot-from-sd.md) | Brief xrock procedure; full details in Flashing |
-
-### Hardware and drivers
-
-| Page | Content |
-|------|---------|
-| [Hardware](hardware.md) | Device specs table |
-| [Firmware dumps](firmware-dumps.md) | Stock unpacks: 2025 vs 2024 SPI (`miyoo355_fw_*`, `spi_*`) |
-| [Board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md) | RK817, suspend, DMC, battery OCV, SD — vs [flip commits](https://github.com/Zetarancio/distribution/commits/flip/) |
-| [Display](display.md) | DSI panel bring-up: init sequence, backlight, timing, pipeline |
-| [Drivers](drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU; full poweroff note |
-| [DTS porting](dts-porting.md) | BSP-to-mainline device tree translation |
+| [Boot and flash](boot-and-flash.md) | Hardware specs, where to get images, boot chain, flashing overview, SD boot overview |
+| [→ Flashing (full guide)](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore, boot.img format, mtdparts |
+| [→ Boot from SD](boot-and-flash/boot-from-sd.md) | Brief xrock procedure to boot from SD |
+| [RK3566 reference](rk3566-reference.md) | SoC overview: DDR specs, voltage domains, PLLs |
+| [→ Datasheet specs](rk3566-reference/datasheet-specs.md) | DDR types/frequencies, voltage rails, IO leakage, OPP validation |
+| [→ TRM Part 1](rk3566-reference/trm-part1-registers-dpll.md) | DDR registers, DPLL, CRU, DDR_GRF, PMU |
+| [→ TRM Part 2](rk3566-reference/trm-part2-dmc-hwffc-dcf.md) | DMC, HWFFC, DCF, FSP, DFI monitor |
+| [→ Unused pins](rk3566-reference/unused-pins-power-saving.md) | GPIO pins to tie for power saving (Miyoo Flip model, adapt to your board) |
+| [Stock firmware and findings](stock-firmware-and-findings.md) | Stock dumps, BSP analysis overview |
+| [→ BSP and DDR findings](stock-firmware-and-findings/bsp-and-ddr-findings.md) | BSP sources, DMC driver, BL31/ATF, kernel config |
+| [→ SPI and boot chain](stock-firmware-and-findings/spi-and-boot-chain.md) | SPI layout, FIT, BL31 strings, DDR scaling, V2 SIP |
+| [Drivers and DTS](drivers-and-dts.md) | Board DTS evolution, drivers, display, suspend overview |
+| [→ Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) | Required DTS nodes for patches, RK817, I2C0 TCS4525/RK8600, DMC, SD, joypad, final state |
+| [→ Drivers (WiFi/BT, GPU)](drivers-and-dts/drivers.md) | RTL8733BU and Mali-G52 GPU drivers |
+| [→ DTS porting](drivers-and-dts/dts-porting.md) | BSP-to-mainline device tree translation |
+| [→ Display](drivers-and-dts/display.md) | DSI panel bring-up, init sequence, pipeline |
+| [→ WiFi/BT power-off](drivers-and-dts/wifi-bt-power-off.md) | Optional GPIO-level power-off for RTL8733BU |
+| [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | rk3568-suspend, deep sleep, vdd_logic off-in-suspend |
 | [Troubleshooting](troubleshooting.md) | Boot hangs, kernel notes, debug bootargs |
-
-### Boot chain, suspend, DMC, power, reference
-
-| Page | Content |
-|------|---------|
-| [Boot chain](boot-chain.md) | FIT layout, OP-TEE requirement |
-| [SPI image and boot chain (detailed)](spi-and-boot-chain.md) | SPI layout, FIT, BL31/OP-TEE, DDR scaling, V2 SIP |
-| [Suspend and vdd_logic](suspend-and-vdd-logic.md) | rk3568-suspend, deep sleep, vdd_logic off-in-suspend |
-| [BSP and DDR findings](bsp-and-ddr-findings.md) | BSP sources, DMC driver location, mainline status |
-| [TRM part 1 (registers, DPLL)](trm-part1-registers-dpll.md) | TRM: DDR registers, DPLL, CRU |
-| [TRM part 2 (DMC, HWFFC, DCF)](trm-part2-dmc-hwffc-dcf.md) | TRM: DMC, hardware FSP, DCF |
-| [RK3566 datasheet specs](rk3566-datasheet-specs.md) | DDR timing, electrical, voltage domains |
-| [WiFi/BT power-off](wifi-bt-power-off.md) | Full poweroff of RTL8733BU via GPIO driver |
-| [Unused pins and battery saving](unused-pins-power-saving.md) | Pins to tie for power saving; pins to exclude |
+| [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |

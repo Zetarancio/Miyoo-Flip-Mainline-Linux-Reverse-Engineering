@@ -1,6 +1,6 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/). Align mainline DTS and kernel patches with **miyoo355_fw_20250509213001 stock firmware** where noted in [firmware dumps](firmware-dumps.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/). Align mainline DTS and kernel patches with **miyoo355_fw_20250509213001 stock firmware** where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
 
 ---
 
@@ -92,7 +92,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | Topic | Notes |
 |-------|--------|
 | **rk8xx suspend/resume** | Kernel patches align RK817 sleep/resume with BSP ordering (e.g. `SLPPIN_SLP_FUN`, resume path). DTS may use `pmic-reset` tied to sleep-pin GPIO for reliable resume. |
-| **Full power-off** | Do **not** use `system-power-controller` on RK817: mainline `DEV_OFF` can race PSCI `SYSTEM_OFF`, leaving the PMIC partly on and draining the battery. Without it, shutdown uses `rk8xx_shutdown()` + BL31. See [troubleshooting](troubleshooting.md). |
+| **Full power-off** | Do **not** use `system-power-controller` on RK817: mainline `DEV_OFF` can race PSCI `SYSTEM_OFF`, leaving the PMIC partly on and draining the battery. Without it, shutdown uses `rk8xx_shutdown()` + BL31. See [troubleshooting](../troubleshooting.md). |
 | **Deep sleep** | Still requires **rk3568-suspend** (BL31 deep-sleep flags) + sensible `vdd_logic` / regulator-off-in-suspend where used. See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **vcc9 / BOOST** | Document clearly that RK817 `vcc9` needs the correct supply (e.g. avoid fw_devlink cycles vs `dcdc_boost`). |
 
@@ -107,6 +107,17 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 ---
 
+## I2C0 CPU regulator (TCS4525 and RK8600)
+
+**miyoo355_fw_20250509213001** stock DTS enables **both** a **TCS4525 @ 0x1c** and an **RK8600 @ 0x40** as possible CPU rails. That implies **two board revisions** may exist in the wild (one populated part per address), but **this is not proven** on hardware—only the **firmware/DTS** documents both.
+
+The Miyoo Flip mainline DTS was aligned to that model:
+
+- **[b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777)** — Comments and **full TCS4525 node** from stock (with `fcs,suspend-voltage-selector`, suspend state, etc.); documents two revisions vs 2025 firmware; clarifies USB host 5V and SD power pinctrl vs stock 2025.
+- **[6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)** — **Both** `tcs4525@1c` and `rk8600@40` use `status = "okay"` (no longer disabling TCS4525 to silence probe). **TCS4525 on real hardware with only RK8600 is still untested** in that configuration; the expectation is the same as stock: **only the populated chip probes successfully**. The other address gets a normal **driver probe failure** (`-ENXIO` / chip ID) and is **ignored**—**the system boots and runs** using the regulator that is actually present.
+
+---
+
 ## SD / eMMC PHY
 
 | Topic | Notes |
@@ -114,7 +125,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | **Shared vqmmc** | Both MicroSD slots share a **single `vqmmc` rail** (vccio_sd). They must operate at the same I/O voltage. Tested: **two 1.8 V cards** (works). Untested but plausible: **two 3.3 V cards**. Also works: **one single 3.3 V card**. **You cannot mix a 1.8 V and a 3.3 V card.** |
 | **SDR50 on slot 2** | Removed from second slot — shared vqmmc limits stable UHS negotiation when both slots are populated. Slot 0 (boot) keeps SDR12/SDR25/SDR50/SDR104. |
 | **Karlman MMC** | Not useful for this board. The Karlman warm-reboot MMC patch was tried and removed — the actual constraint is the shared vqmmc rail, not a warm-reboot bug. |
-| **Revisions** | I2C0 may see either TCS4525 or RK8600 on VDD_CPU depending on board revision, there might be differents board revisions according to **miyoo355_fw_20250509213001 stock firmware** DTS — DTS keeps both nodes (TCS4525 disabled, RK8600 enabled). |
+| **CPU rail / I2C0** | See [I2C0 CPU regulator (TCS4525 and RK8600)](#i2c0-cpu-regulator-tcs4525-and-rk8600) — dual nodes enabled like stock; two revisions **possible**, **not proven**. |
 
 ---
 
@@ -131,7 +142,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 | Topic | Notes |
 |-------|--------|
-| **BL31 / OP-TEE** | U-Boot FIT may track newer rkbin BL32; some trees adjust reserved-memory for OP-TEE. Always match **DDR init blob ↔ BL31** version expectations (see [SPI and boot chain](spi-and-boot-chain.md)). |
+| **BL31 / OP-TEE** | U-Boot FIT may track newer rkbin BL32; some trees adjust reserved-memory for OP-TEE. Always match **DDR init blob ↔ BL31** version expectations (see [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md)). |
 
 ---
 
@@ -174,5 +185,6 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
 | **DMC / suspend** | Keep the out-of-tree DMC + rk3568-suspend path, plus latest rk8xx suspend/resume ordering updates. |
+| **VDD_CPU (I2C0)** | **Both** `tcs4525@1c` and `rk8600@40` **enabled** (`okay`), matching 2025 stock ([6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). Two board variants are **firmware-inferred only**; absent chip = probe fail, **boot OK**. |
 
 Reference stream: [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).

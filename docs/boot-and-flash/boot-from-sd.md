@@ -12,4 +12,4 @@ To boot the Miyoo Flip from an SD card (e.g. ROCKNIX) instead of internal SPI NA
    `xrock flash write 0 /tmp/zeros.img`
 5. Insert your SD (mainline image with idbloader/U-Boot/extlinux), disconnect USB, power on.
 
-**Backup first.** Restore internal boot by reflashing preloader and uboot — see [Flashing](flashing.md) (backup, restore, partition layout, and the full [Booting from SD](flashing.md#booting-from-sd) section).
+**Backup first.** Restore internal boot by reflashing preloader and uboot — see the [full flashing guide](flashing.md) (backup, restore, partition layout, and the full [Booting from SD](flashing.md#booting-from-sd) section).

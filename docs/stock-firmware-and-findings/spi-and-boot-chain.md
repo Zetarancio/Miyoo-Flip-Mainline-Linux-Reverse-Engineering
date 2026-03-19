@@ -307,7 +307,7 @@ An out-of-tree DMC devfreq driver correctly implements this V2 protocol for main
 ## 10. Stock DDR Frequency Scaling — Confirmed Working
 
 The stock boot log (`boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` in this repo) confirms
-DDR frequency scaling was active on the Miyoo Flip. For current mainline boot log see `boot_log_ROCKNIX.txt` in this repo.
+DDR frequency scaling was active on the Miyoo Flip. For a captured mainline boot log see `boot_log_ROCKNIX.txt` in this repo (**historical proof**; it may not reflect the **latest** DTS/kernel iteration).
 
 ### Stock Boot Log Evidence
 

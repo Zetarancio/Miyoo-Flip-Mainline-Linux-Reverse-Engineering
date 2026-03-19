@@ -1,5 +1,7 @@
 # Unused Pins and Battery Saving (Miyoo Flip / RK3566)
 
+> **Note:** The pin tables below were modeled on the **Miyoo Flip** board. Other RK3566 devices in the same family share the same pad types but may use different pins for their peripherals. **Adapt the pin lists to your specific board** before applying unused-pin pinctrl groups.
+
 Distro-agnostic reference for which GPIO pins on the Miyoo Flip can be put into a **power-saving state** (tied to a defined level) to reduce leakage. Unused pins that are left floating can draw current (input buffer shoot-through). Tying them via pinctrl to pull-up or pull-down avoids that.
 
 **Rule:** Only pins that are **not** used by any driver or function on the board may be included in an “unused pins” pinctrl group. A device tree can define pinctrl groups for unused pins and a consumer node that selects them at boot.

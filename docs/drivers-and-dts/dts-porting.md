@@ -1,6 +1,6 @@
 # Stock DTS to Mainline DTS Translation
 
-Reference: `Extra/rockchip/rk3566-miyoo-355-v10-linux.dts` (BSP 5.10, from steward-fu) and repo [firmware dumps](firmware-dumps.md) (2024 SPI vs 2025 card image DTS).
+Reference: `Extra/rockchip/rk3566-miyoo-355-v10-linux.dts` (BSP 5.10, from steward-fu) and repo [firmware dumps](../stock-firmware-and-findings.md) (2024 SPI vs 2025 card image DTS).
 Target: `rk3566-miyoo-flip.dts` (mainline, includes only `rk3566.dtsi`). For **PMIC, DDR, battery, SD, suspend** changes since early porting, see [Board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
 
 ## Root Node
@@ -40,7 +40,7 @@ The display pipeline was the hardest subsystem to port. See
 | BSP | Mainline | Notes |
 |-----|----------|-------|
 | `rk8600@40` with `rockchip,suspend-voltage-selector` | `fcs,suspend-voltage-selector = <1>` | **Critical.** See renames above |
-| `tcs4525@1c` (vdd_cpu alt) | `status = "disabled"` | Not populated; disable to avoid probe noise |
+| `tcs4525@1c` (vdd_cpu alt) | `status = "okay"` (with `rk8600@40` also `okay`) | Matches **2025 stock**: both nodes enabled; only the populated chip probes ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). The empty address fails probe harmlessly. |
 | `rk817: vcc9-supply = <&dcdc_boost>` | `vcc9-supply = <&vccsys>` | Avoids PMIC->BOOST->PMIC dependency cycle |
 | `rk817: pinctrl-1/2/3` (sleep/reset states) | Only `pinctrl-0 = <&pmic_int>` | Avoids PMIC->pinctrl_rk8xx->PMIC cycle | Requires patch |
 | `rk817 codec` | Add `mclk` on parent node | Required for mainline RK817 codec |
@@ -64,7 +64,7 @@ The display pipeline was the hardest subsystem to port. See
 | BSP | Mainline | Status |
 |-----|----------|--------|
 | `&bus_npu` | -- | BSP-only, no mainline |
-| `&dfi`, `&dmc` | `&dfi`, `&dmc` + out-of-tree DMC devfreq | DMC: out-of-tree driver for mainline 6.18+ (see [BSP and DDR findings](bsp-and-ddr-findings.md), [SPI and boot chain](spi-and-boot-chain.md)) |
+| `&dfi`, `&dmc` | `&dfi`, `&dmc` + out-of-tree DMC devfreq | DMC: out-of-tree driver for mainline 6.18+ (see [BSP and DDR findings](../stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md)) |
 | `&iep`, `&jpegd`, `&mpp_srv` | -- | BSP-only multimedia (MPP framework) |
 | `&rk_rga` | `rockchip-rga` | Mainline driver; working in ROCKNIX |
 | `&rkvdec`, `&rkvenc` (VPU/vepu) | `hantro-vpu` (dec/enc) | Mainline hantro driver; working in ROCKNIX |

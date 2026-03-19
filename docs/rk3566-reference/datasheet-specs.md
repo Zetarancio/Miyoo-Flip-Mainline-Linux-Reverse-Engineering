@@ -106,7 +106,7 @@ vdd_logic is now set to `regulator-off-in-suspend` in the Miyoo Flip DTS, matchi
 stock firmware behavior. The **rk3568-suspend** driver configures BL31
 with `RKPM_SLP_ARMOFF_LOGOFF` so TF-A properly saves/restores the logic domain (deep sleep).
 
-See `06-suspend-driver-and-vdd-logic.md` for details.
+See [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md) for details.
 
 ---
 
@@ -136,7 +136,7 @@ DDRPHY_VDDQ is fixed at 1.1 V by board hardware (not software-controlled during 
 | Int PLL | 10–800 MHz | 475–1900 MHz | 9–1900 MHz | ~1000 ref cycles |
 
 OSC input: **24 MHz**. 9 PLLs total in the SoC.
-The DDR PLL (DPLL) derives DDR clocks. See `02-trm-part1-registers-and-dpll.md`.
+The DDR PLL (DPLL) derives DDR clocks. See [TRM Part 1](trm-part1-registers-dpll.md).
 
 ---
 

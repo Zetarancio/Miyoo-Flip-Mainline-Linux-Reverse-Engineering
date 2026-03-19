@@ -4,7 +4,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This `main` branch is wiki-first. Legacy build scripts are kept in branch **`buildroot`**.
 
-**Wiki updated to:** [`18ad3c198c`](https://github.com/Zetarancio/distribution/commit/18ad3c198c) on the `flip` branch (2026-03-18).
+**Wiki updated to:** [`68821122aa`](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214) on the `flip` branch (2026-03-18). See also [DTS: I2C0 two revisions](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777).
 
 ---
 
@@ -19,8 +19,10 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | Display   | 640x480 MIPI DSI (FT8006M controller, 2-lane, RGB888) |
 | WiFi/BT   | RTL8733BU (USB)                                       |
 | Audio     | RK817 codec + speaker amplifier                        |
-| PMIC      | RK817 + RK8600 (VDD_CPU)                              |
+| PMIC      | RK817 (main) + VDD_CPU (**TCS4525 @ 0x1c** and/or **RK8600 @ 0x40** — see note below) |
 | UART      | ttyS2 @ 1,500,000 baud (3.3V)                         |
+
+**VDD_CPU / I2C0:** 2025 stock DTS and the current flip DTS enable **both** CPU-regulator nodes (`status = "okay"`), matching stock behavior ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). **Two board revisions** (one populated at 0x1c *or* 0x40) are suggested by firmware but **not proven** on hardware. The kernel probes both; the **absent** chip returns **probe failure** and is ignored—the **present** rail works and the system **boots normally**.
 
 ---
 
@@ -28,29 +30,18 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **[Full index → docs/README.md](docs/README.md)**
 
-**Obtain and flash:** one page for obtain and flash. **Device wiki:** serial, flashing, boot from SD, hardware, drivers, reference.
-
-| Guide | Contents |
-| ----- | -------- |
-| [Obtain and flash](docs/obtain-and-flash.md) | Obtain/test images and flash with xrock; legacy scripts are on branch `buildroot` |
-| [Serial](docs/serial.md) | How to obtain serial: wiring, baud, getty, SD slots |
-| [Flashing](docs/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore |
-| [Boot from SD](docs/boot-from-sd.md) | Brief xrock procedure to boot from SD; details in Flashing |
-| [Hardware](docs/hardware.md) | Device specs |
-| [Display](docs/display.md) | DSI panel bring-up, backlight, init sequence |
-| [Drivers](docs/drivers.md) | RTL8733BU WiFi/BT and Mali-G52 GPU |
-| [DTS porting](docs/dts-porting.md) | BSP-to-mainline device tree translation |
-| [Troubleshooting](docs/troubleshooting.md) | Boot hangs, kernel notes, debug bootargs |
-| [Boot chain](docs/boot-chain.md) | FIT layout, OP-TEE requirement |
-| [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) | Deep sleep, vdd_logic off-in-suspend |
-| [WiFi/BT power-off](docs/wifi-bt-power-off.md) | Full poweroff of RTL8733BU via GPIO |
-| [Unused pins](docs/unused-pins-power-saving.md) | Pins to tie for power saving |
-| [BSP and DDR findings](docs/bsp-and-ddr-findings.md) | BSP sources, DMC location, mainline status |
-| [SPI and boot chain](docs/spi-and-boot-chain.md) | SPI layout, FIT, BL31, DDR scaling |
-| [TRM part 1](docs/trm-part1-registers-dpll.md), [TRM part 2](docs/trm-part2-dmc-hwffc-dcf.md), [RK3566 datasheet](docs/rk3566-datasheet-specs.md) | Registers, DMC, voltage/DDR specs |
-| [Firmware dumps](docs/firmware-dumps.md), [Board DTS / PMIC / DDR](docs/board-dts-pmic-ddr-updates.md) | Stock unpacks; RK817, suspend, DMC, battery, SD vs [flip commits](https://github.com/Zetarancio/distribution/commits/flip/) |
+| Topic | Front page | Subpages |
+| ----- | ---------- | -------- |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [Flashing](docs/boot-and-flash/flashing.md), [Boot from SD](docs/boot-and-flash/boot-from-sd.md) |
+| **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
+| **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
+| **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| **Troubleshooting** | [troubleshooting.md](docs/troubleshooting.md) | — |
+| **Serial** | [serial.md](docs/serial.md) | — |
 
 Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
+
+**Note:** `boot_log_ROCKNIX.txt` may not match the **latest** kernel/DTS iteration at all times; it is kept as **historical proof** of a working mainline capture (e.g. DMC after resume, power-down), not as a live regression log.
 
 ---
 
@@ -62,16 +53,16 @@ Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after re
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
 | Audio (RK817)            | Working               | simple-audio-card, speaker amp |
-| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu, 6.18+. Optionally a separate driver can shut down the combo at GPIO level when both radios are off; see [WiFi/BT power-off](docs/wifi-bt-power-off.md). |
+| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu, 6.18+. Optionally a separate driver can shut down the combo at GPIO level when both radios are off; see [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
 | GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
 | Storage                  | Working               | SPI NAND MTD, both SD slots |
 | HDMI                     | Working               | Video and audio (when enabled in DTS) |
 | HDMI audio               | Working               | With HDMI output |
-| DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md), [SPI and boot chain](docs/spi-and-boot-chain.md) |
+| DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
 | IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** and **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution) for BL31 deep sleep; see [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md) |
+| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** and **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution) for BL31 deep sleep; see [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
 | Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
 
 ---
@@ -86,17 +77,19 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and sleep pinctrl states create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and removing sleep pinctrl on RK817. You can then reuse sleep pinctrl + **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution).
 
-- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
+- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Suspend:** Out-of-tree **rk3568-suspend** (not rk356x) configures BL31 **deep sleep**; required for `vdd_logic` off-in-suspend. See [Suspend and vdd_logic](docs/suspend-and-vdd-logic.md).
+- **Suspend:** Out-of-tree **rk3568-suspend** (not rk356x) configures BL31 **deep sleep**; required for `vdd_logic` off-in-suspend. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
-- **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/wifi-bt-power-off.md).
+- **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md).
 
-- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL31) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot chain](docs/boot-chain.md) and [SPI and boot chain](docs/spi-and-boot-chain.md).
+- **Boot chain:** Any U-Boot for this board must include OP-TEE (BL31) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot and flash](docs/boot-and-flash.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Full power-off:** Do **not** set `system-power-controller` for now on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c). Old stock software was not setting `system-power-controller`, newest reintroduced it, may work in conjunction with **patched rk817 core**.
+- **Full power-off:** Do **not** set `system-power-controller` for now on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [Troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c). Old stock software was not setting `system-power-controller`, newest reintroduced it, may work in conjunction with **patched rk817 core**.
 
-- **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [firmware dumps](docs/firmware-dumps.md) and [board DTS / PMIC / DDR updates](docs/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+- **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+
+- **VDD_CPU / I2C0:** Same story as the **Hardware** table note; full write-up: [Board DTS — I2C0 CPU regulator](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator-tcs4525-and-rk8600) ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)).
 
 ---
 
@@ -104,18 +97,18 @@ Findings that made mainline work on this device (details in the wiki).
 
 ```
 docs/                          Documentation wiki (maintained)
-miyoo355_fw_20250509213001/    Unpacked 2025 stock card image (DTS, rootfs) — see docs/firmware-dumps.md
-spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick study used to improve the rocknix driver) — see docs/firmware-dumps.md
-boot_log_ROCKNIX.txt           Mainline boot log (DMC after resume confirmed)
+miyoo355_fw_20250509213001/    Unpacked 2025 stock card image (DTS, rootfs) — see docs/stock-firmware-and-findings.md
+spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick study used to improve the rocknix driver) — see docs/stock-firmware-and-findings.md
+boot_log_ROCKNIX.txt           Mainline boot log (historical proof; may not match latest build—see note below)
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture
 ```
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
 
-**Boot logs:** In repo root — `boot_log_ROCKNIX.txt` (mainline, DMC after resume); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
+**Boot logs:** In repo root — `boot_log_ROCKNIX.txt` (mainline capture; **not guaranteed current** with the latest DTS/kernel—kept as proof); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
 
-**Build system:** For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). This `main` branch is documentation-focused; legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/flashing.md](docs/flashing.md).
+**Build system:** For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). This `main` branch is documentation-focused; legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/boot-and-flash/flashing.md](docs/boot-and-flash/flashing.md).
 
 ---
 
@@ -125,7 +118,7 @@ For a **current image and build**, use the [Zetarancio/distribution](https://git
 
 For legacy local build scripts, see branch **`buildroot`**.
 
-For flashing and SD boot on this wiki, see [Obtain and flash](docs/obtain-and-flash.md) and [docs/flashing.md](docs/flashing.md).
+For flashing and SD boot on this wiki, see [Boot and flash](docs/boot-and-flash.md).
 
 ---
 

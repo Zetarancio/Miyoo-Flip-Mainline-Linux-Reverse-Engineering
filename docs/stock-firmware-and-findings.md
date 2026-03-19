@@ -1,4 +1,10 @@
-# Stock firmware dumps (reference)
+# Stock firmware and findings
+
+Distro-agnostic reference: unpacked stock firmware images, BSP/DDR analysis findings, and SPI boot chain investigation for the Miyoo Flip.
+
+---
+
+## Stock firmware dumps
 
 This repo includes **partially unpacked** Miyoo Flip stock firmware for comparison with mainline DTS and drivers. Both are **BSP 5.10**-era trees (not mainline). Not a full rootfs extraction; selected files are kept for reference.
 
@@ -12,3 +18,19 @@ This repo includes **partially unpacked** Miyoo Flip stock firmware for comparis
 **Latest stock DTS:** `miyoo355_fw_20250509213001/unpack/miyoo355_2025.dts` — diff this against your mainline `rk3566-miyoo-flip.dts` for PMIC (`rk817`), SDMMC (`vqmmc`, speed caps), battery/OCV tables, and DSI/panel init alignment.
 
 **Typical use:** Rootfs under `unpack/rootfs/` shows how stock loads WiFi/BT and which kernel options were enabled (`info/config-5.10`).
+
+---
+
+## BSP and DDR findings
+
+Analysis of the BSP kernel sources: DDR init binaries, DMC devfreq driver (`rockchip_dmc.c`), BL31/ATF firmware, power management regulators, relevant kernel config options, and the mainline status of each subsystem. Includes the out-of-tree `rk3568_dmc.c` driver implementing V2 SIP for mainline 6.18+.
+
+**[Full BSP and DDR findings →](stock-firmware-and-findings/bsp-and-ddr-findings.md)**
+
+---
+
+## SPI image analysis and DDR scaling investigation
+
+Deep analysis of the stock SPI NAND image: FIT image layout (ATF/OP-TEE/U-Boot segments with load addresses), BL31 DDR-related strings, SCMI clock configuration, U-Boot `dmc_fsp` driver analysis (compiled but never probed), stock kernel DDR/DMC DTS nodes and LPDDR4 timing parameters, the three-step SET_RATE protocol (V2 SIP + MCU/IRQ), and confirmation that DDR frequency scaling was active on stock firmware.
+
+**[Full SPI and boot chain analysis →](stock-firmware-and-findings/spi-and-boot-chain.md)**

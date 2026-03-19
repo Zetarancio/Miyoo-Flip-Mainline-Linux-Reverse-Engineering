@@ -21,7 +21,7 @@
 - Usage: `xrock extra maskrom --rc4 off --dram rk356x_usbplug_v1.17.bin --delay 10`
 
 **ROCKNIX DDR:**
-- From ROCKNIX boot (see [Boot from SD](boot-from-sd.md), [Flashing](flashing.md#booting-from-sd)): Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
+- From ROCKNIX boot (see [Boot from SD](../boot-and-flash/boot-from-sd.md), [Flashing](../boot-and-flash/flashing.md#booting-from-sd)): Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
 
 ### 2. DMC (Dynamic Memory Controller) configuration
 
@@ -56,7 +56,7 @@ From `kernel_config`:
 - `rockchip_dfi_enable`
 
 **Mainline status:**
-From `dts-porting.md`:
+From [DTS porting](../drivers-and-dts/dts-porting.md):
 > "DMC/DFI -- DDR frequency scaling (closed-source dependencies)" - BSP-only
 
 Note: An out-of-tree `rk3568_dmc.c` driver has been implemented for [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`), using the same V2 SIP + MCU/IRQ protocol as the BSP `rockchip_dmc.c`.
@@ -72,12 +72,12 @@ ret = bidram_reserve(MEM_ATF, mem.base, mem.size);
 ```
 
 **Boot partition layout:**
-From `flashing.md`:
+From [Flashing](../boot-and-flash/flashing.md):
 - Preloader (0x0-0x200000): DDR init + SPL
 - U-Boot (0x300000): U-Boot FIT (ATF + OP-TEE + U-Boot)
 
 **GammaOS bootloader:**
-From boot-from-SD procedure (see [Boot from SD](boot-from-sd.md), [Flashing](flashing.md#booting-from-sd)):
+From boot-from-SD procedure (see [Boot from SD](../boot-and-flash/boot-from-sd.md), [Flashing](../boot-and-flash/flashing.md#booting-from-sd)):
 - Preloader: Updated DDR init + GammaOS SPL
 - U-Boot: GammaOS U-Boot with ATF + OP-TEE
 
@@ -95,7 +95,7 @@ From boot-from-SD procedure (see [Boot from SD](boot-from-sd.md), [Flashing](fla
 - Governors: `CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y`
 
 **Power management notes:**
-- GPU devfreq active (200-800 MHz) per `troubleshooting.md`
+- GPU devfreq active (200-800 MHz) per [Troubleshooting](../troubleshooting.md)
 - Thermal integration: `CONFIG_DEVFREQ_THERMAL=y`
 - Requires `CONFIG_ROCKCHIP_THERMAL=y` (built-in) for GPU devfreq
 
@@ -167,12 +167,11 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 - USB plug: `rk356x_usbplug_v1.17.bin` 
 
 **Documentation:**
-- `dts-porting.md`: notes DMC/DFI as BSP-only
-- `flashing.md`: DDR init process for MASKROM mode
-- `boot-from-sd.md` / `flashing.md`: DDR init in bootloader chain
-- `obtain-and-flash.md`: obtain/flash guidance; legacy local build scripts are on branch `buildroot`
+- [DTS porting](../drivers-and-dts/dts-porting.md): notes DMC/DFI as BSP-only
+- [Flashing](../boot-and-flash/flashing.md): DDR init process for MASKROM mode
+- [Boot and flash](../boot-and-flash.md): obtain/flash guidance; legacy local build scripts are on branch `buildroot`
 
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via
 `rockchip_dmc.c` (CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ). It uses the proprietary
 BL31 SIP interface (V2 shared-memory protocol with MCU-based DCF completion).
-An out-of-tree `rk3568_dmc.c` driver implementing the same protocol is available in [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) for mainline kernel 6.18+. Recent trees also tune that driver (e.g. self-refresh idle, transition ratelimit) — see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md) and [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).
+An out-of-tree `rk3568_dmc.c` driver implementing the same protocol is available in [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) for mainline kernel 6.18+. Recent trees also tune that driver (e.g. self-refresh idle, transition ratelimit) — see [board DTS / PMIC / DDR updates](../drivers-and-dts/board-dts-pmic-ddr-updates.md) and [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).

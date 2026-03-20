@@ -88,12 +88,16 @@ The BSP `panel-init-sequence` was decoded into 22 structured commands:
 Plus 2 exit commands (Display Off + Sleep In). These are compiled into
 the `miyoo_flip_panel` descriptor in `panel-simple.c`.
 
+## Backlight minimum and resume
+
+**PWM 4/255 is the minimum** that reliably latches on cold resume at 800 Hz ([e78fefa](https://github.com/Zetarancio/distribution/commit/e78fefa352156b5bb718a5a77ece264016a4dd28)). PWM 2/255 (0.78% duty) lights the panel during normal operation but fails to latch after deep sleep. PWM 4/255 (1.57% duty) reliably latches while still being very dim. A 20 ms post-PWM-on delay is added for additional stability.
+
 ## Files Changed
 
 | File | Change |
 |------|--------|
 | `panel-simple.c` (kernel patch) | Panel descriptor with mode, DSI init/exit sequences, timing delays. `panel_simple_dsi_send_one()` with retry logic |
-| `rk3566-miyoo-flip.dts` | `power-supply`, `backlight` on panel; OF graph endpoints for DSI/HDMI/VOP |
+| `rk3566-miyoo-flip.dts` | `power-supply`, `backlight` on panel; OF graph endpoints for DSI/HDMI/VOP; PWM minimum 4/255 at 800 Hz, 20 ms post-PWM-on delay |
 | Kernel config | `CONFIG_BACKLIGHT_PWM=y`, `CONFIG_PWM=y`, `CONFIG_PWM_ROCKCHIP=y` |
 
 ## Verification

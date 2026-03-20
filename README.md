@@ -4,7 +4,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This `main` branch is wiki-first. Legacy build scripts are kept in branch **`buildroot`**.
 
-**Wiki updated to:** [`68821122aa`](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214) on the `flip` branch (2026-03-18). See also [DTS: I2C0 two revisions](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777).
+**Wiki updated to:** [`e78fefa`](https://github.com/Zetarancio/distribution/commit/e78fefa352156b5bb718a5a77ece264016a4dd28) on the `flip` branch (2026-03-20).
 
 ---
 

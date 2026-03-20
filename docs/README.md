@@ -21,6 +21,7 @@ Reference boot logs (mainline, stock) are in the repo root. **`boot_log_ROCKNIX.
 | [→ SPI and boot chain](stock-firmware-and-findings/spi-and-boot-chain.md) | SPI layout, FIT, BL31 strings, DDR scaling, V2 SIP |
 | [Drivers and DTS](drivers-and-dts.md) | Board DTS evolution, drivers, display, suspend overview |
 | [→ Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) | Required DTS nodes for patches, RK817, I2C0 TCS4525/RK8600, DMC, SD, joypad, final state |
+| [→ Patch portability](drivers-and-dts/patch-portability.md) | Detailed analysis: what each patch reads from DTS, BSP vs ROCKNIX, portability to other RK3566/RK3568 boards |
 | [→ Drivers (WiFi/BT, GPU)](drivers-and-dts/drivers.md) | RTL8733BU and Mali-G52 GPU drivers |
 | [→ DTS porting](drivers-and-dts/dts-porting.md) | BSP-to-mainline device tree translation |
 | [→ Display](drivers-and-dts/display.md) | DSI panel bring-up, init sequence, pipeline |

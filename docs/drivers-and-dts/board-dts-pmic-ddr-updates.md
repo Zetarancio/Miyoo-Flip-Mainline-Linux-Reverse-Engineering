@@ -8,7 +8,11 @@ Distro-agnostic summary of **what changed** on the Miyoo Flip port since early m
 
 Each out-of-tree kernel patch below needs specific DTS nodes to function. Patches live under `projects/ROCKNIX/devices/RK3566/patches/linux/` in the distribution tree.
 
+**For detailed portability analysis** (what each patch reads from DTS, BSP vs ROCKNIX differences, minimum DTS for other RK3566/RK3568 boards), see [Patch portability and DTS requirements](patch-portability.md).
+
 ### Patch 1012 — DMC devfreq driver (DDR frequency scaling)
+
+**See [Patch portability — 1012](patch-portability.md#patch-1012--rk3568-dmc-devfreq-driver) for detailed analysis.**
 
 ```dts
 dmc: dmc {
@@ -34,9 +38,13 @@ Also requires `&dfi { status = "okay"; }`.
 
 ### Patch 1011 — DFI suspend/resume (DDRMON reinit after deep sleep)
 
+**See [Patch portability — 1011](patch-portability.md#patch-1011--devfreq-event-rockchip-dfi-pm-suspendresume).**
+
 Same `&dfi { status = "okay"; }` node. The patch adds PM suspend/resume ops so DDRMON state is restored when the center power domain is off during deep sleep.
 
 ### Patch 1013 — rk3568-suspend (BL31 deep-sleep configuration)
+
+**See [Patch portability — 1013](patch-portability.md#patch-1013--rk3568-suspend-mode-configuration-driver) for detailed analysis.**
 
 ```dts
 #include <dt-bindings/suspend/rockchip-rk3568.h>
@@ -82,6 +90,8 @@ pinctrl-3 = <&soc_slppin_gpio>;
 - `system-power-controller` must be **commented out** (DEV_OFF races with PSCI SYSTEM_OFF).
 
 ### Patch 0030 — rk8xx ON/OFF source logging
+
+**See [Patch portability — 0030](patch-portability.md#patch-0030--mfd-rk8xx-log-on_sourceoff_source).**
 
 No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debugging power-on/off causes).
 
@@ -155,6 +165,7 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 | **Driver** | `rocknix-singleadc-joypad` with `rocknix,use-miyoo-serial-joypad` — analog sticks are read via **UART1** (Miyoo serial protocol), not ADC channels. |
 | **Analog sticks** | Deadzone 4914, fuzz 32, flat 32, threshold 128; L/R axis tuning 90. Sysfs calibration available at runtime; joystick cal saved/restored on boot via quirks/modules. Some of these feature requires dedicated patches avalaible in rocknix branch. |
 | **GPIO buttons** | 17 GPIO switches: dpad (up/down/left/right), A/B/X/Y, select, start, mode, L1/R1, L2/R2, thumb L/R. |
+| **Debounce** | Volume keys: 10 ms (matches stock gpio-keys-polled). Lid (hall sensor): 1500 ms to avoid double triggers ([eda5e75](https://github.com/Zetarancio/distribution/commit/eda5e752f89d0b8cc6421fcbd84db7bddc01e466)). |
 | **Rumble** | PWM5 @ 10 MHz period. |
 | **ADC keys** | **Disabled** in DTS — floating ADC ch0 causes phantom `KEY_VOLUMEDOWN` and triggers stock recovery entry. Volume up/down are on GPIO (GPIO3_PA7 / GPIO3_PB0). |
 | **Hall sensor** | `SW_LID` on GPIO0_PC6, wakeup-source (lid open/close detection). |

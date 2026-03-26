@@ -20,6 +20,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | WiFi/BT   | RTL8733BU (USB)                                       |
 | Audio     | RK817 codec + speaker amplifier                        |
 | PMIC      | RK817 (main) + VDD_CPU (**TCS4525 @ 0x1c** and/or **RK8600 @ 0x40** — see note below) |
+| Battery   | Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (typical pack marking) |
 | UART      | ttyS2 @ 1,500,000 baud (3.3V)                         |
 
 **VDD_CPU / I2C0:** 2025 stock DTS and the current flip DTS enable **both** CPU-regulator nodes (`status = "okay"`), matching stock behavior ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). **Two board revisions** (one populated at 0x1c *or* 0x40) are suggested by firmware but **not proven** on hardware. The kernel probes both; the **absent** chip returns **probe failure** and is ignored—the **present** rail works and the system **boots normally**.

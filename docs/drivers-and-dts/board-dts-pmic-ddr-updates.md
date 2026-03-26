@@ -192,7 +192,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | Area | Final state |
 |------|-------------|
 | **RK817 power-off** | Keep `system-power-controller` **disabled** on Miyoo Flip RK817 to avoid DEV_OFF vs PSCI race and battery drain while off to match stock firmware. Still under testing as **miyoo355_fw_20250509213001 stock firmware** actually keeps it enabled. |
-| **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. |
+| **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
 | **DMC / suspend** | Keep the out-of-tree DMC + rk3568-suspend path, plus latest rk8xx suspend/resume ordering updates. |

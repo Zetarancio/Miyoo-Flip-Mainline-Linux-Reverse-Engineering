@@ -143,7 +143,7 @@ The Miyoo Flip mainline DTS was aligned to that model:
 
 | Topic | Notes |
 |-------|--------|
-| **DSI / panel** | Panel init sequences and DSI flags were aligned with **miyoo355_fw_20250509213001 stock firmware** where they diverged from 2024 dumps. |
+| **DSI / panel** | Module **LMY35120-20p**; DSI facts from stock DTS — see [Display — sure vs presumed](display.md#module-name-vs-what-is-proven). Init/flags aligned with **miyoo355_fw_20250509213001** where they diverged from 2024 dumps. |
 | **RTL8733BU** | GPIO power rail, disable USB autosuspend when the chip is power-gated, and several driver patches for suspend/resume and power. Optional **rtl8733bu-power**-style driver for full cut-off. See [drivers](drivers.md), [WiFi/BT power-off](wifi-bt-power-off.md). |
 
 ---

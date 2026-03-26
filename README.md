@@ -16,7 +16,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | GPU       | Mali-G52 2EE (Bifrost)                                |
 | RAM       | LPDDR4                                                |
 | Storage   | SPI NAND 128 MB + 2x MicroSD                          |
-| Display   | 640x480 MIPI DSI (FT8006M controller, 2-lane, RGB888) |
+| Display   | **LMY35120-20p** (marking **2503x**). Confirmed: 640×480 MIPI DSI, 2-lane, RGB888 video mode (stock DTS). Presumed: FT8006M COG — [details](docs/drivers-and-dts/display.md#module-name-vs-what-is-proven) |
 | WiFi/BT   | RTL8733BU (USB)                                       |
 | Audio     | RK817 codec + speaker amplifier                        |
 | PMIC      | RK817 (main) + VDD_CPU (**TCS4525 @ 0x1c** and/or **RK8600 @ 0x40** — see note below) |

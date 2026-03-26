@@ -32,7 +32,7 @@ Translation of the stock BSP 5.10 DTS to mainline: critical renames (`rockchip,s
 
 ## Display bring-up
 
-The 640×480 MIPI DSI panel (FT8006M controller) is working on mainline. Five root causes were found: DSI init commands sent in video mode instead of command mode, missing PWM backlight driver, missing Rockchip PWM controller driver, missing DTS references on the panel node, and missing timing delays. Includes the display pipeline diagram and DSI init command reference.
+The 640×480 MIPI DSI panel (**LMY35120-20p**; [sure vs presumed](drivers-and-dts/display.md#module-name-vs-what-is-proven)) is working on mainline. Five root causes were found: DSI init commands sent in video mode instead of command mode, missing PWM backlight driver, missing Rockchip PWM controller driver, missing DTS references on the panel node, and missing timing delays. Includes the display pipeline diagram and DSI init command reference.
 
 **[Full display bring-up →](drivers-and-dts/display.md)**
 

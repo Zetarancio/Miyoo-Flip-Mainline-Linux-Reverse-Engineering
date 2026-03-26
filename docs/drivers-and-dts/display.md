@@ -1,5 +1,14 @@
 # Display Bring-Up
 
+## Module name vs what is proven
+
+**Panel module (flex):** **LMY35120-20p**; also marked **2503x** (likely lot/date — no public datasheet found here).
+
+| | |
+|--|--|
+| **Sure** (stock DTS, e.g. `spi_20241119160817/unpack/spi_20241119.dts`) | 640×480, MIPI DSI, **2 data lanes**, `dsi,format = 0` → **RGB888**, `dsi,flags` → **video DSI** (incl. burst-style mode in Rockchip BSP). |
+| **Presumed** (not in DTS; port/community) | **FT8006M** as the panel COG / driver IC. |
+
 ## Status: Working
 
 The Miyoo Flip's 640x480 MIPI DSI panel is fully functional on mainline

@@ -1,0 +1,27 @@
+
+/home/ale/Downloads/Steward-fu-FLIP/Extra/miyoo-flip-main/rkbin/bin/rk35/rk3568_bl31_v1.44.elf:     file format elf64-littleaarch64
+
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .text_sram_init 00006000  00000000fdcc1000  00000000fdcc1000  00051000  2**12
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data_sram_init 00004000  00000000fdcc7000  00000000fdcc7000  00057000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .text_sram    00001000  00000000fdcce000  00000000fdcce000  0005e000  2**12
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .data_sram    00001000  00000000fdccf000  00000000fdccf000  0005f000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .text_pmusram 00002000  00000000fdcd0000  00000000fdcd0000  00060000  2**4
+                  CONTENTS, ALLOC, LOAD, CODE
+  5 ro            00029000  0000000000040000  0000000000040000  00010000  2**16
+                  CONTENTS, ALLOC, LOAD, CODE
+  6 .text_pmusram_reuse 00001eec  00000000fdcd0000  0000000000069000  00040000  2**2
+                  CONTENTS, ALLOC, LOAD, CODE
+  7 .data         00004f43  000000000006b000  000000000006b000  0004b000  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+  8 stacks        00002000  000000000006ff80  000000000006ff80  0004ff43  2**6
+                  ALLOC
+  9 .bss          0002ad20  0000000000071f80  0000000000071f80  0004ff43  2**6
+                  ALLOC
+ 10 xlat_table    00012000  000000000009d000  000000000009d000  0004ff43  2**12
+                  ALLOC

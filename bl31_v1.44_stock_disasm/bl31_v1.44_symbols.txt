@@ -1,0 +1,7 @@
+
+/home/ale/Downloads/Steward-fu-FLIP/Extra/miyoo-flip-main/rkbin/bin/rk35/rk3568_bl31_v1.44.elf:     file format elf64-littleaarch64
+
+SYMBOL TABLE:
+no symbols
+
+

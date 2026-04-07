@@ -1,0 +1,7 @@
+
+/tmp/rocknix-rkbin/bin/rk35/rk3568_bl31_v1.45.elf:     file format elf64-littleaarch64
+
+SYMBOL TABLE:
+no symbols
+
+

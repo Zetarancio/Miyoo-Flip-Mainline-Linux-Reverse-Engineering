@@ -1,0 +1,27 @@
+
+/tmp/rocknix-rkbin/bin/rk35/rk3568_bl31_v1.45.elf:     file format elf64-littleaarch64
+
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .text_sram_init 00006000  00000000fdcc1000  00000000fdcc1000  00051000  2**12
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data_sram_init 00004000  00000000fdcc7000  00000000fdcc7000  00057000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .text_sram    00001000  00000000fdcce000  00000000fdcce000  0005e000  2**12
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .data_sram    00001000  00000000fdccf000  00000000fdccf000  0005f000  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .text_pmusram 00002000  00000000fdcd0000  00000000fdcd0000  00060000  2**4
+                  CONTENTS, ALLOC, LOAD, CODE
+  5 ro            0001a000  0000000000040000  0000000000040000  00010000  2**11
+                  CONTENTS, ALLOC, LOAD, CODE
+  6 .text_pmusram_reuse 00001e54  00000000fdcd0000  000000000005a000  00030000  2**2
+                  CONTENTS, ALLOC, LOAD, CODE
+  7 .data         00005103  000000000005c000  000000000005c000  0003c000  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+  8 stacks        00002000  0000000000061140  0000000000061140  00041103  2**6
+                  ALLOC
+  9 .bss          0002ad20  0000000000063140  0000000000063140  00041103  2**6
+                  ALLOC
+ 10 xlat_table    00012000  000000000008e000  000000000008e000  00041103  2**12
+                  ALLOC

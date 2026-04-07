@@ -1,0 +1,503 @@
+UUUU
+*s~~
+Ta~{
+jy8C
+*#h 
+*ah 
+*ah 
+*ah 
+*ah 
+*#h 
+* k8
+*avD
+*`vD
+*3Xu
+T $@
+T`$@
+T!|@
+Ha8a
+jx8@
+*` @
+cj!x
+d0@9dj!8c
+*!||
+_h(8a
+cj|8Ch;8?
+kBH!
+`j<8
+T@H 
+ejc8
+h;8!
+cja8@
+d2@9
+a6@9
+k!hK
+Hc8e
+Hc8e
+zHv8
+ H`8
+{hz8;k:8Z
+BHc8c
+	kc 
+Xuxa
+!Hu8"|
+RFx`x
+Rj~	)
+	q)#
+*6@6
+q!xfx
+r`zu
+Tazu
+Tczu
+r"x 
+T#x 
+* B;
+(hh8
+#k! 
+S!@A
+!H`8 
+TsJ"
+R`:A
+AHa8b
+@@9 
+*bdX
+RB|@
+T h"8B
+!He8b
+R4x 
+R"x 
+q!8A
+T  8
+T  <
+ X`xa
+T  8
+T  <
+TB|@
+ X`xa
+Hu8a
+Rd@!
+hb8D
+VA)5
+ H`8a
+qcD	
+4!P@
+qcD	
+R! >
+SD,K
+9A(I
+9Ax^
+$A)`
+T`.@
+*a.Cy`
+*a&Cy
+*a"Cy@
+*a6Cy`
+*a2Cy
+*a>Cy
+*a:Cy
+*ar@
+*`z@
+Tbz@
+T`r@
+W*4(J
+Rc >
+T$H 
+T'x#
+dh"8B
+h"8B
+@9#4
+@9#8
+@9#P
+@9 T
+@9 L
+@9 D
+h\u)
+)@	*
+M*)a
+*b>@
+N*F|
+T` @9
+`$@9
+y`BA9
+S`P@9?@
+h#8c
+T@!@
+S&i#8c
+h#8c
+"h 8
+@9b|~
+&1!9
+Rbx`
+BTy@
+h 8@
+ x"x
+ h`8
+BHd8d
+*_@#
+Ht8a
+TB@@
+?P	qc
+0@y @
+	2"<
+_ &k"
+7@y 
+7@y`
+G@y 
+G@y`
+W@y 
+W@y`
+Hu8a
+2`j4
+2`j5
+2`j5
+Q x`
+Tc*@
+R$hc8c
+SoIj
+	*&l
+%hd8
+$hc8
+h#8c
+h#8c
+dh58?
+Ta[axb
+`jt8@
+hd8%hd8
+!"#..
+...+%'
++JYg
+AAIUU
+	q#,
+XEPA
+GD#,
+%D0&
+0123456789abcdefghijklmnopqrstuvwxyz
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+<NULL>
+fsm12 wait SOC_STATUS %x
+cpu state %x
+%p: %x,%x,%x,%x
+wait soc status: %x, %x
+mcu timeout : PMU_GRF->SOC_STATUS %x
+mcu cpu request off timeout : PMU->CLUSTER_PWR_ST %x
+mcu cpu request st timeout : PMU->CLUSTER_PWR_ST %x
+mcu timeout : PMU->DSU_PWR_SFTCON %x
+enter sleep
+2225212325-/-0-2-3(-(/(0(1#-#.#/#0#,#-#.#/25	
+Built : 16:36:43, Sep 19 2023
+bl31-v1.44
+v2.3():v2.3-645-g8cea6ab0b:cl, fwver: v1.44
+secure
+normal
+EL1 supports AArch64-only. Please set build flag CTX_INCLUDE_AARCH32_REGS = 0
+(BL31: Preparing for EL3 exit to %s world
+BL31: %s
+(BL31: Initializing runtime services
+(BL31: Initializing BL32
+BL31: BL32 initialization failed
+Invalid runtime service descriptor %p
+Error initializing runtime service %s
+(GICv%u with%s legacy support detected.
+(ARM GICv%u driver initialized in EL3
+S-EL2 can not be used in AArch32.
+/aliases
+Unexpected affinity info state.
+(PSCI Power Domain Map:
+(  Domain Node : Level %u, parent_node %d, State %s (0x%x)
+(  CPU Node : MPID 0x%llx, parent_node %d, State %s (0x%x)
+RETENTION
+Invalid target power level for suspend operation
+Unimplemented PSCI Call: 0x%x
+(Preloader serial: %d
+LPDDR3
+LPDDR4
+LPDDR2
+UNKNOWN
+(default %s
+ddrdbg_get_powersave_info
+ddrdbg_update_powersave
+ddrdbg_get_drvodt_info
+ddrdbg_update_drvodt
+ddrdbg_get_deskew_info
+ddrdbg_update_deskew
+ddrdbg_get_regs_info
+UUfw
+UUfw
+UUfw
+%s:The cpu_stop_st is error! %d:%x
+wait_cpu_stop_st_timeout
+%s event(0x%x) timeout
+i2c_get_ipd_event
+(Tag is overflow
+(Magic(%x) is not support
+Exceeded the supported suspend GPIO number.
+/chosen
+stdout-path
+serial
+uartdbg_el_data.org_cpu_context err
+fiq_dbg_ctx error
+(Using opteed sec cpu_context!
+(boot cpu mask: %d
+register secure fiq handler fail: %d
+get uartdbg share memory fail: %d
+%s: unhandled SMC
+%s: unhandled DDR SMC id(0x%llx)
+rockchip_sip_svc
+last_log_request
+ddr_get_stall_time
+ddr_get_addrmap_info
+ddr_plat_smc_handler
+rockchip
+Agent %u Protocol 0x%x Message 0x%x: not supported
+SCMI payload too big %lu
+SCMI channel bad status 0x%llx
+SCMI error
+%s: DCF_ERR
+(%s-%d PARAM_DCF_STATUS timeout
+(ddr dmc_fsp already initialized in loader.
+dfs get fsp_param[%d] error, 0x%x != 0x%x
+(dfs DDR fsp_param[%d].freq_mhz= %dMHz
+loader&trust unmatch!!! Please update trust if need enable dmc
+loader&trust unmatch!!! Please update loader if need enable dmc
+dcf_configure_parameter
+post_set_rate
+(%s-%d: ddr_params version 0x%x unsupported
+ddr_fsp_init_params
+(id_bytes=0x%x
+(Unknown SoC
+---OTP---Check sbpi int done TIMEOUT
+byte addr and byte length must be even numbers!
+Both read secure and non secure otp are not supported!
+ecc otp_addr:0x%x, otp_qp failed 0x%x
+---OTP---sbpi read otp failed! addr: 0x%x
+(		GPIO%dD%d
+(		GPIO%dC%d
+(		GPIO%dB%d
+(		GPIO%dA%d
+(virtual_poweroff_en: %d
+%s: unhandled sip (0x%llx)
+(WAKEUP: PMU_WAKEUP_INT_CON:0x%x, reg: 0x%x
+(PLL: PMU_PLLPD_CON(0x%x):0x%x
+(PD & BUS:PMU_PWR_DWN_ST(0x%x):0x%x
+(PD & BUS:PMU_PWR_GATE_CON(0x%x):0x%x
+(PD & BUS:PMU_BUS_IDLE_CON0(0x%x):0x%x
+(PD & BUS:PMU_BUS_IDLE_CON1(0x%x):0x%x
+(PD & BUS:PMU_PWR_CON(0x%x):0x%x
+(DDR: PMU_PLLPD_CON(0x%x):0x%x
+(DDR: PMU_DDR_PWR_CON(0x%x):	0x%x
+(	 DDR_SREF_ENA
+(	 DDRIO_RET_EXIT_ENA
+(	 DDRPHY_AUTO_GATING_ENA
+(DSU: PMU_DSU_PWR_CON(0x%x): 0x%x
+(DSU: PMU_CLUSTER_IDLE_CON(0x%x),: 0x%x
+(DSU: PMU_PWR_CON(0x%x),: 0x%x
+(CRU: PMU_CRU_PWR_CON(0x0%x): 0x%x
+(CPU: PMU_CLUSTER_PWR_ST(0x%x):0x%x
+(PMU_PWR_CON(0x%x):	0x%x
+(	 POWRMODE_EN
+(	 DSU in low power procedure
+(	 BUS idle in low power procedure
+(	 DDR in low power procedure
+(	 PD in low power procedure
+(	 CRU in low power procedure
+(	 CPU0 in low power procedure
+(	 CPU1 in low power procedure
+(	 CPU2 in low power procedure
+(	 CPU3 in low power procedure
+(	 PMU_SLEEP_HIGH
+(	 PMU_SLEEP_LOW
+(sleep mode config[0x%x]:
+(	mode: RKPM_SLP_CENTER_PD
+(	mode: RKPM_SLP_ARMOFF_LOGOFF
+(	mode: RKPM_SLP_PMIC_LP
+(	mode: RKPM_SLP_HW_PLLS_PD
+(	mode: RKPM_SLP_PMUALIVE_32K
+(	mode: RKPM_SLP_OSC_DIS
+(	mode: RKPM_SLP_32K_EXT
+(	mode: RKPM_SLP_32K_PVTM
+(wakeup source config[0x%x]:
+(	default config
+(	Enable CPU0 interrupt as wakeup source
+(	Enable CPU1 interrupt as wakeup source
+(	Enable CPU2 interrupt as wakeup source
+(	Enable CPU3 interrupt as wakeup source
+(	Enable GPIO0 interrupt as wakeup source
+(	Enable UART0 interrupt as wakeup source
+(	Enable SDMMC0 detect interrupt as wakeup source
+(	Enable SDMMC1 interrupt as wakeup source
+(	Enable SDMMC2 interrupt as wakeup source.
+(	Enable USB detect interrupt as wakeup source
+(	Enable PCIE detect interrupt as wakeup source
+(	Enable VAD detect interrupt as wakeup source
+(	Enable TIMER detect interrupt as wakeup source.
+(	Enable PWM0 detect interrupt as wakeup source
+(	Enable PMU timeout interrupt as wakeup source
+(	Enable mcusft source as wakeup source
+(	PMU_USB_LINESTATE_WAKEUP_EN cas wakeup source
+(PVTM: PMU_CRU_PWR_CON(0x0%x): 0x%x
+(PVTM: PMU_GRF_DLL_CON0(0x0%x): 0x%x
+(32K: PMU_CRU_PWR_CON(0x0%x): 0x%x
+(ULTRA: PMU_CRU_PWR_CON(0x0%x): 0x%x
+(ULTRA: PMU_GRF_SOC_CON1(0x0%x): 0x%x
+(ULTRA: PMU_GRF_SOC_CON2(0x0%x): 0x%x
+(ULTRA: 0x00dc: 0x%x
+([TEST]: wakeup count: %d
+(wake interput ID: %d
+(WAKEUP SOURCE: 0x%x
+(	CPU0 interrupt as wakeup source
+(	CPU1 interrupt as wakeup source
+(	CPU2 interrupt as wakeup source
+(	CPU3 interrupt as wakeup source
+(	GPIO0 interrupt as wakeup source
+(	UART0 interrupt as wakeup source
+(	SDMMC0 interrupt as wakeup source
+(	SDMMC1 interrupt as wakeup source
+(	SDMMC2 interrupt as wakeup source
+(	USB interrupt as wakeup source
+(	PCIE interrupt as wakeup source
+(	VAD interrupt as wakeup source
+(	TIMER interrupt as wakeup source
+(	PWM0 interrupt as wakeup source
+(	TIMEOUT interrupt as wakeup source
+(	MCU SFT interrupt as wakeup source
+suspend_mode_config
+(%s:st=%x(%x)
+%s: %d, %d, error!
+%s: %x
+(%s: wait soc status timeout: %x
+(pmu v1 is valid 220114
+(pmu v0 is valid
+(l3 cache partition cfg-%x
+pmu_bus_idle_req
+pmu_power_domain_ctr
+cpus_off_status_trigger
+pmu_v0_sys_suspend_wfi
+(reset.........................
+(pd (0x%x) idle (0x%llx 0x%x 0x%x)
+(vop idle time %lld us
+%s: unhandled SMC (0x%x)
+rockchip_plat_sip_handler
+(%s:ERROR: PLL WAIT LOCK FAILED
+(get cpu_opp_info fail, use default config!
+(adjust cpu pvtpll: min=%uM, max=%uM, length=%u
+(get gpu_opp_info fail, use default config!
+(adjust gpu pvtpll: min=%uM, max=%uM, length=%u
+(get npu_opp_info fail, use default config!
+(adjust npu pvtpll: min=%uM, max=%uM, length=%u
+rk3568_apll_set_rate
+Unimplemented Arm Architecture Service Call: 0x%x 
+arm_arch_svc
+No OPTEE provided by BL2 boot loader, Booting device without OPTEE initialization. SMC`s destined for OPTEE will return SMC_UNK
+opteed_std
+opteed_fast
+Unimplemented Standard Service Call: 0x%x 
+std_svc
+(Entry point address = 0x%lx
+(SPSR = 0x%x
+ERROR:   
+NOTICE:  
+WARNING: 
+INFO:    
+VERBOSE: 
+S-EL1
+Unhandled External Abort received on 0x%lx from %s
+exception reason=%u syndrome=0x%llx
+mmap_add_region_check() failed. error %d
+Not enough memory to map region:
+ VA:0x%lx  PA:0x%llx  size:0x%zx  attr:0x%x
+Ignoring unknown BL aux parameter: 0x%llx
+PANIC at PC : 0x
+ib8B
+Aib8B
+gh`8
+@9? 
+@9!	@9
+Vih8
+7`fO
+clk_scmi_cpu
+clk_scmi_gpu
+clk_scmi_npu
+clk_scmi_ddr
+! %^
+!0%^
+!@%^
+! %^
+!0%^
+!@%^
+! %^
+!0%^
+!@%^
+! %^
+!0%^
+!@%^
+4E?%
+E?%1
+S)cp
+R$Hf8
+"He8
+#He8B\
+"hb8
+`ha8
+,*qb
+h$xg
+i$xg
+'h$xc$
+TTygx	I
+uygx
+8h9x9
+$h)x
+r`h%
+4A8@
+4@<@
+"Kc|
+y!|	
+0s9?
+x!|	
+h"8B
+0s9`
+h!8!
+*cD	
+	 	*)
+*s23
+* h$
+R*hi
+@y#	@yB
+@y`t
+@yP 
+@yc 	S
+@yc 
+qBD	
+qBD	
+qBD	
+S!<H
+SB N
+*k1H
+%*$}
+S&A&
+|F9F
+6ar@
+B $K"
+c $K#
+yC\P
+c $KB $K#$
+RZ3H
+A)BP
+!Hh8b
+R!|	
+R!|	
+5c`	
+@8B\
+UUUU
+r#x 
+T#x 
+.shstrtab
+.text_sram_init
+.data_sram_init
+.text_sram
+.data_sram
+.text_pmusram
+.text_pmusram_reuse
+.data
+stacks
+.bss
+xlat_table

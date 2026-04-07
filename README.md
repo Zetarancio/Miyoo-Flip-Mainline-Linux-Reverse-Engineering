@@ -101,6 +101,11 @@ Findings that made mainline work on this device (details in the wiki).
 docs/                          Documentation wiki (maintained)
 miyoo355_fw_20250509213001/    Unpacked 2025 stock card image (DTS, rootfs) — see docs/stock-firmware-and-findings.md
 spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick study used to improve the rocknix driver) — see docs/stock-firmware-and-findings.md
+bl31_v1.44_stock_disasm/       BL31 v1.44 disassembly + ELF (stock rkbin snapshot) — see docs/stock-firmware-and-findings.md
+bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)
+bl31_v1.44_vs_v1.45_diff.patch Diff of disassembly exports (v1.44 vs v1.45)
+Stock-dump.txt                 Stock BSP debugfs / PMIC capture (power investigation)
+Rocknix-dump-Before-ChargerFIX.txt  ROCKNIX PMIC dump before kernel patch 0007 (SYS_CAN_SD)
 boot_log_ROCKNIX.txt           Mainline boot log (historical proof; may not match latest build—see note below)
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture

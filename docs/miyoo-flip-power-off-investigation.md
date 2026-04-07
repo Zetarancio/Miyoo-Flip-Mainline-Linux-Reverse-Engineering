@@ -2,14 +2,15 @@
 
 **Wiki:** This file is the long-form write-up. The wiki index links here from [Troubleshooting](troubleshooting.md), [Stock firmware and findings](stock-firmware-and-findings.md), and [Board DTS / PMIC](drivers-and-dts/board-dts-pmic-ddr-updates.md).
 
-**Artifacts in this repository (for BL31 comparison and PMIC dumps):**
+**Artifacts in this repository** (also on GitHub [`main`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering)):
 
-| Path | Purpose |
-|------|---------|
-| [`bl31_v1.44_stock_disasm/`](../bl31_v1.44_stock_disasm/README.txt) | Disassembly of stock-adjacent `rk3568_bl31_v1.44.elf` (Steward-fu rkbin snapshot). |
-| [`bl31_v1.45_rocknix_disasm/`](../bl31_v1.45_rocknix_disasm/README.txt) | Disassembly of ROCKNIX `rk3568_bl31_v1.45.elf`. |
-| [`Stock-dump.txt`](../Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary, partial PMIC reads. |
-| [`Rocknix-dump-Before-ChargerFIX.txt`](../Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX full dump attempt (PMIC `i2cdump` @ 0x20, debugfs); taken before the SYS_CAN_SD kernel fix. |
+| Path | GitHub | Purpose |
+|------|--------|---------|
+| `bl31_v1.44_stock_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.44_stock_disasm) | Disassembly of stock-adjacent `rk3568_bl31_v1.44.elf` (Steward-fu rkbin snapshot). |
+| `bl31_v1.45_rocknix_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.45_rocknix_disasm) | Disassembly of ROCKNIX `rk3568_bl31_v1.45.elf`. |
+| `bl31_v1.44_vs_v1.45_diff.patch` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/bl31_v1.44_vs_v1.45_diff.patch) | Diff between v1.44 and v1.45 disassembly exports. |
+| `Stock-dump.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary, partial PMIC reads. |
+| `Rocknix-dump-Before-ChargerFIX.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` @ 0x20, debugfs; **before** kernel patch 0007 (SYS_CAN_SD). |
 
 > **Date:** 2026-03-29 — 2026-04-05
 >

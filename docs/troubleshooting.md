@@ -50,13 +50,17 @@ resolve:
 | BOOST | `vcc9-supply = <&dcdc_boost>` | Use `<&vccsys>` |
 | Pinctrl | `pinctrl-1/2/3` (sleep/reset states) | Only use `pinctrl-0 = <&pmic_int>` |
 
-## Power-off / battery drain: do not use system-power-controller
+## Power-off / battery drain (~8 mA while “off”) — fixed in kernel
 
-**Symptom:** Device does not fully power off, or battery drains while "off".
+**Symptom:** After `poweroff`, the battery still loses charge quickly (ammeter ~**8 mA** vs stock ~**0.05 mA**).
 
-**Cause:** With `system-power-controller` on the RK817 PMIC node, mainline rk8xx-core writes DEV_OFF, which **races with PSCI SYSTEM_OFF**. The PMIC can end up partially on, causing battery drain. The BSP kernel does not use DEV_OFF for RK817.
+**Root cause (2026-04):** Bit **SYS_CAN_SD** (bit 7 of RK817 register **0xe6**, `CHRG_TERM`). The BSP charger driver clears it at probe; mainline `rk817_charger.c` did not, leaving the hardware default. With the bit set, the PMIC **charger monitoring block stays active** after system-off.
 
-**Fix (in mainline DTS):** Do **not** add `system-power-controller` to the RK817 node. Without it, `rk8xx_shutdown()` still sets SLPPIN_DN_FUN and BL31 performs a clean power-down via PSCI — matching upstream Powkiddy X55 and fixing full power-off. See [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c).
+**Fix:** Kernel patch **`0007-power-supply-rk817-disable-idle-charger-monitoring-f.patch`** — clears `SYS_CAN_SD` during `rk817_battery_init()`. Landed on the Miyoo Flip branch as [Zetarancio/distribution@560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d9d262d621d66f1108c859399db7777) (“fix ~8 mA off-state battery drain on RK817 boards”). **No DTS change is required** for this fix.
+
+**Full narrative:** step-by-step investigation (shutdown path, WiFi/USB dead ends, RK860, register binary search) — **[Miyoo Flip — power-off battery drain investigation](miyoo-flip-power-off-investigation.md)**.
+
+**Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. Measurement and **OFF_SOURCE** logging showed the effective shutdown path is **SLPPIN_DN + BL31** on this board; the **~8 mA** leak was **not** explained by that race alone. After patch 0007, treat **drain** as addressed; DTS choices for `system-power-controller` and SLPPIN pinctrl are documented in [Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) and the investigation doc.
 
 ## Power/Battery Status
 

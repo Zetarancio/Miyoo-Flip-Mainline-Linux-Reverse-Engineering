@@ -70,24 +70,21 @@ rk3568-suspend {
 
 Regulators with `regulator-off-in-suspend` on vdd_logic, vdd_gpu, etc. are only safe when `RKPM_SLP_ARMOFF_LOGOFF` is set (BL31 saves/restores the logic domain). See [suspend and vdd_logic](suspend-and-vdd-logic.md).
 
-### Patch 0029 — rk8xx PMIC pinctrl switching (RK817 sleep/resume/power-off)
+### Patch 0007 — rk817_charger: clear SYS_CAN_SD (off-state drain)
 
-DTS requires on the RK817 PMIC node:
+**See [Patch portability — 0007](patch-portability.md#patch-0007--rk817_charger-clear-sys_can_sd-off-state-drain).**
 
-Notes
-```dts
-pinctrl-names = "default", "pmic-sleep", "pmic-power-off", "pmic-reset";
-pinctrl-0 = <&pmic_int>, <&i2s1m0_mclk>;
-pinctrl-1 = <&soc_slppin_slp>;
-pinctrl-2 = <&soc_slppin_gpio>;
-pinctrl-3 = <&soc_slppin_gpio>;
-/* system-power-controller; */
-```
-- `pinctrl-names` will be updated to match mainline names. Check the patch for future infos.
-- `pinctrl-0` must **not** include any SLPPIN group. If SLPPIN_DN_FUN is retained from a prior shutdown, driving GPIO0_PA2 high at probe triggers an immediate power-off before the driver can clear it.
-- `pmic-sleep` (`pinctrl-1`): muxes the pin to PMU_SLEEP so the PMIC applies `regulator-state-mem` during suspend.
-- `pmic-power-off` / `pmic-reset` (`pinctrl-2`/`pinctrl-3`): mux to GPIO so BL31 can drive the pin for shutdown/resume.
-- `system-power-controller` must be **commented out** (DEV_OFF races with PSCI SYSTEM_OFF).
+**No DTS requirement.** Adds `regmap_write_bits(..., RK817_PMIC_CHRG_TERM, RK817_SYS_CAN_SD, 0)` in `rk817_battery_init()` so the PMIC does not keep **~8 mA** charger monitoring active when the system is off. Stock BSP always cleared this bit; mainline did not.
+
+**Full analysis:** [Power-off battery drain investigation](../miyoo-flip-power-off-investigation.md). **Commit:** [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb).
+
+### Patch 0029 — rk8xx PMIC pinctrl switching (historical)
+
+The BSP-style **0029** mfd patch (PMIC pinctrl / extra `rk808_power_off()` sequencing) was **removed** from the active Miyoo Flip / RK3566 patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)): it worsened off-state behavior in testing and is **not** the correct fix for the **~8 mA** leak (that is **patch 0007** above).
+
+**Portability reference** (if you revive 0029 elsewhere): [Patch portability — 0029](patch-portability.md#patch-0029--mfd-rk8xx-bsp-style-pmic-pinctrl-switching).
+
+**Current DTS direction:** Miyoo Flip aligns SLPPIN-related pinctrl with **upstream `pmic_pins`** where possible ([a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)) — see the live `rk3566-miyoo-flip.dts` in the distribution tree.
 
 ### Patch 0030 — rk8xx ON/OFF source logging
 
@@ -102,7 +99,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | Topic | Notes |
 |-------|--------|
 | **rk8xx suspend/resume** | Kernel patches align RK817 sleep/resume with BSP ordering (e.g. `SLPPIN_SLP_FUN`, resume path). DTS may use `pmic-reset` tied to sleep-pin GPIO for reliable resume. |
-| **Full power-off** | Do **not** use `system-power-controller` on RK817: mainline `DEV_OFF` can race PSCI `SYSTEM_OFF`, leaving the PMIC partly on and draining the battery. Without it, shutdown uses `rk8xx_shutdown()` + BL31. See [troubleshooting](../troubleshooting.md). |
+| **Full power-off** | Off-state **current** is dominated by **SYS_CAN_SD** until patch **0007** clears it (BSP parity). **OFF_SOURCE** on this board points to **SLPPIN_DN + BL31** for software `poweroff`; `system-power-controller` / DEV_OFF is not the recorded mechanism. Details: [investigation](../miyoo-flip-power-off-investigation.md), [troubleshooting](../troubleshooting.md). |
 | **Deep sleep** | Still requires **rk3568-suspend** (BL31 deep-sleep flags) + sensible `vdd_logic` / regulator-off-in-suspend where used. See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **vcc9 / BOOST** | Document clearly that RK817 `vcc9` needs the correct supply (e.g. avoid fw_devlink cycles vs `dcdc_boost`). |
 
@@ -191,7 +188,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 
 | Area | Final state |
 |------|-------------|
-| **RK817 power-off** | Keep `system-power-controller` **disabled** on Miyoo Flip RK817 to avoid DEV_OFF vs PSCI race and battery drain while off to match stock firmware. Still under testing as **miyoo355_fw_20250509213001 stock firmware** actually keeps it enabled. |
+| **RK817 power-off / off-state drain** | **~8 mA “off” drain** is fixed by kernel **patch 0007** (clear **SYS_CAN_SD** in `rk817_charger`). See [investigation](../miyoo-flip-power-off-investigation.md) and [troubleshooting](../troubleshooting.md). DTS for `system-power-controller` and SLPPIN pinctrl follows the live `flip` tree ([560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb), [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)). Omitting `system-power-controller` was **not** the real fix for the mA-level leak. |
 | **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |

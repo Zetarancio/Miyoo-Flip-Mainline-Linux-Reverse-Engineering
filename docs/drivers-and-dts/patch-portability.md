@@ -6,7 +6,23 @@ Patches live under `projects/ROCKNIX/devices/RK3566/patches/linux/` in the distr
 
 ---
 
+## Patch 0007 — `rk817_charger`: clear SYS_CAN_SD (off-state drain)
+
+**File:** `0007-power-supply-rk817-disable-idle-charger-monitoring-f.patch`
+
+**What it does:** In `rk817_battery_init()`, after programming charge termination, clears **SYS_CAN_SD** (bit 7 of `RK817_PMIC_CHRG_TERM`, register **0xe6**). The BSP driver always did this (`rk817_charge_sys_can_sd_disable`); mainline left the bit at its default (**set**), which keeps charger monitoring active after power-off and causes **~8 mA** battery drain on Miyoo Flip–class hardware.
+
+**DTS / device tree:** **None.** The patch only touches `drivers/power/supply/rk817_charger.c` and `include/linux/mfd/rk808.h` (`RK817_SYS_CAN_SD` define).
+
+**Portability:** Applies to **any** board using RK817 with the mainline `rk817_charger` driver. Worth upstreaming as general RK817 parity with BSP behavior. Full measurement narrative: [Power-off battery drain investigation](../miyoo-flip-power-off-investigation.md).
+
+**Miyoo Flip commit:** [560a99cbe1](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb).
+
+---
+
 ## Patch 0029 — `mfd: rk8xx: BSP-style PMIC pinctrl switching`
+
+> **Status on Miyoo Flip / RK3566 (2026-04):** This patch was **removed** from the active patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)). It is documented here for **portability** if you reintroduce it on another tree. Off-state drain is addressed by **patch 0007** above, not by 0029.
 
 **What the driver reads from DTS:**
 

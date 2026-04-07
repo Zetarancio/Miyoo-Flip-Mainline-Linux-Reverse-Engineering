@@ -34,3 +34,18 @@ Analysis of the BSP kernel sources: DDR init binaries, DMC devfreq driver (`rock
 Deep analysis of the stock SPI NAND image: FIT image layout (ATF/OP-TEE/U-Boot segments with load addresses), BL31 DDR-related strings, SCMI clock configuration, U-Boot `dmc_fsp` driver analysis (compiled but never probed), stock kernel DDR/DMC DTS nodes and LPDDR4 timing parameters, the three-step SET_RATE protocol (V2 SIP + MCU/IRQ), and confirmation that DDR frequency scaling was active on stock firmware.
 
 **[Full SPI and boot chain analysis →](stock-firmware-and-findings/spi-and-boot-chain.md)**
+
+---
+
+## Reverse-engineering artifacts (BL31, PMIC dumps)
+
+Material at the **repository root** (not under `docs/`) supports comparing stock vs ROCKNIX firmware and validating RK817 behavior:
+
+| File / folder | Content |
+|---------------|---------|
+| [`bl31_v1.44_stock_disasm/README.txt`](../bl31_v1.44_stock_disasm/README.txt) | Stock-adjacent **BL31 v1.44** ELF disassembly (Steward-fu rkbin snapshot). |
+| [`bl31_v1.45_rocknix_disasm/README.txt`](../bl31_v1.45_rocknix_disasm/README.txt) | **BL31 v1.45** used by ROCKNIX across RK3566 devices; README summarizes diff vs v1.44. |
+| [`Stock-dump.txt`](../Stock-dump.txt) | Stock BSP: debugfs (GPIO, pinmux, regulators) and PMIC snippets. |
+| [`Rocknix-dump-Before-ChargerFIX.txt`](../Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` and debugfs **before** kernel patch 0007 (SYS_CAN_SD). |
+
+**Write-up:** [Miyoo Flip — power-off battery drain investigation](miyoo-flip-power-off-investigation.md) ties these together with ammeter tests and register binary search.

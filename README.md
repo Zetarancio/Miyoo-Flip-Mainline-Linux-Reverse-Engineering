@@ -4,7 +4,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 **For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This `main` branch is wiki-first. Legacy build scripts are kept in branch **`buildroot`**.
 
-**Wiki updated to:** [`e78fefa`](https://github.com/Zetarancio/distribution/commit/e78fefa352156b5bb718a5a77ece264016a4dd28) on the `flip` branch (2026-03-20).
+**Wiki updated to:** [`a482d5c`](https://github.com/Zetarancio/distribution/commit/a482d5cfc4) on the `flip` branch (2026-04). Recent highlights: **RK817 off-state drain fix** [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb) (patch **0007**, SYS_CAN_SD), removal of inactive **0029** PMIC pinctrl patch [f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46), Miyoo Flip DTS cleanup and **upstream `pmic_pins`** [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4).
 
 ---
 
@@ -37,6 +37,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| **Power-off / RK817 drain** | [miyoo-flip-power-off-investigation.md](docs/miyoo-flip-power-off-investigation.md) | Long-form investigation; kernel **patch 0007** (SYS_CAN_SD) |
 | **Troubleshooting** | [troubleshooting.md](docs/troubleshooting.md) | — |
 | **Serial** | [serial.md](docs/serial.md) | — |
 
@@ -76,7 +77,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DSI panel init in command mode:** The stock driver sends init commands via a DT property. On mainline, commands must be sent during `prepare()` (command mode), not `enable()` (video mode), or they collide with the video stream on the shared FIFO.
 
-- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and sleep pinctrl states create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and removing sleep pinctrl on RK817. You can then reuse sleep pinctrl + **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution).
+- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and careful RK817 pinctrl. Deep sleep still uses **patched rk8xx** / suspend ordering from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) where applicable.
 
 - **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
@@ -86,7 +87,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **Boot chain:** Any U-Boot for this board must include OP-TEE (BL31) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot and flash](docs/boot-and-flash.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Full power-off:** Do **not** set `system-power-controller` for now on the RK817 PMIC. It races with PSCI SYSTEM_OFF and leaves the PMIC partially on (battery drain). Without it, rk8xx_shutdown() sets SLPPIN_DN_FUN and BL31 powers down cleanly. See [Troubleshooting](docs/troubleshooting.md) and [Zetarancio/distribution@0a2f831](https://github.com/Zetarancio/distribution/commit/0a2f831f60a4fb0d1a94dc46242c9349624f955c). Old stock software was not setting `system-power-controller`, newest reintroduced it, may work in conjunction with **patched rk817 core**.
+- **Full power-off / off-state drain:** The **~8 mA** battery drain while “off” was traced to RK817 **SYS_CAN_SD** (charger block stays active). **Kernel patch 0007** clears that bit in `rk817_battery_init()` (BSP parity). See [Power-off investigation](docs/miyoo-flip-power-off-investigation.md), [Troubleshooting](docs/troubleshooting.md), and [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). Earlier guidance to omit `system-power-controller` to “fix drain” is **obsolete** once 0007 is applied; DTS follows the current `flip` tree (e.g. upstream-style `pmic_pins`, [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)).
 
 - **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
 

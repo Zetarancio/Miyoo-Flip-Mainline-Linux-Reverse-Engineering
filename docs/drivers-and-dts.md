@@ -8,7 +8,7 @@ Full history: [Zetarancio/distribution commits on branch `flip`](https://github.
 
 ## Board DTS, PMIC, DDR — recent evolution
 
-What changed on the Miyoo Flip port since early mainline bring-up: required DTS nodes for each out-of-tree patch (DMC, DFI, rk3568-suspend, rk8xx pinctrl, ON/OFF logging), RK817 suspend/power-off, **I2C0 VDD_CPU** (TCS4525 @0x1c and RK8600 @0x40 both enabled like 2025 stock—possible dual hardware revisions, unproven), DDR/DMC devfreq, shared SD `vqmmc` constraint, joypad/input, and the final validated state after reversions.
+What changed on the Miyoo Flip port since early mainline bring-up: required DTS nodes for each out-of-tree patch (DMC, DFI, rk3568-suspend, ON/OFF logging), **RK817 off-state drain** (kernel patch **0007** / SYS_CAN_SD — see [full investigation](miyoo-flip-power-off-investigation.md)), RK817 suspend/power-off, **I2C0 VDD_CPU** (TCS4525 @0x1c and RK8600 @0x40 both enabled like 2025 stock—possible dual hardware revisions, unproven), DDR/DMC devfreq, shared SD `vqmmc` constraint, joypad/input, and the final validated state after reversions.
 
 **[Full board DTS details →](drivers-and-dts/board-dts-pmic-ddr-updates.md)** | **[Patch portability analysis →](drivers-and-dts/patch-portability.md)**
 

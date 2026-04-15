@@ -1,6 +1,6 @@
 # Booting from SD
 
-To switch between stock and ROCKNIX **without** opening the shell first, see [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md) (stock **Preloader Eraser** app and ROCKNIX restore script). The steps below use **xrock** from MASKROM instead.
+To switch between stock and ROCKNIX **without** opening the shell first, see [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md) (stock **Preloader Eraser** app, ROCKNIX restore script, and **`extlinux.conf`** / **`FDT`** for `rk3566-miyoo-flip.dtb`). The steps below use **xrock** from MASKROM instead.
 
 ---
 

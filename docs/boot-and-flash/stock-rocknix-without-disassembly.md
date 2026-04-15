@@ -31,6 +31,24 @@ Card OTA packages like **`miyoo355_fw.img`** are **not** a full raw SPI dump and
 
 ---
 
+## ROCKNIX on the SD card: `extlinux.conf` and the device tree
+
+After you write a ROCKNIX image to the microSD, open the **boot** filesystem (the partition is often labeled **ROCKNIX** in disk utilities). Edit:
+
+**`ROCKNIX/extlinux/extlinux.conf`**
+
+Ensure the **FDT** line selects the Miyoo Flip tree:
+
+```text
+FDT /device_trees/rk3566-miyoo-flip.dtb
+```
+
+If the file still references another board’s `rk3566-*.dtb`, change it to **`rk3566-miyoo-flip.dtb`** so the kernel, regulators, and peripherals match this device. **Device-specific** Miyoo Flip artifacts from the distribution **`flip`** branch may already ship the correct line—still worth checking before the first SD boot.
+
+U-Boot reads this path when chainloading Linux from the SD layout described in ROCKNIX’s standard `extlinux` setup.
+
+---
+
 ## Stock → ROCKNIX (erase preloader from stock)
 
 1. Copy **`PreloaderEraser`** from [`preloader-stock-rocknix/App/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App) to **`SDCARD/App/PreloaderEraser/`**.  

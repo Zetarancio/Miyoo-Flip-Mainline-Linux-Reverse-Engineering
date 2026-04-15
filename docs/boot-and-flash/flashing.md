@@ -42,6 +42,8 @@ Both yield five partitions with rootfs at `mtdblock3`. If you see six partitions
 3. While holding, connect USB to the host.
 4. Confirm with `lsusb` (Rockchip USB device).
 
+**Without the button (many cases):** If the SPI **preloader** is blank or invalid and **no bootable SD** is inserted, connecting USB often still brings up **MASKROM** — useful when you already used the [stock preloader eraser](stock-rocknix-without-disassembly.md) or zeroed the preloader. Behaviour can vary with cable/port; see the same guide for the full stock ↔ ROCKNIX workflow.
+
 ---
 
 ## Loading the loader
@@ -120,7 +122,7 @@ xrock flash write 0 preloader_backup.img
 xrock flash write 6144 uboot_backup.img
 ```
 
-From a full stock dump (128 MB):
+From a full stock dump (128 MB), or when flashing stock software:
 
 ```bash
 xrock flash write 0 <stock-full-dump.img>
@@ -166,6 +168,7 @@ xrock flash write 0 /tmp/zeros.img
 ```bash
 dd if=/dev/zero of=/tmp/zero_128mb.img bs=1M count=128
 xrock flash write 0 /tmp/zero_128mb.img
+rm /tmp/zero_128mb.img 
 ```
 
 ---

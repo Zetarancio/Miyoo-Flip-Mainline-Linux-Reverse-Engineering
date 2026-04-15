@@ -1,0 +1,6 @@
+{
+    "label": "Miyoo Flip Preloader Eraser",
+    "icon": "/mnt/SDCARD/App/PreloaderEraser/icon.png",
+    "launch": "launch.sh",
+    "description": "Erase SPI NAND preloader to boot from SD card"
+}

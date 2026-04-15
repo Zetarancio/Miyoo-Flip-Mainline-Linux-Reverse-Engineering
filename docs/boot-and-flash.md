@@ -1,6 +1,21 @@
 # Boot and flash
 
-How the Miyoo Flip boots, how to obtain images, flash the SPI NAND, and boot from SD.
+How the Miyoo Flip boots, where distribution images come from, how to flash the SPI NAND, and how to boot from SD.
+
+---
+
+## Stock ↔ ROCKNIX (no disassembly)
+
+Switch between **stock on internal SPI** and **ROCKNIX on SD** **without** removing screws for MASKROM:
+
+| | |
+|--|--|
+| **Stock → ROCKNIX** | SD-card app erases the SPI **preloader** → reboot with **ROCKNIX** SD. |
+| **ROCKNIX → stock** | Script on ROCKNIX restores **`preloader.img`** → reboot → **stock** from NAND. |
+
+**Article:** [Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+
+**Not a brick:** you can **always** recover with **USB MASKROM** (and, if needed, **disassemble** and use the hardware MASKROM button) + **`xrock`** — [Flashing](boot-and-flash/flashing.md).
 
 ---
 
@@ -29,10 +44,12 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 ## Where to get images
 
-Use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`) for current code/images.
+Use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`) for GitHub Actions image artifacts.
 
-- GitHub Actions creates **generic** and **device-specific** images.
-- For Miyoo Flip testing, use the **device-specific** image.
+- **Generic** and **device-specific** builds are published.
+- For Miyoo Flip, use the **device-specific** image.
+
+The [stock ↔ ROCKNIX](#stock--rocknix-no-disassembly) procedure and typical SD tests use the **device-specific** Miyoo Flip artifacts from that repository.
 
 ---
 
@@ -68,6 +85,8 @@ Quick steps: (1) enter MASKROM, load loader, `xrock flash`. (2) Erase boot and u
 **Backup first.** Restore internal boot by reflashing preloader and uboot.
 
 **[Full SD boot procedure →](boot-and-flash/boot-from-sd.md)**
+
+**Prefer not to open the device?** Use the **Preloader Eraser** app and restore script — same section as above: [**stock-rocknix-without-disassembly.md**](boot-and-flash/stock-rocknix-without-disassembly.md).
 
 ---
 

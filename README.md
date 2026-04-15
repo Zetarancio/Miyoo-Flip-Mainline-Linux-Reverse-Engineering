@@ -2,9 +2,24 @@
 
 This repository is the **maintained wiki and reference** for the **Miyoo Flip** handheld (Rockchip RK3566) on mainline Linux. The documentation is kept up to date as the canonical device reference.
 
-**For a working image and current code** (DTS, drivers, ROCKNIX build system), use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`). GitHub Actions produces two images (specific and generic); **use the specific one** for testing. This `main` branch is wiki-first. Legacy build scripts are kept in branch **`buildroot`**.
+**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** — GitHub Actions publishes **generic** and **device-specific** builds; for Miyoo Flip use the **device-specific** artifact.
+
+The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
 **Wiki updated to:** [`a482d5c`](https://github.com/Zetarancio/distribution/commit/a482d5cfc4) on the `flip` branch (2026-04). Recent highlights: **RK817 off-state drain fix** [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb) (patch **0007**, SYS_CAN_SD), removal of inactive **0029** PMIC pinctrl patch [f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46), Miyoo Flip DTS cleanup and **upstream `pmic_pins`** [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4).
+
+---
+
+## Stock ↔ ROCKNIX without opening the device
+
+| Step | What to do |
+|------|------------|
+| **1. Stock → ROCKNIX** | Install the **Preloader Eraser** app on your SD (from [`preloader-stock-rocknix/App/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App)), run it on **stock**, reboot with a **ROCKNIX** SD. |
+| **2. ROCKNIX → stock** | On **ROCKNIX**, run **`write-preloader-mtd.sh`** with **`preloader.img`** (bundled under [`preloader-stock-rocknix/preloader-restore/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/preloader-restore)), reboot → **internal stock** again. |
+
+**Article:** [Try ROCKNIX without opening the device](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+
+**Safety:** This path **does not brick** the SoC. If anything misbehaves, you can still **open the device**, enter **MASKROM**, and **flash** with **`xrock`** like any other recovery — see the guide’s callout and [Flashing](docs/boot-and-flash/flashing.md).
 
 ---
 
@@ -33,7 +48,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 | Topic | Front page | Subpages |
 | ----- | ---------- | -------- |
-| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [Flashing](docs/boot-and-flash/flashing.md), [Boot from SD](docs/boot-and-flash/boot-from-sd.md) |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [Flashing](docs/boot-and-flash/flashing.md), [Boot from SD](docs/boot-and-flash/boot-from-sd.md), [**Stock ↔ ROCKNIX (no disassembly)**](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
@@ -106,6 +121,7 @@ bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)
 bl31_v1.44_vs_v1.45_diff.patch Diff of disassembly exports (v1.44 vs v1.45)
 Stock-dump.txt                 Stock BSP debugfs / PMIC capture (power investigation)
 Rocknix-dump-Before-ChargerFIX.txt  ROCKNIX PMIC dump before kernel patch 0007 (SYS_CAN_SD)
+preloader-stock-rocknix/       Stock app + scripts: erase/restore SPI preloader to SD-boot ROCKNIX without opening — see docs/boot-and-flash/stock-rocknix-without-disassembly.md
 boot_log_ROCKNIX.txt           Mainline boot log (historical proof; may not match latest build—see note below)
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
 boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture

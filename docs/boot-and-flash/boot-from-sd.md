@@ -1,5 +1,9 @@
 # Booting from SD
 
+To switch between stock and ROCKNIX **without** opening the shell first, see [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md) (stock **Preloader Eraser** app and ROCKNIX restore script). The steps below use **xrock** from MASKROM instead.
+
+---
+
 To boot the Miyoo Flip from an SD card (e.g. ROCKNIX) instead of internal SPI NAND, use **xrock** to erase the boot and uboot partitions or **zero the preloader** so the bootrom falls through to SD.
 
 **Steps (with xrock):**

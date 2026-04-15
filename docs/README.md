@@ -11,6 +11,7 @@ Reference boot logs (mainline, stock) are in the repo root. **`boot_log_ROCKNIX.
 | [Boot and flash](boot-and-flash.md) | Hardware specs, where to get images, boot chain, flashing overview, SD boot overview |
 | [→ Flashing (full guide)](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore, boot.img format, mtdparts |
 | [→ Boot from SD](boot-and-flash/boot-from-sd.md) | Brief xrock procedure to boot from SD |
+| [→ Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md) | Preloader eraser (stock), restore script + `preloader.img`, USB MASKROM without opening, recovery |
 | [RK3566 reference](rk3566-reference.md) | SoC overview: DDR specs, voltage domains, PLLs |
 | [→ Datasheet specs](rk3566-reference/datasheet-specs.md) | DDR types/frequencies, voltage rails, IO leakage, OPP validation |
 | [→ TRM Part 1](rk3566-reference/trm-part1-registers-dpll.md) | DDR registers, DPLL, CRU, DDR_GRF, PMU |

@@ -1,0 +1,13 @@
+# Rules for USBmount -*- conf -*-
+
+SUBSYSTEM!="block", GOTO="usbmount_end"
+ACTION=="remove", RUN+="/usr/share/usbmount/usbmount remove"
+
+ACTION!="add", GOTO="usbmount_end"
+ENV{ID_FS_TYPE}=="", GOTO="usbmount_end"
+
+KERNEL=="mmcblk1*", ATTRS{type}=="SD", RUN+="/usr/share/usbmount/usbmount add sd1"
+KERNEL=="mmcblk2*", ATTRS{type}=="SD", RUN+="/usr/share/usbmount/usbmount add sd2"
+ENV{ID_BUS}=="usb", RUN+="/usr/share/usbmount/usbmount add usb"
+
+LABEL="usbmount_end"

@@ -768,7 +768,7 @@ Full analysis of stock rootfs (`spi_20241119160817/unpack/rootfs/`) confirmed:
   No `devmem`, `i2cset`, `/dev/mem` access, no direct PMIC writes.
 - `power-key.sh` long-press handler calls `poweroff`.
 - `S36load_wifi_modules stop` does `echo 0 > /sys/class/rfkill/rfkill0/state`.
-- Newer firmware (`miyoo355_fw_20250509213001`) adds `hardwareservice` and
+- Official **20250527** card firmware (`miyoo355_fw_20250527`) adds `hardwareservice` and
   `btmanager` — neither touches PMIC or power registers.
 
 **There is no Miyoo userspace power-off fixup.** The fix is entirely in the

@@ -1,6 +1,0 @@
-{
-"label":"USB MassStorage",
-"icon":"usb_icon_80.png",
-"launch":"launch.sh",
-"description":"USB MassStorage Mode"
-}

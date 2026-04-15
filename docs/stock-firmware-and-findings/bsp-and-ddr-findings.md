@@ -102,7 +102,7 @@ From boot-from-SD procedure (see [Boot from SD](../boot-and-flash/boot-from-sd.m
 ### 5. Device tree files
 
 **BSP DTS:**
-- `miyoo355_fw_20250509213001/unpack/miyoo355_2025.dts`
+- `miyoo355_fw_20250527/unpack/miyoo355_20250527_0.dts` (primary DTB decompile from official **20250527** card image)
 
 **Key DTS nodes:**
 ```dts

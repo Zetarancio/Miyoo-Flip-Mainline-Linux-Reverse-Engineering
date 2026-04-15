@@ -1,8 +1,0 @@
-NAME=Buildroot
-VERSION=2021.11
-ID=buildroot
-VERSION_ID=2021.11
-PRETTY_NAME="Buildroot 2021.11"
-OS="buildroot"
-BUILD_INFO="raymanfeng@nuc Fri May  9 21:30:37 CST 2025 - /home3/raymanfeng/miyoo355/miyoo355_linux5.1/buildroot/configs/rockchip_rk3566_defconfig"
-KERNEL="5.10 - rockchip_linux_defconfig"

@@ -1,6 +1,6 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/). Align mainline DTS and kernel patches with **miyoo355_fw_20250509213001 stock firmware** where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/). Align mainline DTS and kernel patches with **`miyoo355_fw_20250527`** stock firmware where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
 
 ---
 
@@ -116,7 +116,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 ## I2C0 CPU regulator (TCS4525 and RK8600)
 
-**miyoo355_fw_20250509213001** stock DTS enables **both** a **TCS4525 @ 0x1c** and an **RK8600 @ 0x40** as possible CPU rails. That implies **two board revisions** may exist in the wild (one populated part per address), but **this is not proven** on hardware—only the **firmware/DTS** documents both.
+**`miyoo355_fw_20250527`** stock DTS enables **both** a **TCS4525 @ 0x1c** and an **RK8600 @ 0x40** as possible CPU rails. That implies **two board revisions** may exist in the wild (one populated part per address), but **this is not proven** on hardware—only the **firmware/DTS** documents both.
 
 The Miyoo Flip mainline DTS was aligned to that model:
 
@@ -140,7 +140,7 @@ The Miyoo Flip mainline DTS was aligned to that model:
 
 | Topic | Notes |
 |-------|--------|
-| **DSI / panel** | Module **LMY35120-20p**; DSI facts from stock DTS — see [Display — sure vs presumed](display.md#module-name-vs-what-is-proven). Init/flags aligned with **miyoo355_fw_20250509213001** where they diverged from 2024 dumps. |
+| **DSI / panel** | Module **LMY35120-20p**; DSI facts from stock DTS — see [Display — sure vs presumed](display.md#module-name-vs-what-is-proven). Init/flags aligned with **`miyoo355_fw_20250527`** where they diverged from 2024 dumps. |
 | **RTL8733BU** | GPIO power rail, disable USB autosuspend when the chip is power-gated, and several driver patches for suspend/resume and power. Optional **rtl8733bu-power**-style driver for full cut-off. See [drivers](drivers.md), [WiFi/BT power-off](wifi-bt-power-off.md). |
 
 ---

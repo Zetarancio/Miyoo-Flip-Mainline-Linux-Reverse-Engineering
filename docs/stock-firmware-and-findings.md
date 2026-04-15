@@ -8,14 +8,14 @@ Distro-agnostic reference: unpacked stock firmware images, BSP/DDR analysis find
 
 This repo includes **partially unpacked** Miyoo Flip stock firmware for comparison with mainline DTS and drivers. Both are **BSP 5.10**-era trees (not mainline). Not a full rootfs extraction; selected files are kept for reference.
 
-**Large raw images (GitHub ~100 MB file limit):** shipped as **zip** at repo root of each folder — `miyoo355_fw.img.zip`, `spi_20241119160817.img.zip`. Unzip if you need the original `.img` to re-flash or re-extract.
+**Large raw images:** `spi_20241119160817.img.zip` at the repo root of that folder (unzip to re-flash or re-extract). The **20250527** card image (`miyoo355_fw.img`, ~129 MiB) lives inside **`miyoo355_fw_20250527/`** under GitHub’s per-file size limit.
 
 | Folder | Contents | Notes |
 |--------|----------|--------|
-| **`miyoo355_fw_20250509213001/`** | Newer card-flash image (May 2025). `unpack/miyoo355_2025.dts`, `unpack/bootimg.cfg`, `unpack/rootfs/` (kernel 5.10 config, System.map, init scripts, Miyoo UI). | Use for **2025** battery OCV, regulator, and panel/DSI expectations when aligning mainline. |
+| **`miyoo355_fw_20250527/`** | Official **May 2025** Miyoo 355 card-flash unpack: `miyoo355_fw.img`, `miyoo355.zip`, `unpack/` with **`miyoo355_20250527_0.dts`** / **`miyoo355_20250527_1.dts`** (two DTBs from `boot.img`), `bootimg.cfg`, `rootfs/` (squashfs tree), kernel 5.10 `config` / `System.map` under `rootfs/info/`, Miyoo UI and init. | Canonical **2025** reference for battery OCV, regulators, and panel/DSI when aligning mainline. Replaces an earlier **20250509213001** tree that was never shipped publicly. |
 | **`spi_20241119160817/`** | Full SPI NAND dump from Nov 2024. `unpack/spi_20241119.dts`, `unpack/bootimg.cfg`, `unpack/userdata.img`, `unpack/rootfs/`, `unpack/joystick_study/` (notes and examples). | Older but **complete** SPI layout reference; joystick study material. |
 
-**Latest stock DTS:** `miyoo355_fw_20250509213001/unpack/miyoo355_2025.dts` — diff this against your mainline `rk3566-miyoo-flip.dts` for PMIC (`rk817`), SDMMC (`vqmmc`, speed caps), battery/OCV tables, and DSI/panel init alignment.
+**Latest stock DTS (primary board):** `miyoo355_fw_20250527/unpack/miyoo355_20250527_0.dts` — diff against mainline `rk3566-miyoo-flip.dts` for PMIC (`rk817`), SDMMC (`vqmmc`, speed caps), battery/OCV tables, and DSI/panel init. The **`_1`** file is the secondary appended DTB from the same `boot.img` (see `unpack/README_UNPACK.txt`).
 
 **Typical use:** Rootfs under `unpack/rootfs/` shows how stock loads WiFi/BT and which kernel options were enabled (`info/config-5.10`).
 

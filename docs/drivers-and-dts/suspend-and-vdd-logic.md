@@ -1,5 +1,20 @@
 # Suspend Mode Driver & vdd_logic Off-in-Suspend
 
+## Miyoo Flip — ROCKNIX `next` branch (current)
+
+Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`next`** (integration branch ahead of device-specific release branches).
+
+| Mode | Miyoo Flip today | Notes |
+|------|------------------|--------|
+| **Standard suspend** (suspend-to-RAM / `echo mem > /sys/power/state`) | **Works** without the deep-sleep driver stack. | This is the normal Linux suspend path; USB and other fixes in the DTS still apply. |
+| **Deep suspend** (BL31 `ARMOFF_LOGOFF`, lowest sleep current, **`vdd_logic` off-in-suspend**) | **Patches present but disabled** in the tree. | Kernel patches **1013a** / **1013b** are shipped as **`*.testing-disabled`** under `projects/ROCKNIX/devices/RK3566/patches/linux/`. The **`rk3568-suspend`** device-tree node in `rk3566-miyoo-flip.dts` is **commented out**, and **`vdd_logic`** keeps **`regulator-on-in-suspend`** in `regulator-state-mem` until that driver is active again (see in-tree comments next to `vdd_logic`). |
+
+**Why deep suspend is turned off even though it works:** re-enabling it is blocked on an **upstream EmulationStation** fix. Until that lands, shipping deep suspend would regress the handheld UX for typical users.
+
+**Rough standby expectation (informal):** with the **current** configuration, field-style estimates are on the order of **40–50 hours** suspended on a charge. With **deep suspend** plus **`vdd_logic` off-in-suspend** and the full BL31 flag set, similar estimates in testing cluster around **100–120 hours**. That gain may **not** be worth the integration cost **right now**, given the EmulationStation dependency and validation overhead.
+
+---
+
 ## Overview
 
 An out-of-tree kernel driver named **rk3568-suspend** (formerly referred to as rk356x in some docs) configures BL31 (ARM Trusted Firmware) **deep-sleep** flags via SIP SMC calls. This enables the deepest suspend states on RK3568/RK3566 SoCs, matching the behavior of stock BSP firmware.
@@ -25,7 +40,7 @@ So both **deep sleep** and **vdd_logic off in suspend** depend on a driver that 
 
 ### Source (ROCKNIX)
 
-The rk3568-suspend driver is available in [ROCKNIX](https://rocknix.org/) via [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`). **RK817 sleep/resume** in mainline is often extended with rk8xx patches that match BSP ordering (`SLPPIN_SLP_FUN`, etc.); see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
+The rk3568-suspend driver sources and DTS references live in [Zetarancio/distribution](https://github.com/Zetarancio/distribution): follow branch **`next`** for the latest Miyoo Flip integration (see [Miyoo Flip — ROCKNIX `next` branch](#miyoo-flip--rocknix-next-branch-current) above). Release / device images may track branch **`flip`** at a slightly older snapshot. **RK817 sleep/resume** in mainline is often extended with rk8xx patches that match BSP ordering (`SLPPIN_SLP_FUN`, etc.); see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
 
 ### Patch (distribution-agnostic)
 
@@ -199,7 +214,7 @@ The Kconfig option must depend on `HAVE_ARM_SMCCC` (not `ARM_SMCCC`). On arm64, 
 
 ## 9. Relationship to DDR Frequency Scaling
 
-The suspend driver and the DDR DMC devfreq driver (rk3568-dmc) are independent but complementary. Both are available in ROCKNIX [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (branch `flip`).
+The suspend driver and the DDR DMC devfreq driver (rk3568-dmc) are independent but complementary. Both are available in [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (`next` / `flip`, depending on branch age).
 
 | Feature | DMC devfreq | rk3568-suspend |
 |---------|-------------|-----------------|

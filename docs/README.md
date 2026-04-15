@@ -27,7 +27,7 @@ Reference boot logs (mainline, stock) are in the repo root. **`boot_log_ROCKNIX.
 | [→ DTS porting](drivers-and-dts/dts-porting.md) | BSP-to-mainline device tree translation |
 | [→ Display](drivers-and-dts/display.md) | DSI panel bring-up, init sequence, pipeline |
 | [→ WiFi/BT power-off](drivers-and-dts/wifi-bt-power-off.md) | Optional GPIO-level power-off for RTL8733BU |
-| [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | rk3568-suspend, deep sleep, vdd_logic off-in-suspend |
+| [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | Standard vs deep suspend; **`next`** branch status; rk3568-suspend disabled pending ES upstream; standby estimates |
 | [Power-off / RK817 drain (full investigation)](miyoo-flip-power-off-investigation.md) | ~8 mA off-state drain: **SYS_CAN_SD** (reg 0xe6), patch 0007, BL31/PMIC evidence |
 | [Troubleshooting](troubleshooting.md) | Boot hangs, kernel notes, debug bootargs, power-off summary |
 | [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |

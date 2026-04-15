@@ -2,7 +2,7 @@
 
 Distro-agnostic reference: board DTS evolution and required nodes for out-of-tree patches, WiFi/GPU drivers, display bring-up, BSP-to-mainline DTS porting, optional WiFi/BT GPIO power-off, and rk3568-suspend / vdd_logic deep sleep.
 
-Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+Commit history: [`next` (integration)](https://github.com/Zetarancio/distribution/commits/next/) · [`flip` (device images)](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
@@ -48,6 +48,6 @@ WiFi works with the 8733bu driver. An optional separate driver shuts down the RT
 
 ## Suspend and vdd_logic off-in-suspend
 
-The out-of-tree **rk3568-suspend** driver configures BL31 deep-sleep flags via SIP SMC calls. Required for `vdd_logic` off-in-suspend — without it, turning off vdd_logic causes resume hangs. Covers the problem statement, implementation, boot/suspend/resume sequences, DTS configuration (sleep-mode-config flags), SIP protocol, debugging, and the relationship to DDR frequency scaling.
+**Standard suspend** works on Miyoo Flip builds from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`next`**. **Deep suspend** (out-of-tree **rk3568-suspend** + BL31 flags + **`vdd_logic` off-in-suspend**) is implemented but **currently disabled** in that tree because it depends on an **EmulationStation** upstream fix; rough standby might move from ~**40–50 h** to ~**100–120 h** when enabled, at the cost of that integration work.
 
 **[Full suspend guide →](drivers-and-dts/suspend-and-vdd-logic.md)**

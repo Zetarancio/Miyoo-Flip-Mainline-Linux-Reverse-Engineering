@@ -100,7 +100,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 |-------|--------|
 | **rk8xx suspend/resume** | Kernel patches align RK817 sleep/resume with BSP ordering (e.g. `SLPPIN_SLP_FUN`, resume path). DTS may use `pmic-reset` tied to sleep-pin GPIO for reliable resume. |
 | **Full power-off** | Off-state **current** is dominated by **SYS_CAN_SD** until patch **0007** clears it (BSP parity). **OFF_SOURCE** on this board points to **SLPPIN_DN + BL31** for software `poweroff`; `system-power-controller` / DEV_OFF is not the recorded mechanism. Details: [investigation](../miyoo-flip-power-off-investigation.md), [troubleshooting](../troubleshooting.md). |
-| **Deep sleep** | Still requires **rk3568-suspend** (BL31 deep-sleep flags) + sensible `vdd_logic` / regulator-off-in-suspend where used. See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
+| **Deep sleep** | **rk3568-suspend** (patch **1013**) + **`vdd_logic` `regulator-off-in-suspend`** is the full stack; on branch **`next`** the patches and DTS node are **disabled** until an **EmulationStation** upstream fix lands (standard suspend still works). See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **vcc9 / BOOST** | Document clearly that RK817 `vcc9` needs the correct supply (e.g. avoid fw_devlink cycles vs `dcdc_boost`). |
 
 ---
@@ -192,7 +192,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
-| **DMC / suspend** | Keep the out-of-tree DMC + rk3568-suspend path, plus latest rk8xx suspend/resume ordering updates. |
+| **DMC / suspend** | Out-of-tree **DMC** remains enabled. **rk3568-suspend** is **off** on Miyoo Flip **`next`** until ES upstream is ready; see [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **VDD_CPU (I2C0)** | **Both** `tcs4525@1c` and `rk8600@40` **enabled** (`okay`), matching 2025 stock ([6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). Two board variants are **firmware-inferred only**; absent chip = probe fail, **boot OK**. |
 
 Reference stream: [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).

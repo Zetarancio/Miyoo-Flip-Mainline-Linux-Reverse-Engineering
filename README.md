@@ -2,7 +2,7 @@
 
 This repository is the **maintained wiki and reference** for the **Miyoo Flip** handheld (Rockchip RK3566) on mainline Linux. The documentation is kept up to date as the canonical device reference.
 
-**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** — GitHub Actions publishes **generic** and **device-specific** builds; for Miyoo Flip use the **device-specific** artifact.
+**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** — GitHub Actions publishes **generic** and **device-specific** builds on branch **`flip`** (use the **device-specific** artifact for Miyoo Flip). Day-to-day DTS and kernel integration for this wiki tracks branch **`next`** ahead of those freezes.
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
@@ -79,7 +79,7 @@ Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after re
 | DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
 | IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working (out-of-tree) | Requires **rk3568-suspend** and **patched rk817 core** available at [Zetarancio/distribution](https://github.com/Zetarancio/distribution) for BL31 deep sleep; see [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| Suspend                  | Working               | **Standard** suspend-to-RAM works on [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`next`**. **Deep suspend** (rk3568-suspend + **`vdd_logic` off-in-suspend**) is implemented but **disabled** pending an **EmulationStation** upstream fix; improves estimated standby (~40–50 h → ~100–120 h) but not shipped yet — [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
 | Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
 
 ---
@@ -96,7 +96,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Suspend:** Out-of-tree **rk3568-suspend** (not rk356x) configures BL31 **deep sleep**; required for `vdd_logic` off-in-suspend. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
+- **Suspend:** **Standard** suspend works on **`next`**. **Deep sleep** uses **rk3568-suspend** + **`vdd_logic` off-in-suspend**; that stack is **implemented but disabled** until **EmulationStation** catches up upstream (~40–50 h vs ~**100–120 h** estimated standby). See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md).
 

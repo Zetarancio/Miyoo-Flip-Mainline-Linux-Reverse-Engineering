@@ -114,7 +114,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 ```
 docs/                          Documentation wiki (maintained)
-miyoo355_fw_20250527/          Official May 2025 card-flash unpack (DTS, rootfs, `miyoo355_fw.img`) — see docs/stock-firmware-and-findings.md
+miyoo355_fw_20250527/          Official May 2025 card-flash unpack (DTS, rootfs; raw `miyoo355_fw.img` not kept in git — see docs/stock-firmware-and-findings.md)
 spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick study used to improve the rocknix driver) — see docs/stock-firmware-and-findings.md
 bl31_v1.44_stock_disasm/       BL31 v1.44 disassembly + ELF (stock rkbin snapshot) — see docs/stock-firmware-and-findings.md
 bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)

@@ -18,6 +18,8 @@ To actually **power off** the combo (and save maximum battery when both WiFi and
 
 Without a driver that does this (e.g. **RTL8733BU-POWER** or a similar power-control driver), the WiFi/BT combo **cannot be fully powered off**; it can only be “soft” disabled via rfkill while the chip remains powered.
 
+**Zetarancio `flip` (2026-04):** Miyoo Flip quirks and modprobe ordering for this combo evolve in-tree — see [f397258](https://github.com/Zetarancio/distribution/commit/f397258), [1af2a32](https://github.com/Zetarancio/distribution/commit/1af2a32), [2a51ce0](https://github.com/Zetarancio/distribution/commit/2a51ce0), [e57d731](https://github.com/Zetarancio/distribution/commit/e57d731); summary line on the [wiki README](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/README.md).
+
 ---
 
 ## Typical Power-Driver Logic

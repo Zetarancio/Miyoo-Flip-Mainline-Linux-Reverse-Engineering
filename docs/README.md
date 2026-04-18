@@ -2,6 +2,8 @@
 
 Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
+**`flip` images:** [Zetarancio/distribution/commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README lists the current **`flip`** tip and Miyoo-relevant commits.
+
 ---
 
 ## Device wiki (distro-agnostic)

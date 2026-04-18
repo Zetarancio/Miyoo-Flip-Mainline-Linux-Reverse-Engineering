@@ -1,6 +1,6 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/). Align mainline DTS and kernel patches with **`miyoo355_fw_20250527`** stock firmware where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README carries the latest **`flip`** tip and short highlights). Align mainline DTS and kernel patches with **`miyoo355_fw_20250527`** stock firmware where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
 
 ---
 

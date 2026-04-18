@@ -56,9 +56,9 @@ The distribution repo holds the build system and device sources; **this `main` b
 | **Troubleshooting** | [troubleshooting.md](docs/troubleshooting.md) | — |
 | **Serial** | [serial.md](docs/serial.md) | — |
 
-Reference boot logs in this repo: `boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
+Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
 
-**Note:** `boot_log_ROCKNIX.txt` may not match the **latest** kernel/DTS iteration at all times; it is kept as **historical proof** of a working mainline capture (e.g. DMC after resume, power-down), not as a live regression log.
+**Note:** `logs/boot_log_ROCKNIX.txt` may not match the **latest** kernel/DTS iteration at all times; it is kept as **historical proof** of a working mainline capture (e.g. DMC after resume, power-down), not as a live regression log.
 
 ---
 
@@ -119,17 +119,14 @@ spi_20241119160817/            Unpacked 2024 SPI dump (DTS, rootfs, joystick stu
 bl31_v1.44_stock_disasm/       BL31 v1.44 disassembly + ELF (stock rkbin snapshot) — see docs/stock-firmware-and-findings.md
 bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)
 bl31_v1.44_vs_v1.45_diff.patch Diff of disassembly exports (v1.44 vs v1.45)
-Stock-dump.txt                 Stock BSP debugfs / PMIC capture (power investigation)
-Rocknix-dump-Before-ChargerFIX.txt  ROCKNIX PMIC dump before kernel patch 0007 (SYS_CAN_SD)
+logs/                          Boot logs + PMIC/debugfs dumps (reference)
+test-scripts/                  `miyoo-flip-power-dump.sh` — optional on-device capture
 preloader-stock-rocknix/       Stock app + scripts: erase/restore SPI preloader to SD-boot ROCKNIX without opening — see docs/boot-and-flash/stock-rocknix-without-disassembly.md
-boot_log_ROCKNIX.txt           Mainline boot log (historical proof; may not match latest build—see note below)
-boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt   Stock with DDR/sleep debug
-boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt             Stock, sleep/poweroff capture
 ```
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
 
-**Boot logs:** In repo root — `boot_log_ROCKNIX.txt` (mainline capture; **not guaranteed current** with the latest DTS/kernel—kept as proof); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug); `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
+**Boot logs:** Under `logs/` — same filenames as before (mainline/stock captures; not guaranteed current).
 
 **Build system:** For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). This `main` branch is documentation-focused; legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/boot-and-flash/flashing.md](docs/boot-and-flash/flashing.md).
 

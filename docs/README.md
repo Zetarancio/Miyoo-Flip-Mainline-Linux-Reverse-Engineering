@@ -1,6 +1,6 @@
 # Documentation index
 
-Reference boot logs (mainline, stock) are in the repo root. **`boot_log_ROCKNIX.txt`** is a **historical capture** (proof of e.g. DMC/resume/power-down) and may **not** match the latest kernel/DTS.
+Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
 ---
 

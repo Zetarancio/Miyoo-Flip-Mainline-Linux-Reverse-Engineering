@@ -9,8 +9,8 @@
 | `bl31_v1.44_stock_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.44_stock_disasm) | Disassembly of stock-adjacent `rk3568_bl31_v1.44.elf` (Steward-fu rkbin snapshot). |
 | `bl31_v1.45_rocknix_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.45_rocknix_disasm) | Disassembly of ROCKNIX `rk3568_bl31_v1.45.elf`. |
 | `bl31_v1.44_vs_v1.45_diff.patch` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/bl31_v1.44_vs_v1.45_diff.patch) | Diff between v1.44 and v1.45 disassembly exports. |
-| `Stock-dump.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary, partial PMIC reads. |
-| `Rocknix-dump-Before-ChargerFIX.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` @ 0x20, debugfs; **before** kernel patch 0007 (SYS_CAN_SD). |
+| `logs/Stock-dump.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary, partial PMIC reads. |
+| `logs/Rocknix-dump-Before-ChargerFIX.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` @ 0x20, debugfs; **before** kernel patch 0007 (SYS_CAN_SD). |
 
 > **Date:** 2026-03-29 — 2026-04-05
 >
@@ -802,7 +802,7 @@ in the kernel's PMIC register writes before PSCI is invoked.
 battery** (`vin-supply = <&vccsys>`), not through an RK817 PMIC rail. It
 stays powered even after the PMIC shuts off all its regulators.
 
-Stock shutdown log (from `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt`):
+Stock shutdown log (from `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt`):
 
 ```
 [273.315031] rk860-regulator 0-0040: rk860..... reset
@@ -1302,9 +1302,9 @@ code runs) after stock **boots** achieves 0.05 mA. This means:
 
 **Dumps used:**
 - **Stock**: `i2cdump -f -y 0 0x20` on running stock firmware
-  (file: `Stock-dump.txt`, second clean dump at line 955)
+  (file: `logs/Stock-dump.txt`, second clean dump at line 955)
 - **ROCKNIX (new)**: `i2cget` loop on current ROCKNIX boot (inline)
-- **ROCKNIX (old)**: `i2cdump` from earlier iteration (`Rocknix-dump.txt`)
+- **ROCKNIX (old)**: `i2cdump` from earlier iteration (`logs/Rocknix-dump-Before-ChargerFIX.txt`)
 
 **Total: 66 register differences, of which 21 are configuration registers.**
 

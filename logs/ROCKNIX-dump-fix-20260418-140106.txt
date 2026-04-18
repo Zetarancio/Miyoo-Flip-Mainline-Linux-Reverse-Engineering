@@ -1,0 +1,1278 @@
+
+
+========== META / OS ==========
+Sat Apr 18 14:01:09 CEST 2026
+Linux RK3566 6.18.22 #1 SMP PREEMPT Thu Apr 16 23:08:31 UTC 2026 aarch64 GNU/Linux
+OS_NAME="ROCKNIX"
+OS_VERSION="20260417"
+OS_BUILD="nightly"
+GIT_ORGANIZATION="ROCKNIX"
+GIT_REPO="distribution"
+HOME_URL="https://rocknix.org"
+BUILD_ID="2a51ce091fa904b8e3164df1f0a6d0e30e418f72"
+BUILD_BRANCH="flip"
+BUILD_DATE="Fri Apr 17 02:43:50 UTC 2026"
+HW_DEVICE="RK3566"
+HW_ARCH="aarch64"
+HW_CPU="Rockchip RK3566"
+DISTRO_DEVICE="RK3566"
+hostname: RK3566
+crw-------    1 root     root       89,   0 Apr 18 13:57 /dev/i2c-0
+crw-------    1 root     root       89,   6 Apr 18 13:57 /dev/i2c-6
+
+
+========== I2C BUS LIST ==========
+Sat Apr 18 14:01:09 CEST 2026
+i2c-0	i2c       	rk3x-i2c                        	I2C adapter
+i2c-6	i2c       	DesignWare HDMI                 	I2C adapter
+
+
+========== I2C BUS SCAN (i2cdetect -y -a BUS) ==========
+Sat Apr 18 14:01:09 CEST 2026
+--- bus 0 ---
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+--- bus 6 ---
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: 30 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+
+
+========== RK817 PMIC (bus 0 addr 0x20) full byte dump ==========
+Sat Apr 18 14:01:09 CEST 2026
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: 12 58 11 08 04 26 03 14 29 23 06 04 26 80 02 00    ?X???&??)#??&??.
+10: 00 00 03 f4 00 0f 00 40 c8 00 00 00 00 00 02 00    ..??.?.@?.....?.
+20: 00 00 00 d9 d9 00 00 70 00 ff 00 00 00 00 00 03    ...??..p.......?
+30: 04 00 00 00 a5 02 00 00 b0 00 00 00 00 e0 0f 09    ?...??..?....???
+40: a9 7f 04 58 2d 0c a5 00 00 00 00 17 20 00 17 00    ???X-??....? .?.
+50: fc 00 01 00 01 00 04 41 03 68 00 00 00 00 00 00    ?.?.?.?A?h......
+60: 00 00 ff e8 2d ea 06 ff fe ff ee e2 36 f9 28 02    ...?-??.?.??6?(?
+70: 02 e7 ce 10 02 d5 8d d5 d9 25 e9 45 ff ff 00 01    ?????????%?E...?
+80: a5 2e 03 be 19 70 05 23 d3 36 05 23 b2 65 00 02    ?.???p?#?6?#?e.?
+90: 45 80 16 80 06 df d2 80 16 7f d3 27 01 df 08 00    E??????????'???.
+a0: b8 0b 00 00 07 00 0a 00 00 00 00 00 24 00 07 03    ??..?.?.....$.??
+b0: 77 0f 0f 07 00 05 35 ff ff 00 64 20 20 64 1c 20    w???.?5...d  d? 
+c0: 64 00 00 64 62 62 6b ff ff ff ff ff 30 30 0c 0c    d..dbbk.....00??
+d0: 0c 0c 6c 00 30 6c 6c 6c 30 30 30 00 58 00 0b 30    ??l.0lll000.X.?0
+e0: 00 00 00 55 b1 db 40 40 00 ff 22 80 0a 81 75 05    ...U??@@.."???u?
+f0: 82 8c 20 40 20 80 04 06 00 dc 00 fc 00 ff 00 00    ?? @ ???.?.?....
+
+
+========== RK817 spot reads (same regs as stock manual i2cget) ==========
+Sat Apr 18 14:01:09 CEST 2026
+i2cget -f -y 0 0x20 0xf2 -> 0x20
+i2cget -f -y 0 0x20 0x99 -> 0x7f
+i2cget -f -y 0 0x20 0xa4 -> 0x07
+i2cget -f -y 0 0x20 0xb1 -> 0x0f
+i2cget -f -y 0 0x20 0xb2 -> 0x0f
+i2cget -f -y 0 0x20 0xb3 -> 0x07
+i2cget -f -y 0 0x20 0xb4 -> 0x00
+i2cget -f -y 0 0x20 0x20 -> 0x00
+
+
+========== CPU rail RK8600 (bus 0 addr 0x40) ==========
+Sat Apr 18 14:01:09 CEST 2026
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: 8d 17 c0 88 01 88 30 30 3f 44 00 00 31 23 04 00    ??????00?D..1#?.
+10: 00 00 80 00 00 00 00 00 00 00 00 00 00 00 00 00    ..?.............
+20: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+40: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+60: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+80: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+a0: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+c0: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+e0: 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00 00    ...?............
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+
+
+========== CPU rail TCS4525 (bus 0 addr 0x1c) if present ==========
+Sat Apr 18 14:01:09 CEST 2026
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+10: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+20: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+30: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+40: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+50: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+60: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+70: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+80: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+90: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+a0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+b0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+c0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+d0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+e0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+f0: XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX    XXXXXXXXXXXXXXXX
+
+
+========== Bus 3 addr 0x3d (stock dump; skip if no i2c-3) ==========
+Sat Apr 18 14:01:10 CEST 2026
+/dev/i2c-3 not present
+
+
+========== /sys/class/power_supply ==========
+Sat Apr 18 14:01:10 CEST 2026
+--- /sys/class/power_supply/battery ---
+uevent: DEVTYPE=power_supply
+OF_NAME=charger
+OF_FULLNAME=/i2c@fdd40000/pmic@20/charger
+OF_COMPATIBLE_N=0
+POWER_SUPPLY_NAME=battery
+POWER_SUPPLY_TYPE=Battery
+POWER_SUPPLY_STATUS=Discharging
+POWER_SUPPLY_CHARGE_TYPE=N/A
+POWER_SUPPLY_PRESENT=1
+POWER_SUPPLY_VOLTAGE_MAX_DESIGN=4250000
+POWER_SUPPLY_VOLTAGE_MIN_DESIGN=3200000
+POWER_SUPPLY_VOLTAGE_AVG=3910500
+POWER_SUPPLY_CURRENT_AVG=-971972
+POWER_SUPPLY_CHARGE_FULL_DESIGN=3000000
+POWER_SUPPLY_CHARGE_EMPTY_DESIGN=0
+POWER_SUPPLY_CHARGE_FULL=3000000
+POWER_SUPPLY_CHARGE_NOW=2271948
+POWER_SUPPLY_CONSTANT_CHARGE_CURRENT_MAX=1500000
+POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE_MAX=4250000
+POWER_SUPPLY_CAPACITY=76
+POWER_SUPPLY_TYPE=Battery
+POWER_SUPPLY_CHARGE_TERM_CURRENT=150000
+type: Battery
+status: Discharging
+voltage_avg: 3910500
+current_avg: -971972
+capacity: 76
+charge_type: N/A
+--- /sys/class/power_supply/charger ---
+uevent: DEVTYPE=power_supply
+OF_NAME=charger
+OF_FULLNAME=/i2c@fdd40000/pmic@20/charger
+OF_COMPATIBLE_N=0
+POWER_SUPPLY_NAME=charger
+POWER_SUPPLY_TYPE=USB
+POWER_SUPPLY_ONLINE=0
+POWER_SUPPLY_VOLTAGE_MAX_DESIGN=5500000
+POWER_SUPPLY_VOLTAGE_MIN_DESIGN=3800000
+POWER_SUPPLY_VOLTAGE_AVG=0
+POWER_SUPPLY_TYPE=USB
+POWER_SUPPLY_USB_TYPE=Unknown [DCP]
+type: USB
+voltage_avg: 0
+(none)
+
+
+========== /sys/kernel/debug/gpio ==========
+Sat Apr 18 14:01:10 CEST 2026
+gpiochip0: 32 GPIOs, parent: platform/fdd60000.gpio, gpio0:
+ gpio-0   (                    |enable              ) out lo ACTIVE LOW
+ gpio-3   (                    |interrupt           ) in  hi IRQ 
+ gpio-12  (                    |green:power         ) out lo 
+ gpio-18  (                    |red:status          ) out lo 
+ gpio-22  (                    |Lid                 ) in  hi IRQ ACTIVE LOW
+ gpio-23  (                    |vcc3v3-lcd0-n       ) out hi 
+
+gpiochip1: 32 GPIOs, parent: platform/fe740000.gpio, gpio1:
+
+gpiochip2: 32 GPIOs, parent: platform/fe750000.gpio, gpio2:
+ gpio-16  (                    |GPIO BTN_THUMBR     ) in  lo 
+ gpio-17  (                    |GPIO BTN_THUMBL     ) in  lo 
+
+gpiochip3: 32 GPIOs, parent: platform/fe760000.gpio, gpio3:
+ gpio-1   (                    |GPIO BTN_F          ) in  hi 
+ gpio-3   (                    |GPIO DPAD-UP        ) in  hi 
+ gpio-4   (                    |GPIO DPAD-DOWN      ) in  hi 
+ gpio-5   (                    |GPIO DPAD-LEFT      ) in  hi 
+ gpio-6   (                    |GPIO DPAD-RIGHT     ) in  hi 
+ gpio-7   (                    |Volume Up           ) in  hi IRQ ACTIVE LOW
+ gpio-8   (                    |Volume Down         ) in  hi IRQ ACTIVE LOW
+ gpio-9   (                    |GPIO BTN_TL         ) in  hi 
+ gpio-10  (                    |GPIO BTN_TL2        ) in  hi 
+ gpio-11  (                    |GPIO BTN_TR         ) in  hi 
+ gpio-12  (                    |GPIO BTN_TR2        ) in  hi 
+ gpio-13  (                    |GPIO BTN_START      ) in  hi 
+ gpio-14  (                    |GPIO BTN_SELECT     ) in  hi 
+ gpio-16  (                    |GPIO BTN-Y          ) in  hi 
+ gpio-17  (                    |GPIO BTN-X          ) in  hi 
+ gpio-18  (                    |GPIO KEY BTN-A      ) in  hi 
+ gpio-19  (                    |GPIO BTN-B          ) in  hi 
+
+gpiochip4: 32 GPIOs, parent: platform/fe770000.gpio, gpio4:
+ gpio-0   (                    |reset               ) out hi ACTIVE LOW
+ gpio-18  (                    |enable              ) out hi 
+ gpio-21  (                    |vcc5v0-host-regulato) out lo 
+ gpio-22  (                    |Headphone detection ) in  hi IRQ ACTIVE LOW
+
+
+========== /sys/kernel/debug/pinctrl/pinctrl-rockchip-pinctrl/pinmux-pins ==========
+Sat Apr 18 14:01:10 CEST 2026
+Pinmux settings per pin
+Format: pin (name): mux_owner gpio_owner hog?
+pin 0 (gpio0-0): rtl8733bu-power gpio0:0 function wireless-wlan group wifi-enable-h
+pin 1 (gpio0-1): fe710000.tsadc (GPIO UNCLAIMED) function tsadc group tsadc-shutorg
+pin 2 (gpio0-2): 0-0020 (GPIO UNCLAIMED) function pmic group pmic-pins
+pin 3 (gpio0-3): 0-0020 (GPIO UNCLAIMED) function pmic group pmic-int-l
+pin 4 (gpio0-4): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-det
+pin 5 (gpio0-5): vcc-sd (GPIO UNCLAIMED) function vcc-sd group vcc-sd-h
+pin 6 (gpio0-6): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 7 (gpio0-7): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 8 (gpio0-8): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 9 (gpio0-9): fdd40000.i2c (GPIO UNCLAIMED) function i2c0 group i2c0-xfer
+pin 10 (gpio0-10): fdd40000.i2c (GPIO UNCLAIMED) function i2c0 group i2c0-xfer
+pin 11 (gpio0-11): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 12 (gpio0-12): (MUX UNCLAIMED) gpio0:12
+pin 13 (gpio0-13): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 14 (gpio0-14): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 15 (gpio0-15): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 16 (gpio0-16): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 17 (gpio0-17): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 18 (gpio0-18): (MUX UNCLAIMED) gpio0:18
+pin 19 (gpio0-19): fe6e0000.pwm (GPIO UNCLAIMED) function pwm4 group pwm4-pins
+pin 20 (gpio0-20): fe6e0010.pwm (GPIO UNCLAIMED) function pwm5 group pwm5-pins
+pin 21 (gpio0-21): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-pins
+pin 22 (gpio0-22): gpio-keys gpio0:22 function gpio-hall group gpio-hall-l
+pin 23 (gpio0-23): (MUX UNCLAIMED) gpio0:23
+pin 24 (gpio0-24): fe660000.serial (GPIO UNCLAIMED) function uart2 group uart2m0-xfer
+pin 25 (gpio0-25): fe660000.serial (GPIO UNCLAIMED) function uart2 group uart2m0-xfer
+pin 26 (gpio0-26): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 27 (gpio0-27): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 28 (gpio0-28): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 29 (gpio0-29): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 30 (gpio0-30): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 31 (gpio0-31): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio0-d-pins
+pin 32 (gpio1-0): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio1-a01-pins
+pin 33 (gpio1-1): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio1-a01-pins
+pin 34 (gpio1-2): 0-0020 (GPIO UNCLAIMED) function i2s1 group i2s1m0-mclk
+pin 35 (gpio1-3): fe410000.i2s (GPIO UNCLAIMED) function i2s1 group i2s1m0-sclktx
+pin 36 (gpio1-4): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-i2s1-pins
+pin 37 (gpio1-5): fe410000.i2s (GPIO UNCLAIMED) function i2s1 group i2s1m0-lrcktx
+pin 38 (gpio1-6): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-i2s1-pins
+pin 39 (gpio1-7): fe410000.i2s (GPIO UNCLAIMED) function i2s1 group i2s1m0-sdo0
+pin 40 (gpio1-8): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-i2s1-pins
+pin 41 (gpio1-9): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-i2s1-pins
+pin 42 (gpio1-10): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-i2s1-pins
+pin 43 (gpio1-11): fe410000.i2s (GPIO UNCLAIMED) function i2s1 group i2s1m0-sdi0
+pin 44 (gpio1-12): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 45 (gpio1-13): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 46 (gpio1-14): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 47 (gpio1-15): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 48 (gpio1-16): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 49 (gpio1-17): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 50 (gpio1-18): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 51 (gpio1-19): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 52 (gpio1-20): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 53 (gpio1-21): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 54 (gpio1-22): (MUX UNCLAIMED) (GPIO UNCLAIMED)
+pin 55 (gpio1-23): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 56 (gpio1-24): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 57 (gpio1-25): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 58 (gpio1-26): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 59 (gpio1-27): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 60 (gpio1-28): fe300000.spi (GPIO UNCLAIMED) function fspi group fspi-pins
+pin 61 (gpio1-29): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-bus4
+pin 62 (gpio1-30): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-bus4
+pin 63 (gpio1-31): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-bus4
+pin 64 (gpio2-0): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-bus4
+pin 65 (gpio2-1): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-cmd
+pin 66 (gpio2-2): fe2b0000.mmc (GPIO UNCLAIMED) function sdmmc0 group sdmmc0-clk
+pin 67 (gpio2-3): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-bus4
+pin 68 (gpio2-4): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-bus4
+pin 69 (gpio2-5): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-bus4
+pin 70 (gpio2-6): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-bus4
+pin 71 (gpio2-7): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-cmd
+pin 72 (gpio2-8): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-clk
+pin 73 (gpio2-9): vcc-sd2 (GPIO UNCLAIMED) function vcc-sd group vcc-sd2-h
+pin 74 (gpio2-10): fe2c0000.mmc (GPIO UNCLAIMED) function sdmmc1 group sdmmc1-det
+pin 75 (gpio2-11): fe650000.serial (GPIO UNCLAIMED) function uart1 group uart1m0-xfer
+pin 76 (gpio2-12): fe650000.serial (GPIO UNCLAIMED) function uart1 group uart1m0-xfer
+pin 77 (gpio2-13): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 78 (gpio2-14): fe650000.serial (GPIO UNCLAIMED) function uart1 group uart1m0-ctsn
+pin 79 (gpio2-15): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 80 (gpio2-16): rocknix-singleadc-joypad gpio2:80 function gpio-control group btn-pins-ctrl
+pin 81 (gpio2-17): rocknix-singleadc-joypad gpio2:81 function gpio-control group btn-pins-ctrl
+pin 82 (gpio2-18): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 83 (gpio2-19): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 84 (gpio2-20): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 85 (gpio2-21): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 86 (gpio2-22): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-pins
+pin 87 (gpio2-23): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 88 (gpio2-24): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 89 (gpio2-25): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 90 (gpio2-26): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 91 (gpio2-27): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 92 (gpio2-28): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 93 (gpio2-29): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 94 (gpio2-30): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 95 (gpio2-31): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio2-c7d-pins
+pin 96 (gpio3-0): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 97 (gpio3-1): rocknix-singleadc-joypad gpio3:97 function gpio-control group btn-pins-ctrl
+pin 98 (gpio3-2): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 99 (gpio3-3): rocknix-singleadc-joypad gpio3:99 function gpio-control group btn-pins-ctrl
+pin 100 (gpio3-4): rocknix-singleadc-joypad gpio3:100 function gpio-control group btn-pins-ctrl
+pin 101 (gpio3-5): rocknix-singleadc-joypad gpio3:101 function gpio-control group btn-pins-ctrl
+pin 102 (gpio3-6): rocknix-singleadc-joypad gpio3:102 function gpio-control group btn-pins-ctrl
+pin 103 (gpio3-7): gpio-keys gpio3:103 function gpio-control group btn-pins-vol
+pin 104 (gpio3-8): gpio-keys gpio3:104 function gpio-control group btn-pins-vol
+pin 105 (gpio3-9): rocknix-singleadc-joypad gpio3:105 function gpio-control group btn-pins-ctrl
+pin 106 (gpio3-10): rocknix-singleadc-joypad gpio3:106 function gpio-control group btn-pins-ctrl
+pin 107 (gpio3-11): rocknix-singleadc-joypad gpio3:107 function gpio-control group btn-pins-ctrl
+pin 108 (gpio3-12): rocknix-singleadc-joypad gpio3:108 function gpio-control group btn-pins-ctrl
+pin 109 (gpio3-13): rocknix-singleadc-joypad gpio3:109 function gpio-control group btn-pins-ctrl
+pin 110 (gpio3-14): rocknix-singleadc-joypad gpio3:110 function gpio-control group btn-pins-ctrl
+pin 111 (gpio3-15): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 112 (gpio3-16): rocknix-singleadc-joypad gpio3:112 function gpio-control group btn-pins-ctrl
+pin 113 (gpio3-17): rocknix-singleadc-joypad gpio3:113 function gpio-control group btn-pins-ctrl
+pin 114 (gpio3-18): rocknix-singleadc-joypad gpio3:114 function gpio-control group btn-pins-ctrl
+pin 115 (gpio3-19): rocknix-singleadc-joypad gpio3:115 function gpio-control group btn-pins-ctrl
+pin 116 (gpio3-20): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 117 (gpio3-21): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 118 (gpio3-22): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 119 (gpio3-23): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 120 (gpio3-24): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 121 (gpio3-25): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 122 (gpio3-26): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 123 (gpio3-27): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 124 (gpio3-28): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 125 (gpio3-29): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 126 (gpio3-30): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 127 (gpio3-31): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio3-pins
+pin 128 (gpio4-0): fe060000.dsi.0 gpio4:128 function gpio-lcd group lcd-rst
+pin 129 (gpio4-1): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 130 (gpio4-2): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 131 (gpio4-3): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 132 (gpio4-4): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 133 (gpio4-5): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 134 (gpio4-6): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 135 (gpio4-7): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 136 (gpio4-8): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 137 (gpio4-9): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 138 (gpio4-10): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 139 (gpio4-11): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 140 (gpio4-12): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 141 (gpio4-13): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 142 (gpio4-14): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 143 (gpio4-15): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 144 (gpio4-16): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 145 (gpio4-17): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 146 (gpio4-18): audio-amplifier gpio4:146 function audio-amplifier group spk-amp-enable-h
+pin 147 (gpio4-19): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 148 (gpio4-20): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-pins
+pin 149 (gpio4-21): vcc5v0-host-regulator gpio4:149 function usb group vcc5v0-host-en
+pin 150 (gpio4-22): rk817-sound gpio4:150 function headphone group hp-det
+pin 151 (gpio4-23): fe0a0000.hdmi (GPIO UNCLAIMED) function hdmitx group hdmitx-scl
+pin 152 (gpio4-24): fe0a0000.hdmi (GPIO UNCLAIMED) function hdmitx group hdmitx-sda
+pin 153 (gpio4-25): fe0a0000.hdmi (GPIO UNCLAIMED) function hdmitx group hdmitxm0-cec
+pin 154 (gpio4-26): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+pin 155 (gpio4-27): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+pin 156 (gpio4-28): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+pin 157 (gpio4-29): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+pin 158 (gpio4-30): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+pin 159 (gpio4-31): unused-pins-holder (GPIO UNCLAIMED) function unused-pins group unused-gpio4-d2-pins
+
+
+========== /sys/kernel/debug/pinctrl/pinctrl-rockchip-pinctrl/pinconf-pins ==========
+Sat Apr 18 14:01:10 CEST 2026
+Pin config settings per pin
+Format: pin (name): configs
+pin 0 (gpio0-0): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 1 (gpio0-1): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 2 (gpio0-2): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 3 (gpio0-3): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 4 (gpio0-4): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled
+pin 5 (gpio0-5): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 6 (gpio0-6): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 7 (gpio0-7): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 8 (gpio0-8): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 9 (gpio0-9): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 10 (gpio0-10): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 11 (gpio0-11): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 12 (gpio0-12): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 13 (gpio0-13): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 14 (gpio0-14): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 15 (gpio0-15): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 16 (gpio0-16): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 17 (gpio0-17): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 18 (gpio0-18): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 19 (gpio0-19): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 20 (gpio0-20): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 21 (gpio0-21): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 22 (gpio0-22): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 23 (gpio0-23): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 24 (gpio0-24): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled
+pin 25 (gpio0-25): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled
+pin 26 (gpio0-26): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 27 (gpio0-27): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 28 (gpio0-28): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 29 (gpio0-29): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 30 (gpio0-30): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 31 (gpio0-31): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 32 (gpio1-0): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 33 (gpio1-1): input bias pull up (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (1 level)
+pin 34 (gpio1-2): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 35 (gpio1-3): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 36 (gpio1-4): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 37 (gpio1-5): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 38 (gpio1-6): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 39 (gpio1-7): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 40 (gpio1-8): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 41 (gpio1-9): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 42 (gpio1-10): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 43 (gpio1-11): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 44 (gpio1-12): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 45 (gpio1-13): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 46 (gpio1-14): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 47 (gpio1-15): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 48 (gpio1-16): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 49 (gpio1-17): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 50 (gpio1-18): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 51 (gpio1-19): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 52 (gpio1-20): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 53 (gpio1-21): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 54 (gpio1-22): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 55 (gpio1-23): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 56 (gpio1-24): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 57 (gpio1-25): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 58 (gpio1-26): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 59 (gpio1-27): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 60 (gpio1-28): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 61 (gpio1-29): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 62 (gpio1-30): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 63 (gpio1-31): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 64 (gpio2-0): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 65 (gpio2-1): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 66 (gpio2-2): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 67 (gpio2-3): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 68 (gpio2-4): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 69 (gpio2-5): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 70 (gpio2-6): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 71 (gpio2-7): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 72 (gpio2-8): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 73 (gpio2-9): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 74 (gpio2-10): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 75 (gpio2-11): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 76 (gpio2-12): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled
+pin 77 (gpio2-13): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 78 (gpio2-14): input bias disabled, output drive strength (12 mA), input schmitt enabled
+pin 79 (gpio2-15): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 80 (gpio2-16): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 81 (gpio2-17): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 82 (gpio2-18): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 83 (gpio2-19): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 84 (gpio2-20): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 85 (gpio2-21): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 86 (gpio2-22): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 87 (gpio2-23): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 88 (gpio2-24): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 89 (gpio2-25): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 90 (gpio2-26): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 91 (gpio2-27): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 92 (gpio2-28): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 93 (gpio2-29): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 94 (gpio2-30): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 95 (gpio2-31): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 96 (gpio3-0): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 97 (gpio3-1): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 98 (gpio3-2): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 99 (gpio3-3): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 100 (gpio3-4): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 101 (gpio3-5): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 102 (gpio3-6): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 103 (gpio3-7): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 104 (gpio3-8): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 105 (gpio3-9): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 106 (gpio3-10): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 107 (gpio3-11): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 108 (gpio3-12): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 109 (gpio3-13): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 110 (gpio3-14): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 111 (gpio3-15): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 112 (gpio3-16): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 113 (gpio3-17): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 114 (gpio3-18): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 115 (gpio3-19): input bias pull up (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 116 (gpio3-20): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 117 (gpio3-21): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 118 (gpio3-22): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 119 (gpio3-23): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 120 (gpio3-24): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 121 (gpio3-25): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 122 (gpio3-26): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 123 (gpio3-27): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 124 (gpio3-28): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 125 (gpio3-29): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 126 (gpio3-30): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 127 (gpio3-31): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 128 (gpio4-0): input bias disabled, output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 129 (gpio4-1): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 130 (gpio4-2): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 131 (gpio4-3): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 132 (gpio4-4): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 133 (gpio4-5): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 134 (gpio4-6): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 135 (gpio4-7): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 136 (gpio4-8): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 137 (gpio4-9): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 138 (gpio4-10): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 139 (gpio4-11): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 140 (gpio4-12): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 141 (gpio4-13): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 142 (gpio4-14): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 143 (gpio4-15): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 144 (gpio4-16): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 145 (gpio4-17): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 146 (gpio4-18): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 147 (gpio4-19): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 148 (gpio4-20): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 149 (gpio4-21): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (0 level)
+pin 150 (gpio4-22): input bias pull down (1 ohms), output drive strength (12 mA), input schmitt enabled, pin output (1 level)
+pin 151 (gpio4-23): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 152 (gpio4-24): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 153 (gpio4-25): input bias disabled, output drive strength (4 mA), input schmitt enabled
+pin 154 (gpio4-26): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 155 (gpio4-27): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 156 (gpio4-28): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 157 (gpio4-29): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 158 (gpio4-30): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+pin 159 (gpio4-31): input bias pull down (1 ohms), output drive strength (4 mA), input schmitt enabled, pin output (0 level)
+
+
+========== /sys/kernel/debug/regulator/regulator_summary ==========
+Sat Apr 18 14:01:10 CEST 2026
+ regulator                      use open bypass  opmode voltage current     min     max
+---------------------------------------------------------------------------------------
+ regulator-dummy                  1    0      0 unknown     0mV     0mA     0mV     0mV 
+ vcc3v8_sys                      13   16      0 unknown  3800mV     0mA  3800mV  3800mV 
+    vdd_cpu                       2    1      0  normal   875mV     0mA   712mV  1387mV 
+       cpu0-cpu                   1                                 0mA   875mV  1150mV
+    vdd_logic                     1    1      0  normal   900mV     0mA   500mV  1350mV 
+       dmc-center                 0                                 0mA   900mV  1350mV
+    vdd_gpu                       1    2      0  normal   850mV     0mA   500mV  1350mV 
+       fde60000.gpu-mali          0                                 0mA     0mV     0mV
+       fde60000.gpu-mali          0                                 0mA   850mV   850mV
+    vcc_ddr                       1    0      0  normal   500mV     0mA     0mV     0mV 
+    vcc_3v3                       4    5      0  normal  3300mV     0mA  3300mV  3300mV 
+       fdc20000.syscon:io-domains-vccio7   0                                 0mA     0mV     0mV
+       fdc20000.syscon:io-domains-vccio4   0                                 0mA     0mV     0mV
+       phy-fe8b0000.usb2phy.4-phy   1                                 0mA     0mV     0mV
+       phy-fe8a0000.usb2phy.2-phy   2                                 0mA     0mV     0mV
+       vcc3v3_lcd0_n              2    2      0 unknown  3300mV     0mA  3300mV  3300mV 
+          fe060000.dsi.0-iovcc    1                                 0mA     0mV     0mV
+          fe060000.dsi.0-vdd      1                                 0mA     0mV     0mV
+    vcca1v8_pmu                   1    0      0 unknown  1800mV     0mA  1800mV  1800mV 
+    vdda_0v9                      2    1      0 unknown   900mV     0mA   900mV   900mV 
+       fe0a0000.hdmi-avdd-0v9     1                                 0mA     0mV     0mV
+    vdda0v9_pmu                   1    0      0 unknown   900mV     0mA   900mV   900mV 
+    vccio_acodec                  2    2      0 unknown  3300mV     0mA  3300mV  3300mV 
+       audio-amplifier-VCC        1                                 0mA     0mV     0mV
+       fdc20000.syscon:io-domains-vccio1   0                                 0mA     0mV     0mV
+    vccio_sd                      3    3      0 unknown  1800mV     0mA  1800mV  3300mV 
+       fdc20000.syscon:io-domains-vccio3   0                                 0mA     0mV     0mV
+       fe2c0000.mmc-vqmmc         1                                 0mA     0mV     0mV
+       fe2b0000.mmc-vqmmc         1                                 0mA  1800mV  1950mV
+    vcc3v3_pmu                    1    1      0 unknown  3300mV     0mA  3300mV  3300mV 
+       fdc20000.syscon:io-domains-pmuio2   0                                 0mA     0mV     0mV
+    vcc_1v8                       3    4      0 unknown  1800mV     0mA  1800mV  1800mV 
+       fe0a0000.hdmi-avdd-1v8     1                                 0mA     0mV     0mV
+       fdc20000.syscon:io-domains-vccio6   0                                 0mA     0mV     0mV
+       fdc20000.syscon:io-domains-vccio5   0                                 0mA     0mV     0mV
+       fe720000.saradc-vref       1                                 0mA     0mV     0mV
+    vcc1v8_dvp                    0    0      0 unknown  1800mV     0mA  1800mV  1800mV 
+    vcc2v8_dvp                    0    0      0 unknown  2800mV     0mA  2800mV  2800mV 
+    boost                         0    1      0 unknown  5000mV     0mA  5000mV  5000mV 
+       vcc5v0_host                0    0      0 unknown  5000mV     0mA     0mV     0mV 
+    otg_switch                    0    0      0 unknown  3800mV     0mA     0mV     0mV 
+ vcc_sd                           2    1      0 unknown  3300mV     0mA  3300mV  3300mV 
+    fe2b0000.mmc-vmmc             1                                 0mA  3300mV  3400mV
+ vcc_sd2                          2    1      0 unknown  3300mV     0mA  3300mV  3300mV 
+    fe2c0000.mmc-vmmc             1                                 0mA  3300mV  3400mV
+
+
+========== /sys/kernel/debug/pm_genpd/pm_genpd_summary ==========
+Sat Apr 18 14:01:10 CEST 2026
+domain                          status          children        performance
+    /device                         runtime status                  managed by
+------------------------------------------------------------------------------
+pipe                            on                              0
+    fcc00000.usb                    active                      0           SW
+    fd000000.usb                    active                      0           SW
+venc                            off-0                           0
+vdec                            off-0                           0
+vpu                             off-0                           0
+    fdea0800.iommu                  suspended                   0           SW
+    fdea0000.video-codec            suspended                   0           SW
+rga                             off-0                           0
+    fdeb0000.rga                    suspended                   0           SW
+vo                              on                              0
+    fe850000.mipi-dphy              active                      0           SW
+    fe043e00.iommu                  active                      0           SW
+    fe040000.vop                    active                      0           SW
+    fe060000.dsi                    active                      0           SW
+    fe0a0000.hdmi                   unsupported                 0           SW
+vi                              off-0                           0
+gpu                             on                              0
+    fde60000.gpu                    active                      0           SW
+
+
+========== /sys/kernel/debug/clk/clk_summary ==========
+Sat Apr 18 14:01:10 CEST 2026
+                                 enable  prepare  protect                                duty  hardware                            connection
+   clock                          count    count    count        rate   accuracy phase  cycle    enable   consumer                         id
+---------------------------------------------------------------------------------------------------------------------------------------------
+ clk_scmi_ddr                        0       0        0        324000000   0          0     50000      Y   dmc                             no_connection_id         
+                                                                                                           dmc                             dmc_clk                  
+                                                                                                           deviceless                      no_connection_id         
+ clk_scmi_npu                        0       0        0        594000000   0          0     50000      Y   deviceless                      no_connection_id         
+ clk_scmi_gpu                        1       1        0        198000000   0          0     50000      Y   fde60000.gpu                    no_connection_id         
+                                                                                                           gpu@fde60000                    no_connection_id         
+                                                                                                           gpu@fde60000                    no_connection_id         
+                                                                                                           deviceless                      no_connection_id         
+ clk_scmi_cpu                        0       0        0        1800000000  0          0     50000      Y   cpu0                            no_connection_id         
+                                                                                                           cpu0                            no_connection_id         
+                                                                                                           deviceless                      no_connection_id         
+ rk808-clkout2                       0       0        0        32768       0          0     50000      Y   deviceless                      no_connection_id         
+ rk808-clkout1                       0       0        0        32768       0          0     50000      Y   deviceless                      no_connection_id         
+ xin32k                              0       0        0        32768       0          0     50000      Y   deviceless                      no_connection_id         
+ xin24m                              24      24       0        24000000    0          0     50000      Y   deviceless                      no_connection_id         
+    clk_cpu_boost                    0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_optc_arb                     1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+    clk_timer5                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_timer4                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_timer3                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_timer2                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_timer1                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_timer0                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    dbclk_gpio                       1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       dbclk_gpio4                   0       0        0        24000000    0          0     50000      N         gpio@fe770000                   no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       dbclk_gpio3                   2       2        0        24000000    0          0     50000      Y         gpio@fe760000                   no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       dbclk_gpio2                   0       0        0        24000000    0          0     50000      N         gpio@fe750000                   no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       dbclk_gpio1                   0       0        0        24000000    0          0     50000      N         gpio@fe740000                   no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+    clk_pwm3_capture                 0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm3                         0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm2_capture                 0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm2                         0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm1_capture                 0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm1                         1       2        0        24000000    0          0     50000      Y      fe6e0010.pwm                    pwm                      
+                                                                                                              fe6e0000.pwm                    pwm                      
+                                                                                                              deviceless                      no_connection_id         
+    clk_i2c                          0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+       clk_i2c5                      0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+       clk_i2c4                      0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+       clk_i2c3                      0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+       clk_i2c2                      0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+       clk_i2c1                      0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart9_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart9                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart8_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart8                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart7_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart7                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart6_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart6                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart5_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart5                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart4_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart4                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart3_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart3                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    sclk_uart2_mux                   1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart2                    1       1        0        24000000    0          0     50000      Y         fe660000.serial                 baudclk                  
+                                                                                                                 deviceless                      no_connection_id         
+    tclk_wdt_ns                      1       1        0        24000000    0          0     50000      Y      fe600000.watchdog               tclk                     
+                                                                                                              deviceless                      no_connection_id         
+    clk_saradc                       1       1        0        24000000    0          0     50000      Y      fe720000.saradc                 saradc                   
+                                                                                                              deviceless                      no_connection_id         
+    clk_hdmi_sfr                     1       2        0        24000000    0          0     50000      Y      fe0a0000.hdmi                   isfr                     
+                                                                                                              hdmi@fe0a0000                   no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    clk_vop_pwm                      0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_cam1_out                     0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_cam0_out                     0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_cif_out                      0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_sdmmc2                       0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+       sdmmc2_sample                 0       0        0        12000000    0          0     50000      Y         deviceless                      no_connection_id         
+       sdmmc2_drv                    0       0        0        12000000    0          180   50000      Y         deviceless                      no_connection_id         
+    clk_usb3otg1_suspend             1       2        0        24000000    0          0     50000      Y      fd000000.usb                    suspend_clk              
+                                                                                                              usb@fd000000                    no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    clk_usb3otg1_ref                 1       2        0        24000000    0          0     50000      Y      fd000000.usb                    ref_clk                  
+                                                                                                              usb@fd000000                    no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    clk_usb3otg0_suspend             1       2        0        24000000    0          0     50000      Y      fcc00000.usb                    suspend_clk              
+                                                                                                              usb@fcc00000                    no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    clk_usb3otg0_ref                 1       2        0        24000000    0          0     50000      Y      fcc00000.usb                    ref_clk                  
+                                                                                                              usb@fcc00000                    no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    clk_pcie30x2_aux_ndft            0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pcie30x1_aux_ndft            0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pcie20_aux_ndft              0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    tclk_emmc                        0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    sclk_sfc                         0       0        0        24000000    0          0     50000      N      fe300000.spi                    clk_sfc                  
+                                                                                                              deviceless                      no_connection_id         
+    clk_otpc_ns_sbpi                 0       0        0        24000000    0          0     50000      N      fe38c000.otp                    sbpi                     
+                                                                                                              deviceless                      no_connection_id         
+    clk24_ddrmon                     0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+    clk_npu_pvtm                     0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_gpu_pvtm                     0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_core_pvtm                    0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    usb480m                          0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+    xin_osc0_half                    0       0        0        12000000    0          0     50000      Y      deviceless                      no_connection_id         
+       clk_otpc_ns_usr               0       0        0        12000000    0          0     50000      N         fe38c000.otp                    usr                      
+                                                                                                                 deviceless                      no_connection_id         
+       i2s3_mclkout_rx               0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+       i2s3_mclkout_tx               0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+       i2s2_mclkout                  0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+       i2s1_mclkout_rx               0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+       i2s0_mclkout_rx               0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+       i2s0_mclkout_tx               0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+    clk_osc0_div_750k                0       0        0        750000      0          0     50000      N      deviceless                      no_connection_id         
+       clk_osc0_div_375k             0       0        0        375000      0          0     50000      Y         deviceless                      no_connection_id         
+          cclk_emmc                  0       0        0        375000      0          0     50000      N            deviceless                      no_connection_id         
+             emmc_sample             0       0        0        187500      0          0     50000      Y               deviceless                      no_connection_id         
+             emmc_drv                0       0        0        187500      0          180   50000      Y               deviceless                      no_connection_id         
+    pll_vpll                         1       1        0        1200000000  0          0     50000      Y      deviceless                      no_connection_id         
+       vpll                          1       1        0        1200000000  0          0     50000      Y         deviceless                      no_connection_id         
+          dclk_vop1                  2       2        0        30769231    0          0     50000      Y            fe040000.vop                    dclk_vp1                 
+                                                                                                                    vop@fe040000                    no_connection_id         
+                                                                                                                    deviceless                      no_connection_id         
+    pll_npll                         0       0        0        1200000000  0          0     50000      Y      deviceless                      no_connection_id         
+    npll                             1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       clk_npu_src                   0       0        0        12000000    0          0     50000      N         deviceless                      no_connection_id         
+          clk_npu_pre_ndft           0       0        0        12000000    0          0     50000      Y            deviceless                      no_connection_id         
+             clk_npu_pvtpll          0       0        0        12000000    0          0     50000      Y               deviceless                      no_connection_id         
+             clk_npu_pvtm_core       0       0        0        12000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_npu                 0       0        0        12000000    0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_npu_pre         0       0        0        12000000    0          0     50000      N                  deviceless                      no_connection_id         
+                   aclk_npu          0       0        0        12000000    0          0     50000      N                     deviceless                      no_connection_id         
+                pclk_npu_pre         0       0        0        2000000     0          0     50000      N                  deviceless                      no_connection_id         
+                   pclk_npu_pvtm     0       0        0        2000000     0          0     50000      N                     deviceless                      no_connection_id         
+                hclk_npu_pre         0       0        0        3000000     0          0     50000      N                  deviceless                      no_connection_id         
+                   hclk_npu          0       0        0        3000000     0          0     50000      N                     deviceless                      no_connection_id         
+    pll_cpll                         1       1        0        1000000000  0          0     50000      Y      deviceless                      no_connection_id         
+       cpll                          7       7        0        1000000000  0          0     50000      Y         deviceless                      no_connection_id         
+          aclk_vop_pre               1       2        0        500000000   0          0     50000      Y            power-domain@9                  no_connection_id         
+                                                                                                                    deviceless                      no_connection_id         
+             aclk_vop                3       4        0        500000000   0          0     50000      Y               fe040000.vop                    aclk                     
+                                                                                                                       vop@fe040000                    no_connection_id         
+                                                                                                                       fe043e00.iommu                  aclk                     
+                                                                                                                       iommu@fe043e00                  no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+          clk_isp                    0       0        0        500000000   0          0     50000      N            deviceless                      no_connection_id         
+          mclk_spdif_8ch_src         0       0        0        50000000    0          0     50000      N            deviceless                      no_connection_id         
+             mclk_spdif_8ch          0       0        0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+             mclk_spdif_8ch_frac     0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s3_2ch_rx_src        0       0        0        50000000    0          0     50000      N            deviceless                      no_connection_id         
+             clk_i2s3_2ch_rx         0       0        0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+                mclk_i2s3_2ch_rx     0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                   clk_acdcdig_adc   0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+             clk_i2s3_2ch_rx_frac    0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s3_2ch_tx_src        0       0        0        50000000    0          0     50000      N            deviceless                      no_connection_id         
+             clk_i2s3_2ch_tx         0       0        0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+                mclk_i2s3_2ch_tx     0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                   clk_acdcdig_dac   0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+             clk_i2s3_2ch_tx_frac    0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s2_2ch_src           0       0        0        50000000    0          0     50000      N            deviceless                      no_connection_id         
+             clk_i2s2_2ch            0       0        0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+                mclk_i2s2_2ch        0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+             clk_i2s2_2ch_frac       0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s1_8ch_rx_src        1       1        0        1000000000  0          0     50000      Y            deviceless                      no_connection_id         
+             clk_i2s1_8ch_rx         1       1        0        1000000000  0          0     50000      Y               deviceless                      no_connection_id         
+                mclk_i2s1_8ch_rx     2       2        0        1000000000  0          0     50000      Y                  fe410000.i2s                    mclk_rx                  
+                                                                                                                          deviceless                      no_connection_id         
+             clk_i2s1_8ch_rx_frac    0       0        0        1000000000  0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s1_8ch_tx_src        1       1        0        1000000000  0          0     50000      Y            deviceless                      no_connection_id         
+             clk_i2s1_8ch_tx_frac    1       1        0        12288000    0          0     50000      Y               deviceless                      no_connection_id         
+                clk_i2s1_8ch_tx      2       2        0        12288000    0          0     50000      Y                  deviceless                      no_connection_id         
+                   i2s1_mclkout_tx   1       1        0        12288000    0          0     50000      Y                     pmic@20                         no_connection_id         
+                                                                                                                             0-0020                          mclk                     
+                                                                                                                             deviceless                      no_connection_id         
+                   mclk_i2s1_8ch_tx  2       2        0        12288000    0          0     50000      Y                     i2s@fe410000                    no_connection_id         
+                                                                                                                             fe410000.i2s                    mclk_tx                  
+                                                                                                                             deviceless                      no_connection_id         
+          clk_i2s0_8ch_rx_src        1       1        0        1000000000  0          0     50000      Y            deviceless                      no_connection_id         
+             clk_i2s0_8ch_rx         1       1        0        1000000000  0          0     50000      Y               deviceless                      no_connection_id         
+                mclk_i2s0_8ch_rx     1       1        0        1000000000  0          0     50000      Y                  fe400000.i2s                    mclk_rx                  
+                                                                                                                          deviceless                      no_connection_id         
+             clk_i2s0_8ch_rx_frac    0       0        0        1000000000  0          0     50000      N               deviceless                      no_connection_id         
+          clk_i2s0_8ch_tx_src        1       1        0        1000000000  0          0     50000      Y            deviceless                      no_connection_id         
+             clk_i2s0_8ch_tx_frac    1       1        0        12288000    0          0     50000      Y               deviceless                      no_connection_id         
+                clk_i2s0_8ch_tx      1       1        0        12288000    0          0     50000      Y                  deviceless                      no_connection_id         
+                   mclk_i2s0_8ch_tx  1       1        0        12288000    0          0     50000      Y                     i2s@fe400000                    no_connection_id         
+                                                                                                                             fe400000.i2s                    mclk_tx                  
+                                                                                                                             deviceless                      no_connection_id         
+          clk_gpu_src                1       1        0        166666667   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_gpu_pvtpll          0       0        0        166666667   0          0     50000      Y               deviceless                      no_connection_id         
+             clk_gpu_pvtm_core       0       0        0        166666667   0          0     50000      N               deviceless                      no_connection_id         
+             clk_gpu_pre_mux         1       3        0        166666667   0          0     50000      Y               deviceless                      no_connection_id         
+                clk_gpu              1       2        0        166666667   0          0     50000      Y                  gpu@fde60000                    no_connection_id         
+                                                                                                                          gpu@fde60000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_gpu_pre         0       1        0        33333334    0          0     50000      Y                  power-domain@7                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_gpu_pvtm     0       0        0        33333334    0          0     50000      N                     deviceless                      no_connection_id         
+                aclk_gpu_pre         0       1        0        83333334    0          0     50000      Y                  power-domain@7                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+          cpll_25m                   0       0        0        25000000    0          0     50000      Y            deviceless                      no_connection_id         
+          cpll_50m                   2       2        0        50000000    0          0     50000      Y            deviceless                      no_connection_id         
+             pclk_top                2       2        0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+                pclk_edpphy_grf      0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_otpphy          0       0        0        50000000    0          0     50000      N                  fe38c000.otp                    phy                      
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_cpu_boost       0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pipephy2        0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pipephy1        0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pipephy0        0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_mipidsiphy1     0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_mipidsiphy0     2       2        0        50000000    0          0     50000      Y                  fe850000.mipi-dphy              pclk                     
+                                                                                                                          mipi-dphy@fe850000              no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_mipicsiphy      0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pcie30phy       0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+             pclk_bus                10      11       0        50000000    0          0     50000      Y               deviceless                      no_connection_id         
+                pclk_timer           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_gpio4           1       1        0        50000000    0          0     50000      Y                  gpio@fe770000                   no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_gpio3           1       1        0        50000000    0          0     50000      Y                  gpio@fe760000                   no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_gpio2           1       1        0        50000000    0          0     50000      Y                  gpio@fe750000                   no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_gpio1           1       1        0        50000000    0          0     50000      Y                  gpio@fe740000                   no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_pwm3            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pwm2            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pwm1            0       2        0        50000000    0          0     50000      N                  fe6e0010.pwm                    pclk                     
+                                                                                                                          fe6e0000.pwm                    pclk                     
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_spi3            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_spi2            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_spi1            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_spi0            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c5            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c4            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c3            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c2            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c1            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_can2            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_can1            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_can0            0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart9           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart8           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart7           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart6           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart5           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart4           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart3           0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_uart2           1       1        0        50000000    0          0     50000      Y                  fe660000.serial                 apb_pclk                 
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_uart1           1       1        0        50000000    0          0     50000      Y                  fe650000.serial                 apb_pclk                 
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_mailbox         0       0        0        50000000    0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_intmux          0       0        0        50000000    0          0     50000      Y                  deviceless                      no_connection_id         
+                pclk_wdt_ns          1       1        0        50000000    0          0     50000      Y                  fe600000.watchdog               pclk                     
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_scr             0       0        0        50000000    0          0     50000      Y                  deviceless                      no_connection_id         
+                pclk_saradc          1       1        0        50000000    0          0     50000      Y                  fe720000.saradc                 apb_pclk                 
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_tsadc           1       1        0        50000000    0          0     50000      Y                  fe710000.tsadc                  apb_pclk                 
+                                                                                                                          deviceless                      no_connection_id         
+             clk_sata2_rxoob         0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_sata1_rxoob         0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_sata0_rxoob         0       0        0        50000000    0          0     50000      N               deviceless                      no_connection_id         
+          cpll_62p5                  0       0        0        62500000    0          0     50000      Y            deviceless                      no_connection_id         
+             clk_gmac1_ptp_ref       0       0        0        62500000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_gmac0_ptp_ref       0       0        0        62500000    0          0     50000      N               deviceless                      no_connection_id         
+          cpll_100m                  0       0        0        100000000   0          0     50000      Y            deviceless                      no_connection_id         
+          cpll_125m                  0       0        0        125000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_mac1_out            0       0        0        125000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_mac1_2top           0       0        0        125000000   0          0     50000      N               deviceless                      no_connection_id         
+                clk_mac1_refout      0       0        0        125000000   0          0     50000      N                  deviceless                      no_connection_id         
+             clk_mac0_out            0       0        0        125000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_mac0_2top           0       0        0        125000000   0          0     50000      N               deviceless                      no_connection_id         
+                clk_gmac0            0       0        0        125000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                   clk_gmac0_rgmii_speed 0       0        0        125000000   0          0     50000      Y                     deviceless                      no_connection_id         
+                      clk_gmac0_rx_tx 0       0        0        125000000   0          0     50000      Y                        deviceless                      no_connection_id         
+                   clk_gmac0_rx_div20 0       0        0        6250000     0          0     50000      Y                     deviceless                      no_connection_id         
+                      clk_gmac0_rmii_speed 0       0        0        6250000     0          0     50000      Y                        deviceless                      no_connection_id         
+                   clk_gmac0_rx_div2 0       0        0        62500000    0          0     50000      Y                     deviceless                      no_connection_id         
+                   clk_gmac0_tx_div50 0       0        0        2500000     0          0     50000      Y                     deviceless                      no_connection_id         
+                   clk_gmac0_tx_div5 0       0        0        25000000    0          0     50000      Y                     deviceless                      no_connection_id         
+                clk_mac0_refout      0       0        0        125000000   0          0     50000      N                  deviceless                      no_connection_id         
+          cpll_250m                  0       0        0        250000000   0          0     50000      Y            deviceless                      no_connection_id         
+          cpll_333m                  0       0        0        333333334   0          0     50000      Y            deviceless                      no_connection_id         
+             dclk_vicap              0       0        0        333333334   0          0     50000      N               deviceless                      no_connection_id         
+          cpll_500m                  0       0        0        500000000   0          0     50000      Y            deviceless                      no_connection_id         
+    pll_gpll                         1       1        0        1200000000  0          0     50000      Y      deviceless                      no_connection_id         
+       gpll                          7       10       0        1200000000  0          0     50000      Y         deviceless                      no_connection_id         
+          clk_can2                   0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          clk_can1                   0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          clk_can0                   0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          clk_uart9_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart9_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart8_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart8_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart7_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart7_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart6_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart6_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart5_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart5_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart4_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart4_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart3_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart3_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart2_src              0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             clk_uart2_frac          0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_uart1_src              1       1        0        100000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_uart1_frac          1       1        0        153600      0          0     50000      Y               deviceless                      no_connection_id         
+                sclk_uart1_mux       1       1        0        153600      0          0     50000      Y                  deviceless                      no_connection_id         
+                   sclk_uart1        1       1        0        153600      0          0     50000      Y                     fe650000.serial                 baudclk                  
+                                                                                                                             deviceless                      no_connection_id         
+          clk_rkvdec_hevc_ca         0       0        0        600000000   0          0     50000      N            deviceless                      no_connection_id         
+          clk_rkvdec_core            0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          clk_rkvdec_ca              0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          aclk_rkvdec_pre            0       1        0        400000000   0          0     50000      N            deviceless                      no_connection_id         
+             aclk_rkvdec             0       0        0        400000000   0          0     50000      N               deviceless                      no_connection_id         
+             hclk_rkvdec_pre         0       1        0        200000000   0          0     50000      N               power-domain@13                 no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+                hclk_rkvdec          0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+          clk_rkvenc_core            0       0        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+          aclk_rkvenc_pre            0       1        0        300000000   0          0     50000      N            deviceless                      no_connection_id         
+             aclk_rkvenc             0       0        0        300000000   0          0     50000      N               deviceless                      no_connection_id         
+             hclk_rkvenc_pre         0       1        0        100000000   0          0     50000      N               power-domain@14                 no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+                hclk_rkvenc          0       0        0        100000000   0          0     50000      N                  deviceless                      no_connection_id         
+          aclk_vpu_pre               0       2        0        400000000   0          0     50000      N            deviceless                      no_connection_id         
+             aclk_vpu                0       4        0        400000000   0          0     50000      N               fdea0000.video-codec            aclk                     
+                                                                                                                       video-codec@fdea0400            no_connection_id         
+                                                                                                                       fdea0800.iommu                  aclk                     
+                                                                                                                       iommu@fdea0800                  no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+             hclk_vpu_pre            0       2        0        200000000   0          0     50000      N               power-domain@11                 no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+                hclk_vpu             0       4        0        200000000   0          0     50000      N                  fdea0000.video-codec            hclk                     
+                                                                                                                          video-codec@fdea0400            no_connection_id         
+                                                                                                                          fdea0800.iommu                  iface                    
+                                                                                                                          iommu@fdea0800                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+          sclk_audpwm_src            0       0        0        100000000   0          0     50000      N            deviceless                      no_connection_id         
+             sclk_audpwm             0       0        0        100000000   0          0     50000      Y               deviceless                      no_connection_id         
+             sclk_audpwm_frac        0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          gpll_20m                   0       0        0        20000000    0          0     50000      Y            deviceless                      no_connection_id         
+             clk_sata2_pmalive       0       0        0        20000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_sata1_pmalive       0       0        0        20000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_sata0_pmalive       0       0        0        20000000    0          0     50000      N               deviceless                      no_connection_id         
+          gpll_75m                   0       0        0        75000000    0          0     50000      Y            deviceless                      no_connection_id         
+          gpll_100m                  1       1        0        100000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_tsadc_tsen          1       1        0        16666667    0          0     50000      Y               deviceless                      no_connection_id         
+                clk_tsadc            1       1        0        694445      0          0     50000      Y                  fe710000.tsadc                  tsadc                    
+                                                                                                                          deviceless                      no_connection_id         
+             dclk_sdmmc_buffer       0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          gpll_150m                  8       8        0        150000000   0          0     50000      Y            deviceless                      no_connection_id         
+             hclk_top                1       1        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+             aclk_bus                2       3        0        150000000   0          0     50000      Y               fe550000.dma-controller         apb_pclk                 
+                                                                                                                       fe530000.dma-controller         apb_pclk                 
+                                                                                                                       deviceless                      no_connection_id         
+                aclk_mcu             0       0        0        150000000   0          0     50000      Y                  deviceless                      no_connection_id         
+             hclk_perimid            1       1        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+             hclk_usb                3       3        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+                hclk_sdmmc2          0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_usb2host1_arb   1       1        0        150000000   0          0     50000      Y                  usb@fd880000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_usb2host1       1       1        0        150000000   0          0     50000      Y                  usb@fd880000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_usb2host0_arb   0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_usb2host0       0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+             hclk_php                3       3        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+                hclk_sdmmc1          1       1        0        150000000   0          0     50000      Y                  fe2c0000.mmc                    biu                      
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_sdmmc0          1       1        0        150000000   0          0     50000      Y                  fe2b0000.mmc                    biu                      
+                                                                                                                          deviceless                      no_connection_id         
+             nclk_nandc              0       0        0        150000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_crypto_ns_core      0       0        0        150000000   0          0     50000      N               deviceless                      no_connection_id         
+             hclk_secure_flash       1       1        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+                hclk_emmc            0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_sfc_xip         0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_sfc             0       0        0        150000000   0          0     50000      N                  fe300000.spi                    hclk_sfc                 
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_nandc           0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_otpc_ns         0       0        0        150000000   0          0     50000      N                  fe38c000.otp                    apb                      
+                                                                                                                          deviceless                      no_connection_id         
+                clk_trng_ns          0       0        0        150000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                hclk_trng_ns         0       0        0        150000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                clk_crypto_ns_rng    0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_crypto_ns       0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+             hclk_gic_audio          2       2        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+                hclk_acdcdig         0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_audpwm          0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_spdif_8ch       0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_vad             0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_pdm             0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_i2s3_2ch        0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_i2s2_2ch        0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+                hclk_i2s1_8ch        2       2        0        150000000   0          0     50000      Y                  fe410000.i2s                    hclk                     
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_i2s0_8ch        1       1        0        150000000   0          0     50000      Y                  fe400000.i2s                    hclk                     
+                                                                                                                          deviceless                      no_connection_id         
+                hclk_sdmmc_buffer    0       0        0        150000000   0          0     50000      N                  deviceless                      no_connection_id         
+             aclk_core_niu2bus       1       1        0        150000000   0          0     50000      Y               deviceless                      no_connection_id         
+          gpll_200m                  3       3        0        200000000   0          0     50000      Y            deviceless                      no_connection_id         
+             aclk_top_low            1       1        0        200000000   0          0     50000      Y               deviceless                      no_connection_id         
+             clk_spi3                0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_spi2                0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_spi1                0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_spi0                0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_edp_200m            0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_xpcs_eee            0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             aclk_pipe               2       3        0        200000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_usb3otg1        1       2        0        200000000   0          0     50000      Y                  fd000000.usb                    bus_clk                  
+                                                                                                                          usb@fd000000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                aclk_usb3otg0        1       2        0        200000000   0          0     50000      Y                  fcc00000.usb                    bus_clk                  
+                                                                                                                          usb@fcc00000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                aclk_sata2           0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_sata1           0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_sata0           0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x2_dbi    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x2_slv    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x2_mst    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x1_dbi    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x1_slv    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie30x1_mst    0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie20_dbi      0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie20_slv      0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_pcie20_mst      0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pipe            0       1        0        50000000    0          0     50000      N                  power-domain@15                 no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_xpcs         0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+                   pclk_pcie30x2     0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+                   pclk_pcie30x1     0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+                   pclk_pcie20       0       0        0        50000000    0          0     50000      N                     deviceless                      no_connection_id         
+             bclk_emmc               0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             aclk_secure_flash       1       1        0        200000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_emmc            0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_crypto_ns       0       0        0        200000000   0          0     50000      N                  deviceless                      no_connection_id         
+             clk_acdcdig_i2c         0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+             aclk_gic_audio          0       0        0        200000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_spinlock        0       0        0        200000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                aclk_gic600          0       0        0        200000000   0          0     50000      Y                  deviceless                      no_connection_id         
+          gpll_300m                  5       7        0        300000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_sdmmc1              0       0        0        300000000   0          0     50000      N               fe2c0000.mmc                    ciu                      
+                                                                                                                       deviceless                      no_connection_id         
+                sdmmc1_sample        0       0        0        150000000   0          193   50000      Y                  fe2c0000.mmc                    ciu-sample               
+                                                                                                                          deviceless                      no_connection_id         
+                sdmmc1_drv           0       0        0        150000000   0          180   50000      Y                  fe2c0000.mmc                    ciu-drive                
+                                                                                                                          deviceless                      no_connection_id         
+             clk_sdmmc0              0       0        0        300000000   0          0     50000      N               fe2b0000.mmc                    ciu                      
+                                                                                                                       deviceless                      no_connection_id         
+                sdmmc0_sample        0       0        0        150000000   0          199   50000      Y                  fe2b0000.mmc                    ciu-sample               
+                                                                                                                          deviceless                      no_connection_id         
+                sdmmc0_drv           0       0        0        150000000   0          180   50000      Y                  fe2b0000.mmc                    ciu-drive                
+                                                                                                                          deviceless                      no_connection_id         
+             aclk_top_high           1       1        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+             clk_iep_core            0       0        0        300000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_rga_core            0       1        0        300000000   0          0     50000      N               fdeb0000.rga                    sclk                     
+                                                                                                                       rga@fdeb0000                    no_connection_id         
+                                                                                                                       deviceless                      no_connection_id         
+             aclk_rga_pre            0       3        0        300000000   0          0     50000      N               deviceless                      no_connection_id         
+                aclk_jenc            0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_jdec            0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_iep             0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_rga             0       1        0        300000000   0          0     50000      N                  fdeb0000.rga                    aclk                     
+                                                                                                                          rga@fdeb0000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_rga_pre         0       1        0        100000000   0          0     50000      N                  power-domain@10                 no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_eink         0       0        0        100000000   0          0     50000      N                     deviceless                      no_connection_id         
+                hclk_rga_pre         0       2        0        150000000   0          0     50000      N                  power-domain@10                 no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   hclk_eink         0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_jenc         0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_jdec         0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_ebc          0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_iep          0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_rga          0       1        0        150000000   0          0     50000      N                     fdeb0000.rga                    hclk                     
+                                                                                                                             rga@fdeb0000                    no_connection_id         
+                                                                                                                             deviceless                      no_connection_id         
+             aclk_vo                 2       2        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_hdcp            0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_vo              2       3        0        75000000    0          0     50000      Y                  power-domain@9                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_edp_ctrl     0       0        0        75000000    0          0     50000      N                     deviceless                      no_connection_id         
+                   pclk_dsitx_1      0       0        0        75000000    0          0     50000      N                     deviceless                      no_connection_id         
+                   pclk_dsitx_0      2       2        0        75000000    0          0     50000      Y                     fe060000.dsi                    pclk                     
+                                                                                                                             fe060000.dsi                    pclk                     
+                                                                                                                             dsi@fe060000                    no_connection_id         
+                                                                                                                             deviceless                      no_connection_id         
+                   pclk_hdmi_host    1       2        0        75000000    0          0     50000      Y                     hdmi@fe0a0000                   no_connection_id         
+                                                                                                                             fe0a0000.hdmi                   iahb                     
+                                                                                                                             hdmi@fe0a0000                   no_connection_id         
+                                                                                                                             deviceless                      no_connection_id         
+                   pclk_hdcp         0       0        0        75000000    0          0     50000      N                     deviceless                      no_connection_id         
+                hclk_vo              2       4        0        150000000   0          0     50000      Y                  hdmi@fe0a0000                   no_connection_id         
+                                                                                                                          power-domain@9                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   hclk_hdcp         0       0        0        150000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_vop          3       4        0        150000000   0          0     50000      Y                     fe040000.vop                    hclk                     
+                                                                                                                             vop@fe040000                    no_connection_id         
+                                                                                                                             fe043e00.iommu                  iface                    
+                                                                                                                             iommu@fe043e00                  no_connection_id         
+                                                                                                                             deviceless                      no_connection_id         
+             aclk_perimid            1       1        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+             aclk_usb                1       1        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_gmac1           0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_usb             2       2        0        100000000   0          0     50000      Y                  usb@fd880000                    no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_gmac1        0       0        0        100000000   0          0     50000      N                     deviceless                      no_connection_id         
+             aclk_php                1       1        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_gmac0           0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_php             1       1        0        100000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                   pclk_gmac0        0       0        0        100000000   0          0     50000      N                     deviceless                      no_connection_id         
+             clk_crypto_ns_pka       0       0        0        300000000   0          0     50000      N               deviceless                      no_connection_id         
+             mclk_pdm                0       0        0        300000000   0          0     50000      N               deviceless                      no_connection_id         
+          gpll_400m                  1       1        0        400000000   0          0     50000      Y            deviceless                      no_connection_id         
+             dclk_ebc                0       0        0        400000000   0          0     50000      N               deviceless                      no_connection_id         
+             aclk_vi                 1       2        0        400000000   0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_isp             0       0        0        400000000   0          0     50000      N                  deviceless                      no_connection_id         
+                aclk_vicap           0       0        0        400000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_vi              0       1        0        100000000   0          0     50000      N                  power-domain@8                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   pclk_csi2host1    0       0        0        100000000   0          0     50000      N                     deviceless                      no_connection_id         
+                hclk_vi              1       2        0        200000000   0          0     50000      Y                  power-domain@8                  no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                   hclk_isp          0       0        0        200000000   0          0     50000      N                     deviceless                      no_connection_id         
+                   hclk_vicap        0       0        0        200000000   0          0     50000      N                     deviceless                      no_connection_id         
+    pll_dpll                         0       0        0        162000000   0          0     50000      Y      deviceless                      no_connection_id         
+       dpll                          0       0        0        162000000   0          0     50000      Y         deviceless                      no_connection_id         
+          clk_ddrphy1x_src           0       0        0        162000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_ddr1x               0       0        0        162000000   0          0     50000      Y               deviceless                      no_connection_id         
+                clk_msch             0       0        0        162000000   0          0     50000      Y                  deviceless                      no_connection_id         
+    pll_apll                         1       1        0        1800000000  0          0     50000      Y      deviceless                      no_connection_id         
+       apll                          1       1        0        1800000000  0          0     50000      Y         deviceless                      no_connection_id         
+          sclk_core_src              0       0        0        1800000000  0          0     50000      Y            deviceless                      no_connection_id         
+             sclk_core               0       0        0        1800000000  0          0     50000      Y               deviceless                      no_connection_id         
+                aclk_core            0       0        0        900000000   0          0     50000      Y                  deviceless                      no_connection_id         
+          armclk                     2       2        0        1800000000  0          0     50000      Y            deviceless                      no_connection_id         
+             clk_core_pvtpll         0       0        0        1800000000  0          0     50000      Y               deviceless                      no_connection_id         
+             clk_core_pvtm_core      0       0        0        1800000000  0          0     50000      N               deviceless                      no_connection_id         
+             periphclk_core_pre      0       0        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+                cntclk_core          0       0        0        150000000   0          0     50000      Y                  deviceless                      no_connection_id         
+                tsclk_core           0       0        0        150000000   0          0     50000      Y                  deviceless                      no_connection_id         
+             pclk_core_pre           1       1        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+                pclk_core_pvtm       0       0        0        300000000   0          0     50000      N                  deviceless                      no_connection_id         
+             gicclk_core             0       0        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+             atclk_core              0       0        0        300000000   0          0     50000      Y               deviceless                      no_connection_id         
+    xin_osc0_edpphy_g                0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pciephy2_osc0                0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pciephy1_osc0                0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pciephy0_osc0                0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_wifi_osc0                    0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+       clk_wifi                      0       0        0        24000000    0          0     50000      Y         deviceless                      no_connection_id         
+    xin_osc0_mipidsiphy1_g           0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+       clk_mipidsiphy1_ref           0       0        0        24000000    0          0     50000      Y         deviceless                      no_connection_id         
+    xin_osc0_mipidsiphy0_g           1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       clk_mipidsiphy0_ref           2       2        0        24000000    0          0     50000      Y         fe850000.mipi-dphy              ref                      
+                                                                                                                 mipi-dphy@fe850000              no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+    xin_osc0_usbphy1_g               1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       clk_usbphy1_ref               2       2        0        24000000    0          0     50000      Y         usb2phy@fe8b0000                no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+          clk_usbphy1_480m           1       1        0        480000000   0          0     50000      Y            deviceless                      no_connection_id         
+    xin_osc0_usbphy0_g               1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       clk_usbphy0_ref               1       1        0        24000000    0          0     50000      Y         usb2phy@fe8a0000                no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+          clk_usbphy0_480m           0       0        0        480000000   0          0     50000      Y            deviceless                      no_connection_id         
+             usb480m_phy             0       0        0        480000000   0          0     50000      Y               deviceless                      no_connection_id         
+    clk_core_pmupvtm                 0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pmupvtm                      0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_capture_pwm0_ndft            0       0        0        24000000    0          0     50000      N      deviceless                      no_connection_id         
+    clk_pwm0                         0       0        0        12000000    0          0     50000      N      deviceless                      no_connection_id         
+    dbclk_gpio0                      1       1        0        24000000    0          0     50000      Y      gpio@fdd60000                   no_connection_id         
+                                                                                                              deviceless                      no_connection_id         
+    sclk_uart0_mux                   0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       sclk_uart0                    0       0        0        24000000    0          0     50000      N         deviceless                      no_connection_id         
+    xin_osc0_div                     0       0        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+    clk_rtc32k_frac                  1       1        0        32768       0          0     50000      Y      deviceless                      no_connection_id         
+       clk_rtc_32k                   1       1        0        32768       0          0     50000      Y         deviceless                      no_connection_id         
+          clk_hdmi_cec               1       2        0        32768       0          0     50000      Y            fe0a0000.hdmi                   cec                      
+                                                                                                                    hdmi@fe0a0000                   no_connection_id         
+                                                                                                                    deviceless                      no_connection_id         
+    clk_pmu                          1       1        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+    pll_hpll                         0       0        0        594000000   0          0     50000      Y      deviceless                      no_connection_id         
+    hpll                             3       3        0        24000000    0          0     50000      Y      deviceless                      no_connection_id         
+       dclk_vop2                     1       1        0        6000000     0          0     50000      Y         fe040000.vop                    dclk_vp2                 
+                                                                                                                 vop@fe040000                    no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       dclk_vop0                     1       1        0        24000000    0          0     50000      Y         fe040000.vop                    dclk_vp0                 
+                                                                                                                 vop@fe040000                    no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       clk_hdmi_ref                  1       1        0        24000000    0          0     50000      Y         fe0a0000.hdmi                   ref                      
+                                                                                                                 hdmi@fe0a0000                   no_connection_id         
+                                                                                                                 deviceless                      no_connection_id         
+       hpll_ph0                      0       0        0        12000000    0          0     50000      Y         deviceless                      no_connection_id         
+    pll_ppll                         1       1        0        200000000   0          0     50000      Y      deviceless                      no_connection_id         
+       ppll                          1       1        0        200000000   0          0     50000      Y         deviceless                      no_connection_id         
+          sclk_uart0_div             0       0        0        200000000   0          0     50000      N            deviceless                      no_connection_id         
+             sclk_uart0_frac         0       0        0        200000000   0          0     50000      N               deviceless                      no_connection_id         
+          clk_pdpmu                  1       2        0        200000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_wifi_div            0       0        0        33333334    0          0     50000      N               deviceless                      no_connection_id         
+             clk_ref24m              0       0        0        20000000    0          0     50000      N               deviceless                      no_connection_id         
+             clk_i2c0                0       1        0        100000000   0          0     50000      N               fdd40000.i2c                    i2c                      
+                                                                                                                       deviceless                      no_connection_id         
+             pclk_pdpmu              3       4        0        100000000   0          0     50000      Y               deviceless                      no_connection_id         
+                pclk_pmupvtm         0       0        0        100000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_pwm0            0       0        0        100000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_gpio0           1       1        0        100000000   0          0     50000      Y                  gpio@fdd60000                   no_connection_id         
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_uart0           0       0        0        100000000   0          0     50000      N                  deviceless                      no_connection_id         
+                pclk_i2c0            0       1        0        100000000   0          0     50000      N                  fdd40000.i2c                    pclk                     
+                                                                                                                          deviceless                      no_connection_id         
+                pclk_pmu             1       1        0        100000000   0          0     50000      Y                  deviceless                      no_connection_id         
+          ppll_ph180                 0       0        0        100000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_pcie30phy_ref_n     0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+          ppll_ph0                   0       0        0        100000000   0          0     50000      Y            deviceless                      no_connection_id         
+             clk_pcie30phy_ref_m     0       0        0        100000000   0          0     50000      N               deviceless                      no_connection_id         
+             clk_pciephy2_div        0       0        0        25000000    0          0     50000      N               deviceless                      no_connection_id         
+                clk_pciephy2_ref     0       0        0        25000000    0          0     50000      Y                  deviceless                      no_connection_id         
+             clk_pciephy1_div        0       0        0        25000000    0          0     50000      N               deviceless                      no_connection_id         
+                clk_pciephy1_ref     0       0        0        25000000    0          0     50000      Y                  deviceless                      no_connection_id         
+             clk_pciephy0_div        0       0        0        25000000    0          0     50000      N               deviceless                      no_connection_id         
+                clk_pciephy0_ref     0       0        0        25000000    0          0     50000      Y                  deviceless                      no_connection_id         
+ iclk_vicap_g                        0       0        0        0           0          0     50000      N   deviceless                      no_connection_id         
+ clk_gmac1                           0       0        0        0           0          0     50000      Y   deviceless                      no_connection_id         
+    clk_gmac1_rgmii_speed            0       0        0        0           0          0     50000      Y      deviceless                      no_connection_id         
+       clk_gmac1_rx_tx               0       0        0        0           0          0     50000      Y         deviceless                      no_connection_id         
+    clk_gmac1_rx_div20               0       0        0        0           0          0     50000      Y      deviceless                      no_connection_id         
+       clk_gmac1_rmii_speed          0       0        0        0           0          0     50000      Y         deviceless                      no_connection_id         
+    clk_gmac1_rx_div2                0       0        0        0           0          0     50000      Y      deviceless                      no_connection_id         
+    clk_gmac1_tx_div50               0       0        0        0           0          0     50000      Y      deviceless                      no_connection_id         
+    clk_gmac1_tx_div5                0       0        0        0           0          0     50000      Y      deviceless                      no_connection_id         
+
+
+========== DONE ==========
+Sat Apr 18 14:01:10 CEST 2026
+i2cdetect options used: -y -a
+i2c force flag: -f
+Output file (this run was also tee'd to): /tmp/miyoo-flip-power-dump-20260418-140106.txt

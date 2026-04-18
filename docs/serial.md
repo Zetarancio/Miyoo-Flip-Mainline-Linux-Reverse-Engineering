@@ -54,7 +54,7 @@ picocom -b 1500000 /dev/ttyUSB0
 screen /dev/ttyUSB0 1500000
 ```
 
-Reference boot logs in this repo root: `boot_log_ROCKNIX.txt` (mainline; **may not match the latest build**—kept as **proof** of a past capture), `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug), `boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
+Reference boot logs in **`logs/`**: `logs/boot_log_ROCKNIX.txt` (mainline), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
 
 ---
 

@@ -1,6 +1,8 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README carries the latest **`flip`** tip and short highlights). Align mainline DTS and kernel patches with **`miyoo355_fw_20250527`** stock firmware where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`3a07b953`** — *Merge upstream/next into flip*, kernel **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+
+**Recent Miyoo Flip commits on `flip`:** [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) — remove **adc-keys**; **hall** lid in `gpio_keys_hall` (wake on open only); drop **TCS4525** (see [I2C0](#i2c0-cpu-regulator)); **`pmuio1-supply`**; **`hp_det`** pull-up; speaker widget **Internal Speakers**. [*enable battery charging LED*](https://github.com/Zetarancio/distribution/commit/833f5f9e3a) · [*map menu button as hotkey modifier*](https://github.com/Zetarancio/distribution/commit/ad1affd92f) · [*prime rk817 Playback Mux at boot*](https://github.com/Zetarancio/distribution/commit/79453c8d9b) (`099-audio_prime` quirk).
 
 ---
 
@@ -114,14 +116,11 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 ---
 
-## I2C0 CPU regulator (TCS4525 and RK8600)
+## I2C0 CPU regulator
 
-**`miyoo355_fw_20250527`** stock DTS enables **both** a **TCS4525 @ 0x1c** and an **RK8600 @ 0x40** as possible CPU rails. That implies **two board revisions** may exist in the wild (one populated part per address), but **this is not proven** on hardware—only the **firmware/DTS** documents both.
+**Current `flip`:** **RK8600 @ 0x40** only — **TCS4525 @ 0x1c** removed in [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) after **Miyoo officially confirmed** to this project that there is **no second CPU-regulator hardware variant** (only RK8600 is populated on retail units).
 
-The Miyoo Flip mainline DTS was aligned to that model:
-
-- **[b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777)** — Comments and **full TCS4525 node** from stock (with `fcs,suspend-voltage-selector`, suspend state, etc.); documents two revisions vs 2025 firmware; clarifies USB host 5V and SD power pinctrl vs stock 2025.
-- **[6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)** — **Both** `tcs4525@1c` and `rk8600@40` use `status = "okay"` (no longer disabling TCS4525 to silence probe). **TCS4525 on real hardware with only RK8600 is still untested** in that configuration; the expectation is the same as stock: **only the populated chip probes successfully**. The other address gets a normal **driver probe failure** (`-ENXIO` / chip ID) and is **ignored**—**the system boots and runs** using the regulator that is actually present.
+**2025 stock** (`miyoo355_fw_20250527`) still lists **both** I2C addresses in the BSP DTS; that is **not** proof of two production SKUs. Earlier port commits briefly enabled both nodes ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)) before this trim.
 
 ---
 
@@ -132,7 +131,7 @@ The Miyoo Flip mainline DTS was aligned to that model:
 | **Shared vqmmc** | Both MicroSD slots share a **single `vqmmc` rail** (vccio_sd). They must operate at the same I/O voltage. Tested: **two 1.8 V cards** (works). Untested but plausible: **two 3.3 V cards**. Also works: **one single 3.3 V card**. **You cannot mix a 1.8 V and a 3.3 V card.** |
 | **SDR50 on slot 2** | Removed from second slot — shared vqmmc limits stable UHS negotiation when both slots are populated. Slot 0 (boot) keeps SDR12/SDR25/SDR50/SDR104. |
 | **Karlman MMC** | Not useful for this board. The Karlman warm-reboot MMC patch was tried and removed — the actual constraint is the shared vqmmc rail, not a warm-reboot bug. |
-| **CPU rail / I2C0** | See [I2C0 CPU regulator (TCS4525 and RK8600)](#i2c0-cpu-regulator-tcs4525-and-rk8600) — dual nodes enabled like stock; two revisions **possible**, **not proven**. |
+| **CPU rail / I2C0** | See [I2C0 CPU regulator](#i2c0-cpu-regulator) — **RK8600** only on current `flip`. |
 
 ---
 
@@ -162,10 +161,10 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 | **Driver** | `rocknix-singleadc-joypad` with `rocknix,use-miyoo-serial-joypad` — analog sticks are read via **UART1** (Miyoo serial protocol), not ADC channels. |
 | **Analog sticks** | Deadzone 4914, fuzz 32, flat 32, threshold 128; L/R axis tuning 90. Sysfs calibration available at runtime; joystick cal saved/restored on boot via quirks/modules. Some of these feature requires dedicated patches avalaible in rocknix branch. |
 | **GPIO buttons** | 17 GPIO switches: dpad (up/down/left/right), A/B/X/Y, select, start, mode, L1/R1, L2/R2, thumb L/R. |
-| **Debounce** | Volume keys: 10 ms (matches stock gpio-keys-polled). Lid (hall sensor): 1500 ms to avoid double triggers ([eda5e75](https://github.com/Zetarancio/distribution/commit/eda5e752f89d0b8cc6421fcbd84db7bddc01e466)). |
+| **Debounce** | Volume keys: 10 ms (GPIO). Lid: separate `gpio_keys_hall` node ([1f129e8](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
 | **Rumble** | PWM5 @ 10 MHz period. |
-| **ADC keys** | **Disabled** in DTS — floating ADC ch0 causes phantom `KEY_VOLUMEDOWN` and triggers stock recovery entry. Volume up/down are on GPIO (GPIO3_PA7 / GPIO3_PB0). |
-| **Hall sensor** | `SW_LID` on GPIO0_PC6, wakeup-source (lid open/close detection). |
+| **ADC keys** | **Node removed** — SARADC ch0 caused phantom volume-down / recovery ([1f129e8](https://github.com/Zetarancio/distribution/commit/1f129e89df)). Volume on GPIO3_PA7 / GPIO3_PB0. |
+| **Hall sensor** | `gpio_keys_hall` on GPIO0_PC6; **wake on lid open only** (closing lid while suspended does not wake). |
 
 ---
 
@@ -176,7 +175,7 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 | **combphy1/2** | **Disabled** — no USB3/SATA/PCIe on this board. Saves PD_PIPE power domain. |
 | **i2c3 / touch** | **Disabled** — Hynitron CST3xx identified at 0x3d, but no touchscreen is present. |
 | **CPU clock-latency** | `clock-latency-ns = 300000000` on the 408 MHz CPU OPP reduces I2C storm to the PMIC during rapid frequency transitions. |
-| **LEDs** | Power green (GPIO0_PB4, no default trigger). Charger red (GPIO0_PC2, `battery-charging` trigger, `retain-state-suspended`). |
+| **LEDs** | Power green (GPIO0_PB4). Charger red (GPIO0_PC2); quirk **`DEVICE_BATTERY_LED_STATUS`** drives charging LED [833f5f9](https://github.com/Zetarancio/distribution/commit/833f5f9e3a). |
 | **USB host speed** | `usb_host1_xhci` forced to `maximum-speed = "high-speed"` — no SuperSpeed for the RTL8733BU WiFi/BT module. |
 | **SFC** | **Disabled** in ROCKNIX DTS (boots from SD). BSP SPI NAND layout preserved in DTS comments as reference. |
 
@@ -193,6 +192,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
 | **DMC / suspend** | Out-of-tree **DMC** remains enabled. **rk3568-suspend** is **off** on Miyoo Flip **`next`** until ES upstream is ready; see [suspend and vdd_logic](suspend-and-vdd-logic.md). |
-| **VDD_CPU (I2C0)** | **Both** `tcs4525@1c` and `rk8600@40` **enabled** (`okay`), matching 2025 stock ([6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). Two board variants are **firmware-inferred only**; absent chip = probe fail, **boot OK**. |
+| **VDD_CPU (I2C0)** | **RK8600 @ 0x40** only; **TCS4525** removed per Miyoo confirmation ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
+| **Audio (cold boot)** | `099-audio_prime` quirk sets rk817 **Playback Mux** SPK vs HP from jack GPIO ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b)). |
 
 Reference stream: [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).

@@ -267,7 +267,7 @@ kernel `rk3568-dmc` devfreq driver (MCU+IRQ completion protocol).
 
 ### Mainline implementation
 
-An out-of-tree driver implementing the BSP `rockchip_dmc.c` protocol exists for mainline kernel 6.18+ (V2 SIP shared-memory + MCU/IRQ completion).
+An out-of-tree driver implementing the BSP `rockchip_dmc.c` protocol exists for mainline kernel **7.0+** (V2 SIP shared-memory + MCU/IRQ completion).
 
 **Runtime test results (when using that driver):**
 - ATF version 0x102 detected, shared memory and completion IRQ registered

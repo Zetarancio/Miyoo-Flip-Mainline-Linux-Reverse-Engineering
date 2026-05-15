@@ -116,4 +116,4 @@ Add these to DTS `chosen` bootargs for debugging:
 
 ## Kernel Version Notes
 
-The DTS targets **mainline Linux 6.18+**. The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. Legacy build helpers live on branch `buildroot`.
+The DTS targets **mainline Linux 7.0+** on current ROCKNIX `flip` builds (older notes used 6.18+). The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. Legacy build helpers live on branch `buildroot`.

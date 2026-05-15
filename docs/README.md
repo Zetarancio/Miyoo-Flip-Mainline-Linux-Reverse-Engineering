@@ -2,7 +2,7 @@
 
 Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
-**`flip` images:** [Zetarancio/distribution/commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README lists the current **`flip`** tip and Miyoo-relevant commits.
+**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`3a07b953`** (*Merge upstream/next into flip*), kernel **7.0.2**.
 
 ---
 
@@ -23,7 +23,7 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [→ BSP and DDR findings](stock-firmware-and-findings/bsp-and-ddr-findings.md) | BSP sources, DMC driver, BL31/ATF, kernel config |
 | [→ SPI and boot chain](stock-firmware-and-findings/spi-and-boot-chain.md) | SPI layout, FIT, BL31 strings, DDR scaling, V2 SIP |
 | [Drivers and DTS](drivers-and-dts.md) | Board DTS evolution, drivers, display, suspend overview |
-| [→ Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) | Required DTS nodes for patches, RK817, I2C0 TCS4525/RK8600, DMC, SD, joypad, final state |
+| [→ Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) | Required DTS nodes for patches, RK817, I2C0 RK8600, DMC, SD, joypad, final state |
 | [→ Patch portability](drivers-and-dts/patch-portability.md) | Detailed analysis: what each patch reads from DTS, BSP vs ROCKNIX, portability to other RK3566/RK3568 boards |
 | [→ Drivers (WiFi/BT, GPU)](drivers-and-dts/drivers.md) | RTL8733BU and Mali-G52 GPU drivers |
 | [→ DTS porting](drivers-and-dts/dts-porting.md) | BSP-to-mainline device tree translation |

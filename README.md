@@ -6,7 +6,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
-**Wiki `flip` stamp:** [`c0c68c7`](https://github.com/Zetarancio/distribution/commit/c0c68c75e2bf85f0cb7578bbb97d3e6936c7a95b) (2026-04-18) — merges upstream `next`; full stream: [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/). **Recent Miyoo Flip–oriented commits on `flip`:** lid behaviour [396fcf3](https://github.com/Zetarancio/distribution/commit/396fcf3), RTL8733BU quirks (rfkill-only BT, no `btusb` unload) [e57d731](https://github.com/Zetarancio/distribution/commit/e57d731), balanced WiFi modprobe default [2a51ce0](https://github.com/Zetarancio/distribution/commit/2a51ce0), combo firmware / softdeps [f397258](https://github.com/Zetarancio/distribution/commit/f397258), `btusb` service path/caps [1af2a32](https://github.com/Zetarancio/distribution/commit/1af2a32). **PMIC / power-off baseline (still current context):** patch **0007** (SYS_CAN_SD) [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb), **0029** removed [f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46), DTS **`pmic_pins`** [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4) — [investigation](docs/miyoo-flip-power-off-investigation.md), [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md).
+**Wiki `flip` stamp:** [`3a07b953`](https://github.com/Zetarancio/distribution/commit/3a07b953da) — *Merge upstream/next into flip*. **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir). **Recent Miyoo Flip commits on `flip`:** [Miyoo Flip: map menu button as hotkey modifier](https://github.com/Zetarancio/distribution/commit/ad1affd92f) · [Miyoo Flip: enable battery charging LED status indicator](https://github.com/Zetarancio/distribution/commit/833f5f9e3a) · [Miyoo Flip DTS: cleanup and fixes](https://github.com/Zetarancio/distribution/commit/1f129e89df) · [Miyoo Flip: prime rk817 Playback Mux at boot from jack state](https://github.com/Zetarancio/distribution/commit/79453c8d9b). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
@@ -34,11 +34,11 @@ The distribution repo holds the build system and device sources; **this `main` b
 | Display   | **LMY35120-20p** (marking **2503x**). Confirmed: 640×480 MIPI DSI, 2-lane, RGB888 video mode (stock DTS). Presumed: FT8006M COG — [details](docs/drivers-and-dts/display.md#module-name-vs-what-is-proven) |
 | WiFi/BT   | RTL8733BU (USB)                                       |
 | Audio     | RK817 codec + speaker amplifier                        |
-| PMIC      | RK817 (main) + VDD_CPU (**TCS4525 @ 0x1c** and/or **RK8600 @ 0x40** — see note below) |
+| PMIC      | RK817 (main) + VDD_CPU (**RK8600 @ 0x40**; see I2C0 note below) |
 | Battery   | Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (typical pack marking) |
 | UART      | ttyS2 @ 1,500,000 baud (3.3V)                         |
 
-**VDD_CPU / I2C0:** 2025 stock DTS and the current flip DTS enable **both** CPU-regulator nodes (`status = "okay"`), matching stock behavior ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). **Two board revisions** (one populated at 0x1c *or* 0x40) are suggested by firmware but **not proven** on hardware. The kernel probes both; the **absent** chip returns **probe failure** and is ignored—the **present** rail works and the system **boots normally**.
+**VDD_CPU / I2C0:** Current **`flip`** DTS has **RK8600 @ 0x40** only. **TCS4525 @ 0x1c** was removed ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df) — *Miyoo Flip DTS: cleanup and fixes*) after **Miyoo officially confirmed** to this project that there is **no second CPU-regulator hardware variant** (only RK8600 is populated). **2025 stock DTS** still lists both addresses for BSP comparison only—not evidence of two production SKUs.
 
 ---
 
@@ -66,11 +66,11 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 
 | Subsystem                | Status                | Notes |
 | ------------------------ | --------------------- | ----- |
-| Boot (U-Boot + kernel)   | Working               | Mainline 6.18+, SPI NAND or SD |
+| Boot (U-Boot + kernel)   | Working               | Mainline **7.0+** on current `flip` (was 6.18+); SPI NAND or SD |
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
-| Audio (RK817)            | Working               | simple-audio-card, speaker amp |
-| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu, 6.18+. Optionally a separate driver can shut down the combo at GPIO level when both radios are off; see [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
+| Audio (RK817)            | Working               | PipeWire + rk817 UCM; cold-boot speaker via `099-audio_prime` quirk [79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b) |
+| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu on kernel 7.0+. Optional GPIO power-off driver; see [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
 | GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
 | Storage                  | Working               | SPI NAND MTD, both SD slots |
@@ -94,7 +94,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and careful RK817 pinctrl. Deep sleep still uses **patched rk8xx** / suspend ordering from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) where applicable.
 
-- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline 6.18+ and is confirmed working; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
+- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline **7.0+** (current `flip`; older captures used 6.18+); see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
 - **Suspend:** **Standard** suspend works on **`next`**. **Deep sleep** uses **rk3568-suspend** + **`vdd_logic` off-in-suspend**; that stack is **implemented but disabled** until **EmulationStation** catches up upstream (~40–50 h vs ~**100–120 h** estimated standby). See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
@@ -106,7 +106,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
 
-- **VDD_CPU / I2C0:** Same story as the **Hardware** table note; full write-up: [Board DTS — I2C0 CPU regulator](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator-tcs4525-and-rk8600) ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)).
+- **VDD_CPU / I2C0:** **`flip`** DTS uses **RK8600 only**; **TCS4525** dropped after **Miyoo’s official confirmation** there is no alternate CPU-regulator SKU ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). [Board DTS — I2C0](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator).
 
 ---
 

@@ -64,7 +64,7 @@ The display pipeline was the hardest subsystem to port. See
 | BSP | Mainline | Status |
 |-----|----------|--------|
 | `&bus_npu` | -- | BSP-only, no mainline |
-| `&dfi`, `&dmc` | `&dfi`, `&dmc` + out-of-tree DMC devfreq | DMC: out-of-tree driver for mainline 6.18+ (see [BSP and DDR findings](../stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md)) |
+| `&dfi`, `&dmc` | `&dfi`, `&dmc` + out-of-tree DMC devfreq | DMC: out-of-tree driver for mainline **7.0+** (see [BSP and DDR findings](../stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md)) |
 | `&iep`, `&jpegd`, `&mpp_srv` | -- | BSP-only multimedia (MPP framework) |
 | `&rk_rga` | `rockchip-rga` | Mainline driver; working in ROCKNIX |
 | `&rkvdec`, `&rkvenc` (VPU/vepu) | `hantro-vpu` (dec/enc) | Mainline hantro driver; working in ROCKNIX |

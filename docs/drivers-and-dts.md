@@ -8,7 +8,7 @@ Commit history: [`next` (integration)](https://github.com/Zetarancio/distributio
 
 ## Board DTS, PMIC, DDR — recent evolution
 
-What changed on the Miyoo Flip port since early mainline bring-up: required DTS nodes for each out-of-tree patch (DMC, DFI, rk3568-suspend, ON/OFF logging), **RK817 off-state drain** (patch **0007**), RK817 suspend/power-off, **I2C0 VDD_CPU** (**RK8600** only; **TCS4525** dropped per Miyoo confirmation), DDR/DMC devfreq, shared SD `vqmmc`, joypad/input, and cold-boot audio. **Kernel:** **7.0.2** on current `flip` (tip **`3a07b953`**).
+What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack. **Kernel:** **7.0.2** on `flip` (tip **`1becfbd`**).
 
 **[Full board DTS details →](drivers-and-dts/board-dts-pmic-ddr-updates.md)** | **[Patch portability analysis →](drivers-and-dts/patch-portability.md)**
 
@@ -48,6 +48,6 @@ WiFi works with the 8733bu driver. An optional separate driver shuts down the RT
 
 ## Suspend and vdd_logic off-in-suspend
 
-**Standard suspend** works on Miyoo Flip builds from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`next`**. **Deep suspend** (out-of-tree **rk3568-suspend** + BL31 flags + **`vdd_logic` off-in-suspend**) is implemented but **currently disabled** in that tree because it depends on an **EmulationStation** upstream fix; rough standby might move from ~**40–50 h** to ~**100–120 h** when enabled, at the cost of that integration work.
+**Standard suspend** works on **`flip`**. **Deep suspend** (1013 + `vdd_logic` off) is **deferred** — patches `.testing-disabled`, Kconfig off; EmulationStation upstream blocker.
 
 **[Full suspend guide →](drivers-and-dts/suspend-and-vdd-logic.md)**

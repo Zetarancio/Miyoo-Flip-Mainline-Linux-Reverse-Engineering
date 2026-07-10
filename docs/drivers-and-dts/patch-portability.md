@@ -245,7 +245,9 @@ The BSP also defines `dmc-fsp` and `dmcdbg` nodes — these are BSP-only. The RO
 
 ---
 
-## Patch 1011 — `devfreq-event: rockchip-dfi: PM suspend/resume`
+## Patch 1010 — `devfreq-event: rockchip-dfi: PM suspend/resume`
+
+Renumbered from **1011** on the fork because upstream `next` uses **1011** for the goodix touchscreen patch ([3fe4002ecf](https://github.com/Zetarancio/distribution/commit/3fe4002ecf)).
 
 **What the driver reads from DTS:** Nothing additional. This patch adds PM ops to the existing `rockchip-dfi` driver. The DFI node is already defined in mainline `rk3568.dtsi`:
 

@@ -1,13 +1,13 @@
 # Suspend Mode Driver & vdd_logic Off-in-Suspend
 
-## Miyoo Flip — ROCKNIX `next` branch (current)
+## Miyoo Flip — ROCKNIX `flip` branch (current)
 
-Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`next`** (integration branch ahead of device-specific release branches).
+Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** (device images; merges `upstream/next` periodically — wiki stamp **`1becfbd`**, 2026-07-08).
 
 | Mode | Miyoo Flip today | Notes |
 |------|------------------|--------|
-| **Standard suspend** (suspend-to-RAM / `echo mem > /sys/power/state`) | **Works** without the deep-sleep driver stack. | This is the normal Linux suspend path; USB and other fixes in the DTS still apply. |
-| **Deep suspend** (BL31 `ARMOFF_LOGOFF`, lowest sleep current, **`vdd_logic` off-in-suspend**) | **Patches present but disabled** in the tree. | Kernel patches **1013a** / **1013b** are shipped as **`*.testing-disabled`** under `projects/ROCKNIX/devices/RK3566/patches/linux/`. The **`rk3568-suspend`** device-tree node in `rk3566-miyoo-flip.dts` is **commented out**, and **`vdd_logic`** keeps **`regulator-on-in-suspend`** in `regulator-state-mem` until that driver is active again (see in-tree comments next to `vdd_logic`). |
+| **Standard suspend** (suspend-to-RAM / `echo mem > /sys/power/state`) | **Works** without the deep-sleep driver stack. | Normal Linux suspend; USB/BT quirks (`060-btusb_power`, `sleep.d`) still apply. Re-check after upstream **`rocknix-fake-suspend`** changes. |
+| **Deep suspend** (BL31 `ARMOFF_LOGOFF`, lowest sleep current, **`vdd_logic` off-in-suspend**) | **Deferred** | Patches **1013a** / **1013b** are **`*.testing-disabled`**. Kernel config: **`CONFIG_RK3568_SUSPEND_MODE` is not set** ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). DTS: **`rk3568-suspend`** commented out; **`vdd_logic`** stays **`regulator-on-in-suspend`**. |
 
 **Why deep suspend is turned off even though it works:** re-enabling it is blocked on an **upstream EmulationStation** fix. Until that lands, shipping deep suspend would regress the handheld UX for typical users.
 
@@ -40,7 +40,7 @@ So both **deep sleep** and **vdd_logic off in suspend** depend on a driver that 
 
 ### Source (ROCKNIX)
 
-The rk3568-suspend driver sources and DTS references live in [Zetarancio/distribution](https://github.com/Zetarancio/distribution): follow branch **`next`** for the latest Miyoo Flip integration (see [Miyoo Flip — ROCKNIX `next` branch](#miyoo-flip--rocknix-next-branch-current) above). Release / device images may track branch **`flip`** at a slightly older snapshot. **RK817 sleep/resume** in mainline is often extended with rk8xx patches that match BSP ordering (`SLPPIN_SLP_FUN`, etc.); see [board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
+The rk3568-suspend driver sources and DTS references live in [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** (see [Miyoo Flip — ROCKNIX `flip` branch](#miyoo-flip--rocknix-flip-branch-current) above).
 
 ### Patch (distribution-agnostic)
 

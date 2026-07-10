@@ -1,8 +1,8 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`3a07b953`** — *Merge upstream/next into flip*, kernel **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`1becfbd`** — *Merge upstream/next into flip*, 2026-07-08; RK3566 **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
 
-**Recent Miyoo Flip commits on `flip`:** [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) — remove **adc-keys**; **hall** lid in `gpio_keys_hall` (wake on open only); drop **TCS4525** (see [I2C0](#i2c0-cpu-regulator)); **`pmuio1-supply`**; **`hp_det`** pull-up; speaker widget **Internal Speakers**. [*enable battery charging LED*](https://github.com/Zetarancio/distribution/commit/833f5f9e3a) · [*map menu button as hotkey modifier*](https://github.com/Zetarancio/distribution/commit/ad1affd92f) · [*prime rk817 Playback Mux at boot*](https://github.com/Zetarancio/distribution/commit/79453c8d9b) (`099-audio_prime` quirk).
+**Post-merge Miyoo / RK3566 work on `flip`:** PipeWire **`pulse.idle.timeout = 60`** ([32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)); LED low-battery via shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); DFI PM patch at **`1010`** (upstream took **1011** for goodix — [3fe4002](https://github.com/Zetarancio/distribution/commit/3fe4002ecf)); **`CONFIG_RK3568_SUSPEND_MODE`** off while **1013** is `.testing-disabled` ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). Earlier: [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) (adc-keys removed, hall lid, **TCS4525** dropped — [I2C0](#i2c0-cpu-regulator)); [*prime rk817 Playback Mux*](https://github.com/Zetarancio/distribution/commit/79453c8d9b) (`099-audio_prime`).
 
 ---
 
@@ -38,9 +38,9 @@ dmc_opp_table: dmc-opp-table {
 
 Also requires `&dfi { status = "okay"; }`.
 
-### Patch 1011 — DFI suspend/resume (DDRMON reinit after deep sleep)
+### Patch 1010 — DFI suspend/resume (DDRMON reinit after deep sleep)
 
-**See [Patch portability — 1011](patch-portability.md#patch-1011--devfreq-event-rockchip-dfi-pm-suspendresume).**
+**See [Patch portability — 1010](patch-portability.md#patch-1010--devfreq-event-rockchip-dfi-pm-suspendresume).**
 
 Same `&dfi { status = "okay"; }` node. The patch adds PM suspend/resume ops so DDRMON state is restored when the center power domain is off during deep sleep.
 
@@ -102,7 +102,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 |-------|--------|
 | **rk8xx suspend/resume** | Kernel patches align RK817 sleep/resume with BSP ordering (e.g. `SLPPIN_SLP_FUN`, resume path). DTS may use `pmic-reset` tied to sleep-pin GPIO for reliable resume. |
 | **Full power-off** | Off-state **current** is dominated by **SYS_CAN_SD** until patch **0007** clears it (BSP parity). **OFF_SOURCE** on this board points to **SLPPIN_DN + BL31** for software `poweroff`; `system-power-controller` / DEV_OFF is not the recorded mechanism. Details: [investigation](../miyoo-flip-power-off-investigation.md), [troubleshooting](../troubleshooting.md). |
-| **Deep sleep** | **rk3568-suspend** (patch **1013**) + **`vdd_logic` `regulator-off-in-suspend`** is the full stack; on branch **`next`** the patches and DTS node are **disabled** until an **EmulationStation** upstream fix lands (standard suspend still works). See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
+| **Deep sleep** | **1013** + **`vdd_logic` off-in-suspend** — **deferred** on **`flip`** (`.testing-disabled`, Kconfig off) until EmulationStation upstream fix. Standard suspend still works. See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **vcc9 / BOOST** | Document clearly that RK817 `vcc9` needs the correct supply (e.g. avoid fw_devlink cycles vs `dcdc_boost`). |
 
 ---
@@ -158,8 +158,7 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 
 | Topic | Notes |
 |-------|--------|
-| **Driver** | `rocknix-singleadc-joypad` with `rocknix,use-miyoo-serial-joypad` — analog sticks are read via **UART1** (Miyoo serial protocol), not ADC channels. |
-| **Analog sticks** | Deadzone 4914, fuzz 32, flat 32, threshold 128; L/R axis tuning 90. Sysfs calibration available at runtime; joystick cal saved/restored on boot via quirks/modules. Some of these feature requires dedicated patches avalaible in rocknix branch. |
+| **Driver** | `rocknix-singleadc-joypad` with `rocknix,use-miyoo-serial-joypad` — UART1 Miyoo serial protocol. Driver-source patches **0002** / **0003** (DTS deadzone + sysfs cal); kernel patch **0001** under `linux/patches/rocknix-joypad/` (gpiolib). **Save Miyoo Autocal** tools module persists calibration. |
 | **GPIO buttons** | 17 GPIO switches: dpad (up/down/left/right), A/B/X/Y, select, start, mode, L1/R1, L2/R2, thumb L/R. |
 | **Debounce** | Volume keys: 10 ms (GPIO). Lid: separate `gpio_keys_hall` node ([1f129e8](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
 | **Rumble** | PWM5 @ 10 MHz period. |
@@ -175,7 +174,8 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 | **combphy1/2** | **Disabled** — no USB3/SATA/PCIe on this board. Saves PD_PIPE power domain. |
 | **i2c3 / touch** | **Disabled** — Hynitron CST3xx identified at 0x3d, but no touchscreen is present. |
 | **CPU clock-latency** | `clock-latency-ns = 300000000` on the 408 MHz CPU OPP reduces I2C storm to the PMIC during rapid frequency transitions. |
-| **LEDs** | Power green (GPIO0_PB4). Charger red (GPIO0_PC2); quirk **`DEVICE_BATTERY_LED_STATUS`** drives charging LED [833f5f9](https://github.com/Zetarancio/distribution/commit/833f5f9e3a). |
+| **LEDs** | Green power + red status/charging via `010-led_control` / `bin/ledcontrol`. Low-battery blink uses shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); `DEVICE_BATTERY_LED_STATUS="false"`. |
+| **PipeWire** | `99-rk3566-power.conf`: **`pulse.idle.timeout = 60`** (was 5s; fixes ~1.7s sink wake after idle) — [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308). |
 | **USB host speed** | `usb_host1_xhci` forced to `maximum-speed = "high-speed"` — no SuperSpeed for the RTL8733BU WiFi/BT module. |
 | **SFC** | **Disabled** in ROCKNIX DTS (boots from SD). BSP SPI NAND layout preserved in DTS comments as reference. |
 
@@ -191,8 +191,26 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
 | **WiFi (RTL8733BU)** | For GPIO-controlled power, disable USB autosuspend and keep suspend/resume hardening. LPS/LCLK tuning was iterated; use latest stable combination, not early intermediate commits. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
-| **DMC / suspend** | Out-of-tree **DMC** remains enabled. **rk3568-suspend** is **off** on Miyoo Flip **`next`** until ES upstream is ready; see [suspend and vdd_logic](suspend-and-vdd-logic.md). |
-| **VDD_CPU (I2C0)** | **RK8600 @ 0x40** only; **TCS4525** removed per Miyoo confirmation ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
-| **Audio (cold boot)** | `099-audio_prime` quirk sets rk817 **Playback Mux** SPK vs HP from jack GPIO ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b)). |
+| **DMC / suspend** | Out-of-tree **DMC** + **DFI 1010** PM patch. **1013** rk3568-suspend **`.testing-disabled`**; `CONFIG_RK3568_SUSPEND_MODE` **not set** ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)) until EmulationStation upstream fix — [suspend](suspend-and-vdd-logic.md). |
+| **VDD_CPU (I2C0)** | **RK8600 @ 0x40** only; **TCS4525** removed per **Miyoo official confirmation** (no second regulator SKU) ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
+| **Audio** | `099-audio_prime` sets rk817 **Playback Mux** at boot and after sink resume; PipeWire idle **60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)). |
 
 Reference stream: [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).
+
+---
+
+## Fork vs upstream (`flip` maintenance)
+
+After each merge from `upstream/next`, re-check these **Miyoo Flip invariants** (none of the fork’s suspend/DMC/RK817 patches are in upstream `next` as of merge **`1becfbd`**):
+
+| Must keep | Why |
+|-----------|-----|
+| `rk3566-miyoo-flip` in `config.xml` | Device profile |
+| `ADDITIONAL_DRIVERS` … `RTL8733BU RTL8733BU-POWER` | WiFi/BT stack |
+| `CONFIG_ARM_RK3568_DMC_DEVFREQ=y`; patches **0007**, **1010**, **1012a/b** | DMC + off-state drain |
+| **1013** `.testing-disabled`; `CONFIG_RK3568_SUSPEND_MODE` **off** | Deep suspend deferred (ES) |
+| `pulse.idle.timeout = 60` | RK3566 PipeWire power conf |
+| Joypad **0001** (kernel) vs **0002/0003** (driver package) | Two patch layers — do not merge paths |
+| Miyoo quirks: `099-audio_prime`, `060-btusb_power`, `sleep.d/001-btusb` | Audio + BT suspend |
+
+RK3566 does **not** use InputPlumber (`ROCKNIX_JOYPAD=yes`). Re-verify lid/power suspend after upstream changes to **`rocknix-fake-suspend`**.

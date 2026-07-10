@@ -6,7 +6,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
-**Wiki `flip` stamp:** [`3a07b953`](https://github.com/Zetarancio/distribution/commit/3a07b953da) — *Merge upstream/next into flip*. **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir). **Recent Miyoo Flip commits on `flip`:** [Miyoo Flip: map menu button as hotkey modifier](https://github.com/Zetarancio/distribution/commit/ad1affd92f) · [Miyoo Flip: enable battery charging LED status indicator](https://github.com/Zetarancio/distribution/commit/833f5f9e3a) · [Miyoo Flip DTS: cleanup and fixes](https://github.com/Zetarancio/distribution/commit/1f129e89df) · [Miyoo Flip: prime rk817 Playback Mux at boot from jack state](https://github.com/Zetarancio/distribution/commit/79453c8d9b). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
+**Wiki `flip` stamp:** [`1becfbd`](https://github.com/Zetarancio/distribution/commit/1becfbd094) — *Merge upstream/next into flip* (2026-07-08). **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir; SM* platforms on 7.1.2 only). **Recent Miyoo / RK3566 commits on `flip`:** [RK3566: raise PipeWire idle timeout to 60s](https://github.com/Zetarancio/distribution/commit/32fa5f3308) · [Miyoo Flip: low-battery feedback via existing led_flash](https://github.com/Zetarancio/distribution/commit/f559f5e5aa) · [RK3566 linux: disable CONFIG_RK3568_SUSPEND_MODE while 1013 patches are .testing-disabled](https://github.com/Zetarancio/distribution/commit/ca7bb4a903) · [RK3566 patches: renumber dfi pm 1011 → 1010](https://github.com/Zetarancio/distribution/commit/3fe4002ecf) · earlier: [DTS cleanup](https://github.com/Zetarancio/distribution/commit/1f129e89df), [audio prime](https://github.com/Zetarancio/distribution/commit/79453c8d9b). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
@@ -69,7 +69,7 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 | Boot (U-Boot + kernel)   | Working               | Mainline **7.0+** on current `flip` (was 6.18+); SPI NAND or SD |
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
-| Audio (RK817)            | Working               | PipeWire + rk817 UCM; cold-boot speaker via `099-audio_prime` quirk [79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b) |
+| Audio (RK817)            | Working               | PipeWire + rk817 UCM; `099-audio_prime` + **idle.timeout=60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)) |
 | WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu on kernel 7.0+. Optional GPIO power-off driver; see [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
 | GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
@@ -79,7 +79,7 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 | DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
 | IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working               | **Standard** suspend-to-RAM works on [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`next`**. **Deep suspend** (rk3568-suspend + **`vdd_logic` off-in-suspend**) is implemented but **disabled** pending an **EmulationStation** upstream fix; improves estimated standby (~40–50 h → ~100–120 h) but not shipped yet — [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| Suspend                  | Working               | **Standard** suspend on **`flip`**. **Deep suspend** (1013 + `vdd_logic` off) **deferred** — patches `.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)); ES upstream blocker — [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
 | Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
 
 ---
@@ -96,7 +96,7 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline **7.0+** (current `flip`; older captures used 6.18+); see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Suspend:** **Standard** suspend works on **`next`**. **Deep sleep** uses **rk3568-suspend** + **`vdd_logic` off-in-suspend**; that stack is **implemented but disabled** until **EmulationStation** catches up upstream (~40–50 h vs ~**100–120 h** estimated standby). See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
+- **Suspend:** **Standard** suspend works on **`flip`**. **Deep sleep** (**1013** + `vdd_logic` off) stays **deferred** (`.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off) until **EmulationStation** upstream fix. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md).
 

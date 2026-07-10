@@ -34,6 +34,11 @@ buildroot-*.tar.xz
 *.tmp
 *.log
 boot_log.txt
+# Reddit draft (not part of wiki; keep local)
+logs/ROCKNIX-Miyoo-Flip-changelog-reddit.md
+
+# Local Cursor context (machine-specific paths; not published)
+CURSOR-CONTEXT.md
 
 # Module build artifacts
 modules/*/*.o

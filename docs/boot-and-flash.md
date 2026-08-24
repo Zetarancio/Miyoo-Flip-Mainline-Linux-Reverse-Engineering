@@ -14,7 +14,7 @@ How the Miyoo Flip boots, where distribution images come from, how to flash the 
 | **MASKROM access** | SD-card app **erases** the SPI **preloader** → with no card the device powers on in **MASKROM**. Removes internal stock boot. |
 | **Back to stock only** | **`restore-preloader.sh`** on ROCKNIX writes a stock preloader back → reboot → **stock** from NAND. |
 
-**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
 
 Multiboot puts U-Boot **on the card**, so each distro must ship one built for this board: ROCKNIX does, cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
 
@@ -81,15 +81,15 @@ The 128 MB SPI NAND is flashed via **xrock** over USB in MASKROM mode. The full 
 
 ## Booting from SD
 
-To boot the Miyoo Flip from an SD card (e.g. ROCKNIX) instead of internal SPI NAND, use xrock to erase the boot and uboot partitions and zero the preloader so the bootrom falls through to SD.
+Three routes, in order of how much they cost you:
 
-Quick steps: (1) enter MASKROM, load loader, `xrock flash`. (2) Erase boot and uboot. (3) Zero the preloader. (4) Insert SD, power on.
+| Route | Keeps stock? | Needs a PC? |
+|-------|--------------|-------------|
+| [**SD multiboot**](boot-and-flash/sd-multiboot-apommel.md) — repair the preloader | **yes** | no |
+| [**Preloader Eraser**](boot-and-flash/stock-rocknix-without-disassembly.md) — erase it from software | no | no |
+| [**xrock from MASKROM**](boot-and-flash/flashing.md#booting-from-sd) — zero it from a host | no | yes |
 
-**Backup first.** Restore internal boot by reflashing preloader and uboot.
-
-**[Full SD boot procedure →](boot-and-flash/flashing.md#booting-from-sd)**
-
-**Prefer not to open the device?** Best option is [**SD multiboot**](boot-and-flash/sd-multiboot-apommel.md), which keeps stock bootable. The **Preloader Eraser** app remains the way to reach **MASKROM** from software: [**stock-rocknix-without-disassembly.md**](boot-and-flash/stock-rocknix-without-disassembly.md).
+All three end with the bootrom or SPL loading U-Boot from the card instead of internal NAND. The difference is what happens when no card is inserted: multiboot still boots stock, the other two leave the device in MASKROM.
 
 ---
 

@@ -175,7 +175,7 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
-**Two easier options first.** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) boots from SD **while keeping stock on internal NAND**, and erases nothing — that is the recommended route. If you only want SD, the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) app does the same erase from software, with no PC and no MASKROM. Both are described in [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md), together with `extlinux.conf` / `FDT` for `rk3566-miyoo-flip.dtb`.
+**Two easier options first.** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) boots from SD **while keeping stock on internal NAND**, and erases nothing — that is the recommended route. If you only want SD, the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) app does the same erase from software, with no PC and no MASKROM. Both are described in [MASKROM and SD boot by erasing the preloader](stock-rocknix-without-disassembly.md), together with `extlinux.conf` / `FDT` for `rk3566-miyoo-flip.dtb`.
 
 The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, it destroys internal boot.
 

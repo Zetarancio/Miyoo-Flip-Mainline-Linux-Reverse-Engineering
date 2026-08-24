@@ -13,7 +13,7 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [Boot and flash](boot-and-flash.md) | Hardware specs, where to get images, boot chain, flashing overview, SD boot overview |
 | [→ Flashing (full guide)](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore, boot.img format, mtdparts, and the xrock procedure for [booting from SD](boot-and-flash/flashing.md#booting-from-sd) |
 | [→ SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) | **Stock + SD distro at once** (method by [apommel](https://github.com/apommel/baseos-my355)): what it patches, verification, install/restore, why Knulli/GammaOS cards do not work |
-| [→ Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md) | Preloader eraser as **MASKROM access**, restoring internal stock boot, recovery |
+| [→ MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md) | Preloader eraser as **MASKROM access**, restoring internal stock boot, recovery when nothing boots |
 | [RK3566 reference](rk3566-reference.md) | SoC overview: DDR specs, voltage domains, PLLs |
 | [→ Datasheet specs](rk3566-reference/datasheet-specs.md) | DDR types/frequencies, voltage rails, IO leakage, OPP validation |
 | [→ TRM Part 1](rk3566-reference/trm-part1-registers-dpll.md) | DDR registers, DPLL, CRU, DDR_GRF, PMU |

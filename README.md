@@ -57,7 +57,7 @@ Run **`restore-preloader.sh`** on ROCKNIX and reboot: a stock preloader goes bac
 
 Because U-Boot now comes from the **card**, each distro has to ship one built for this board. Knulli and GammaOS would only need to change what their images write to the card — nothing in NAND. Until they do, those two still need the erase method, at the cost of internal stock boot: [why, in detail](docs/boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
 
-**Articles:** [SD multiboot via a repaired preloader](docs/boot-and-flash/sd-multiboot-apommel.md) · [Try ROCKNIX without opening the device](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+**Articles:** [SD multiboot via a repaired preloader](docs/boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
 
 **Safety:** This path **does not brick** the SoC. The bootrom and USB MASKROM are not stored in SPI, so worst case you **open the device**, enter **MASKROM**, and **flash** with **`xrock`** like any other recovery — [Flashing](docs/boot-and-flash/flashing.md).
 
@@ -88,7 +88,7 @@ Because U-Boot now comes from the **card**, each distro has to ship one built fo
 
 | Topic | Front page | Subpages |
 | ----- | ---------- | -------- |
-| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [**SD multiboot (recommended)**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Stock ↔ ROCKNIX (no disassembly)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [**SD multiboot (recommended)**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Erase the preloader (MASKROM)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |

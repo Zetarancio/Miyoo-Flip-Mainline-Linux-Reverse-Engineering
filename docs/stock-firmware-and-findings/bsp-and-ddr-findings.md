@@ -14,7 +14,18 @@
 **DDR init binaries:**
 - Referenced: `rk3566_ddr_1056MHz_v1.18.bin` (from rkbin)
 - Usage: `xrock extra maskrom --rc4 off --sram rk3566_ddr_1056MHz_v1.18.bin --delay 10`
-- Location: Expected in rkbin repository (not present in Extra/)
+- Location: not shipped with the BSP. Current [`rkbin`](https://github.com/rockchip-linux/rkbin) carries the newer rk3566 `v1.20`/`v1.23` instead — but **the v1.18 blob itself has now been located and identified in two places**
+
+**Confirmed: the stock DRAM blob is a stock public Rockchip binary, not a Miyoo or per-unit one.**
+
+| Where | Evidence |
+|-------|----------|
+| Inside the stock preloader | `DDR V1.18 f366f69a7d typ 23/07/17-15:48:58` at flash offset `0x2d0cc` (and `0x8d0cc`, the second IDB copy) |
+| Inside `unbrick_tool_windows/update.img` | same string, and the surrounding 54.5 KiB (`0x620`–`0xe000` within the loader) is **byte-identical** to the preloader's copy |
+
+The version matches the `v1.18` this BSP already referenced, so the blob is the public rkbin `rk3566_ddr_1056MHz_v1.18.bin`. Note the unbrick tool is a **community package** from [steward-fu's releases](https://github.com/steward-fu/website/releases?q=flip), not a Miyoo download — so this is evidence that one blob works across many real units, rather than a vendor guarantee.
+
+Independent corroboration from the row below: **ROCKNIX boots this hardware with a completely different, newer generic blob (`v1.23`)**. If DRAM init were per-unit calibration data, a stock rkbin binary from a different release could not work — so these blobs are interchangeable per SoC and RAM configuration. This is what makes a redistributable patched preloader defensible; see [SD multiboot](../boot-and-flash/sd-multiboot-apommel.md).
 
 **USB plug handler:**
 - Referenced: `rk356x_usbplug_v1.17.bin` (from rkbin)

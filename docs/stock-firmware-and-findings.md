@@ -8,7 +8,7 @@ Distro-agnostic reference: unpacked stock firmware images, BSP/DDR analysis find
 
 This repo includes **partially unpacked** Miyoo Flip stock firmware for comparison with mainline DTS and drivers. Both are **BSP 5.10**-era trees (not mainline). Not a full rootfs extraction; selected files are kept for reference.
 
-**Large raw images:** `spi_20241119160817.img.zip` at the repo root of that folder (unzip to re-flash or re-extract). The **20250527** card OTA image **`miyoo355_fw.img`** (~129 MiB) is **not** stored in this repo; obtain it from Miyoo or mirror it locally if you need the full card package. The unpack tree under **`miyoo355_fw_20250527/`** is what we track for DTS/rootfs reference.
+**Large raw images:** `spi_20241119160817.img.zip` at the repo root of that folder (unzip to re-flash or re-extract). The **20250527** card OTA image **`miyoo355_fw.img`** (~129 MiB) is **not** stored in this repo; obtain it from Miyoo or mirror it locally if you need the full card package. The unpack tree under **`miyoo355_fw_20250527/`** is what this repo tracks for DTS/rootfs reference.
 
 | Folder | Contents | Notes |
 |--------|----------|--------|
@@ -34,6 +34,14 @@ Analysis of the BSP kernel sources: DDR init binaries, DMC devfreq driver (`rock
 Deep analysis of the stock SPI NAND image: FIT image layout (ATF/OP-TEE/U-Boot segments with load addresses), BL31 DDR-related strings, SCMI clock configuration, U-Boot `dmc_fsp` driver analysis (compiled but never probed), stock kernel DDR/DMC DTS nodes and LPDDR4 timing parameters, the three-step SET_RATE protocol (V2 SIP + MCU/IRQ), and confirmation that DDR frequency scaling was active on stock firmware.
 
 **[Full SPI and boot chain analysis →](stock-firmware-and-findings/spi-and-boot-chain.md)**
+
+---
+
+## OTA update mechanism (`miyoo355_fw.img`)
+
+The card-based update package: sector-0 descriptor, the sector-1 shell script that *is* the update, and why it writes only `mtd1`/`mtd2`/`mtd3` — so a [repaired preloader](boot-and-flash/sd-multiboot-apommel.md) and SD multiboot survive an official update. Also: why the oversized `count=` values are harmless, how U-Boot regenerates `mtdparts` so the layout is preserved, version gating differences between the 2024 and 2025 firmware, and the fact that the OTA check runs **before** MainUI — which makes it a root-code hook that still works when stock's UI is broken. Includes the "stuck on loading" case study (MainUI exiting on a squashfs read error, not hanging).
+
+**[Full OTA update mechanism →](stock-firmware-and-findings/ota-update-mechanism.md)**
 
 ---
 

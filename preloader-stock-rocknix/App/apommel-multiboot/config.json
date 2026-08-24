@@ -1,0 +1,6 @@
+{
+    "label": "Miyoo Flip Multiboot (apommel)",
+    "icon": "/mnt/SDCARD/App/apommel-multiboot/icon.png",
+    "launch": "launch.sh",
+    "description": "Repair the SPI NAND preloader for SD multiboot, keeping stock bootable. Method by apommel."
+}

@@ -1,6 +1,6 @@
 # Stock DTS to Mainline DTS Translation
 
-Reference: `Extra/rockchip/rk3566-miyoo-355-v10-linux.dts` (BSP 5.10, from steward-fu) and repo [firmware dumps](../stock-firmware-and-findings.md) (2024 SPI vs 2025 card image DTS).
+Reference: the BSP 5.10 board DTS `rk3566-miyoo-355-v10-linux.dts`, from the vendor SDK published in [steward-fu's Miyoo Flip release](https://github.com/steward-fu/website/releases/tag/miyoo-flip), plus the [firmware dumps](../stock-firmware-and-findings.md) tracked in this repo (2024 SPI vs 2025 card image DTS).
 Target: `rk3566-miyoo-flip.dts` (mainline, includes only `rk3566.dtsi`). For **PMIC, DDR, battery, SD, suspend** changes since early porting, see [Board DTS / PMIC / DDR updates](board-dts-pmic-ddr-updates.md).
 
 ## Root Node

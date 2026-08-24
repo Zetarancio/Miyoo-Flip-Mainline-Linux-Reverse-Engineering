@@ -1,8 +1,13 @@
 BL31 v1.44 — Stock Miyoo Flip rkbin (Steward-fu repository)
 ===========================================================
 
-Source ELF:  Extra/miyoo-flip-main/rkbin/bin/rk35/rk3568_bl31_v1.44.elf
+Source ELF:  rkbin/bin/rk35/rk3568_bl31_v1.44.elf, from the vendor SDK in
+             https://github.com/steward-fu/website/releases/tag/miyoo-flip
 Origin:      https://github.com/rockchip-linux/rkbin (vendor ATF fork)
+
+The objdump/readelf headers in the files below still show the absolute
+path the exports were produced from. That is verbatim tool output and is
+left as captured; it is not a path in this repository.
 ATF version: v2.3-645-g8cea6ab0b
 Build date:  Sep 19 2023
 Size:        402,376 bytes

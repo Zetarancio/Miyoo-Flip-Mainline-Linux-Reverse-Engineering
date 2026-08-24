@@ -165,7 +165,7 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 **BL31/ATF:**
 - ATF memory reserved in U-Boot via `bidram_reserve(MEM_ATF, ...)`
 - U-Boot FIT includes ATF + OP-TEE + U-Boot
-- BL31 binaries expected from rkbin (not found in Extra/)
+- BL31 binaries are not in the BSP source tree; they come prebuilt from [`rkbin`](https://github.com/rockchip-linux/rkbin)
 
 **Power management:**
 - DDR power: `vcc_ddr` regulator (always-on, on in suspend)

@@ -48,8 +48,9 @@ hcitool scan
 
 ### Firmware Files
 
-WiFi/BT firmware comes from the stock sysroot
-(`Extra/flip-sysroot/usr/lib/firmware/`):
+WiFi/BT firmware comes from the stock sysroot, under
+`usr/lib/firmware/` (extract it from a stock rootfs, e.g. the
+[firmware dumps](../stock-firmware-and-findings.md) in this repo):
 - `rtl8733bu_fw` -- unified WiFi+BT firmware
 - `rtl8733bu_config` -- configuration blob
 

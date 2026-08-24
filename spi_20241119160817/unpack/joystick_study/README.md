@@ -33,7 +33,7 @@ Defaults if file missing or invalid (min==max around zero): see `PK_ADC_DEFAULT_
 
 ## Files in this folder
 
-- `miyoo_inputd.c` — vendor source (from `Extra/`).
+- `miyoo_inputd.c` — vendor source, from the SDK in [steward-fu's Miyoo Flip release](https://github.com/steward-fu/website/releases/tag/miyoo-flip).
 - `binaries/miyoo_inputd` — stock daemon (aarch64).
 - `binaries/MainUI` — launcher + calibration writer.
 - `binaries/factory_test` — factory test binary.

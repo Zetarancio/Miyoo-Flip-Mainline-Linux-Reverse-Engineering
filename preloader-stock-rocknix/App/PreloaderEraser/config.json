@@ -1,6 +1,6 @@
 {
-    "label": "Miyoo Flip Preloader Eraser",
+    "label": "Miyoo Flip MASKROM Access (Preloader Eraser)",
     "icon": "/mnt/SDCARD/App/PreloaderEraser/icon.png",
     "launch": "launch.sh",
-    "description": "Erase SPI NAND preloader to boot from SD card"
+    "description": "Erase the SPI NAND preloader so the device powers on into MASKROM with no card inserted. Removes internal stock boot."
 }

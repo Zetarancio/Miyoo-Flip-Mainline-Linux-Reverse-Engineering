@@ -1,12 +1,16 @@
-# Miyoo Flip — preloader tools (stock ↔ ROCKNIX, no disassembly)
+# Miyoo Flip — preloader tools (multiboot, MASKROM, restore)
 
 | Folder | Role |
 |--------|------|
-| **`App/PreloaderEraser/`** | Stock OS app: erases the SPI preloader so the device boots **ROCKNIX from SD**. |
-| **`preloader-restore/`** | On **ROCKNIX**: shell script + bundled **`preloader.img`** to write the preloader back → **stock from internal SPI**. |
+| **`App/apommel-multiboot/`** | **Repairs** the SPI preloader so the SPL can read a card: no card → **stock**, bootable card → **SD**. Install/restore/backup modes. Runs on stock and ROCKNIX, but can only **write** from ROCKNIX. Method by **[apommel](https://github.com/apommel/baseos-my355)**. |
+| **`App/PreloaderEraser/`** | **Erases** the SPI preloader so the device powers on into **MASKROM** when no card is inserted (a bootable card still boots from SD). Removes internal stock boot. |
 
-**Documentation:** [Try ROCKNIX without opening the device](../docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+Restoring a stock preloader is part of the multiboot app: **`restore-preloader.sh`**, or `sh launch.sh restore [FILE]`. It supersedes the old standalone `preloader-restore/` script, which did the same `flash_erase` + `nandwrite` without validating the image, backing up first, verifying the readback or rolling back.
 
-**See also:** [Boot and flash](../docs/boot-and-flash.md) · [Flashing](../docs/boot-and-flash/flashing.md) · [Boot from SD](../docs/boot-and-flash/boot-from-sd.md)
+**For dual boot use `apommel-multiboot`, not the eraser.** The eraser is for reaching MASKROM from software, and for getting a stock-only unit onto ROCKNIX so the multiboot app can be written there.
+
+**Documentation:** [SD multiboot via a repaired preloader](../docs/boot-and-flash/sd-multiboot-apommel.md) · [Try ROCKNIX without opening the device](../docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+
+**See also:** [Boot and flash](../docs/boot-and-flash.md) · [Flashing](../docs/boot-and-flash/flashing.md) · [Boot from SD](../docs/boot-and-flash/boot-from-sd.md) · [Stock OTA mechanism](../docs/stock-firmware-and-findings/ota-update-mechanism.md)
 
 **ROCKNIX images:** [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** (GitHub Actions artifacts).

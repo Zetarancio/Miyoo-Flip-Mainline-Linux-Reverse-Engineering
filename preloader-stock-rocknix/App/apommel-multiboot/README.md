@@ -132,7 +132,7 @@ Easiest route on device: run **`restore-preloader.sh`** from a file manager.
 
 ### Provenance of `preloader-stock.img`
 
-It is the unmodified stock preloader, md5 `1d525e6e6c89bd788b5245c90c97833b` — **byte-identical to the first 2 MiB of `spi_20241119160817.img`**, this project's own full SPI NAND dump (verified by extracting from `spi_20241119160817/spi_20241119160817.img.zip` in this repo). The same file has been committed as `../../preloader-restore/preloader.img` since commit `70afc20`.
+It is the unmodified stock preloader, md5 `1d525e6e6c89bd788b5245c90c97833b` — **byte-identical to the first 2 MiB of `spi_20241119160817.img`**, this project's own full SPI NAND dump (verified by extracting from `spi_20241119160817/spi_20241119160817.img.zip` in this repo).
 
 Structure, as a sanity check that it is a real preloader and not just matching bytes:
 
@@ -152,6 +152,13 @@ unzip -p spi_20241119160817/spi_20241119160817.img.zip spi_20241119160817.img \
   | head -c 2097152 | md5sum      # 1d525e6e6c89bd788b5245c90c97833b
 ```
 
+The same two commands turn **your own** full SPI dump into a restore image — the first 2 MiB is the preloader region, and a card OTA package (`miyoo355_fw.img`) never contains it:
+
+```sh
+dd if=spi_YYYYmmddHHMMSS.img of=preloader-mine.img bs=512 count=4096
+sh launch.sh restore preloader-mine.img
+```
+
 ### A backup is not automatically a restore point
 
 If the preloader was **already erased** when a backup was taken — which is the case if you had used `PreloaderEraser` to get to ROCKNIX — that backup is **2 MiB of `0xff`** (md5 `b23b5d09162b92c0284923a7f628d2a5`). Writing it back does not restore anything; it erases. The app refuses such images by name and skips them when auto-selecting, but check your own files before trusting them:
@@ -165,7 +172,7 @@ dd if=preloader-backup-X.img bs=1 skip=131072 count=4   # must print RKNS
 
 | Situation | Do this |
 |-----------|---------|
-| ROCKNIX boots | `sh launch.sh restore`, or `preloader-restore/write-preloader-mtd.sh preloader.img` |
+| ROCKNIX boots | `restore-preloader.sh`, or `sh launch.sh restore [FILE]` |
 | only stock boots | you cannot write from stock — run `PreloaderEraser`, boot ROCKNIX, restore there |
 | nothing boots | MASKROM + `xrock` — see [flashing](../../../docs/boot-and-flash/flashing.md) |
 
@@ -278,4 +285,4 @@ ROCKNIX satisfies this. Cards built for **GammaLoader** (Knulli, GammaOS) curren
 
 ---
 
-**See also:** [PreloaderEraser](../PreloaderEraser/) · [preloader-restore](../../preloader-restore/) · [SD multiboot (wiki)](../../../docs/boot-and-flash/sd-multiboot-apommel.md) · [Stock ↔ ROCKNIX without disassembly](../../../docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+**See also:** [PreloaderEraser](../PreloaderEraser/) · [SD multiboot (wiki)](../../../docs/boot-and-flash/sd-multiboot-apommel.md) · [Stock ↔ ROCKNIX without disassembly](../../../docs/boot-and-flash/stock-rocknix-without-disassembly.md)

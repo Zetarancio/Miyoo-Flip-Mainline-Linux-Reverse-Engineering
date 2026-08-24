@@ -1,25 +1,53 @@
 #!/bin/sh
 #
-# Miyoo Flip Preloader Eraser (Stock OS App)
+# Miyoo Flip Preloader Eraser — MASKROM access without disassembly
 #
-# Erases the SPI NAND preloader (IDBLOCK + DDR init + SPL) so the
-# RK3566 bootrom falls through to the SD card, allowing ROCKNIX to
-# boot without entering MASKROM mode.
+# PRIMARY USE: reach MASKROM mode without opening the device.
+#
+# Erasing the SPI NAND preloader (IDBLOCK + DDR init + SPL) leaves the
+# RK3566 bootrom with nothing to load internally. On the next power-on:
+#
+#   no SD card inserted        -> the device comes up in MASKROM,
+#                                 ready for xrock / rkdeveloptool
+#   bootable SD card inserted  -> the bootrom loads the card's own
+#                                 idbloader and boots that OS
+#
+# That first behaviour is the point: MASKROM on demand, no screws, no
+# button, no test point. Everything an opened-case MASKROM session can
+# do — full backup, restore, reflash — becomes available from software.
+#
+# NOT THE WAY TO SET UP DUAL BOOT ANY MORE.
+#
+# Erasing removes internal boot entirely: stock no longer starts, and
+# recovering it needs a PC. For running an SD distro while keeping stock
+# on internal NAND, use ../apommel-multiboot instead, which REPAIRS the
+# preloader rather than destroying it (method by apommel,
+# https://github.com/apommel/baseos-my355). Reach for this eraser when
+# you actually want MASKROM, or as the escape hatch that gets a
+# stock-only device to ROCKNIX so the multiboot app can run there.
+#
+# HOW IT WORKS
 #
 # The preloader sits at SPI NAND offset 0x000000-0x200000 (2 MB,
 # blocks 0-15), BEFORE the first MTD partition (vnvm at 0x200000).
-# CONFIG_MTD_PARTITIONED_MASTER is not set on the stock kernel, so
-# no /dev/mtd* device covers this area. We bypass the kernel and
-# send SPI NAND erase commands directly through the Rockchip SFC
-# (Serial Flash Controller) at 0xFE300000 via devmem + /dev/mem.
+# On stock, partitions come from mtdparts= on the kernel command line
+# and CONFIG_MTD_PARTITIONED_MASTER is not set, so no /dev/mtd* device
+# covers this area. This script therefore bypasses the kernel and sends
+# SPI NAND erase commands directly through the Rockchip SFC (Serial
+# Flash Controller) at 0xFE300000 via devmem + /dev/mem. Erase needs no
+# ECC, which is why this is possible blind; writing would not be.
 #
 # CONFIG_IO_STRICT_DEVMEM is not set on the stock kernel, so MMIO
 # regions claimed by drivers remain accessible through /dev/mem.
 #
-# After reboot the device boots from SD. To restore stock internal boot,
-# write preloader.img back from ROCKNIX (see wiki:
-# docs/boot-and-flash/stock-rocknix-without-disassembly.md) or reflash
-# via MASKROM + xrock.
+# On ROCKNIX the region IS exposed as mtd0 ("preloader"), so there the
+# script uses flash_erase on that node instead of touching the SFC.
+#
+# TO UNDO
+#
+# From ROCKNIX: ../apommel-multiboot/restore-preloader.sh (or
+# launch.sh restore). From MASKROM: xrock. See
+# docs/boot-and-flash/stock-rocknix-without-disassembly.md.
 #
 # SFC register offsets from mainline drivers/spi/spi-rockchip-sfc.c
 
@@ -49,11 +77,23 @@ fi
 echo ""
 echo "============================================"
 echo "  Miyoo Flip Preloader Eraser"
+echo "  MASKROM access without disassembly"
 echo "============================================"
 echo ""
 echo "Erasing SPI NAND preloader (blocks 0-15)."
-echo "After reboot the device will boot from SD."
-echo "To restore stock: reflash via MASKROM + xrock."
+echo ""
+echo "After the reboot:"
+echo "  no SD card       -> device comes up in MASKROM"
+echo "  bootable SD card -> boots that OS from the card"
+echo ""
+echo "This REMOVES internal stock boot. To restore it you need"
+echo "ROCKNIX (../apommel-multiboot/restore-preloader.sh) or"
+echo "MASKROM + xrock."
+echo ""
+echo "Want stock AND an SD distro instead? Do not use this."
+echo "Use ../apommel-multiboot, which repairs the preloader"
+echo "rather than erasing it. Method by apommel:"
+echo "  https://github.com/apommel/baseos-my355"
 echo ""
 
 # ── SFC helper functions ──────────────────────────────────────────
@@ -183,33 +223,66 @@ erase_one_block() {
 }
 
 # ── Main ──────────────────────────────────────────────────────────
+#
+# ROCKNIX exposes the region as mtd0 ("preloader"). Prefer the MTD
+# layer there: it is the supported path and it honours bad-block
+# markers. Stock has no such node, hence the blind SFC path below.
 
-SFC_VER=$(sfc_version)
-echo "SFC hardware version: $SFC_VER"
-
-if [ $SFC_VER -ge 4 ]; then
-    sfc_write $OFF_LEN_CTRL 1
+MTD=
+if [ -c /dev/mtd/by-name/preloader ]; then
+    MTD=$(readlink -f /dev/mtd/by-name/preloader)
+else
+    n=$(grep '"preloader"' /proc/mtd 2>/dev/null | head -n1 | cut -d: -f1)
+    [ -n "$n" ] && [ -c "/dev/$n" ] && MTD="/dev/$n"
 fi
 
 FAIL=0
-for block in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
-    if ! erase_one_block $block; then
-        echo "  WARNING: block $block failed, continuing..."
-        FAIL=$((FAIL + 1))
-    fi
-done
 
-echo ""
-if [ $FAIL -gt 0 ]; then
-    echo "WARNING: $FAIL block(s) failed to erase."
+if [ -n "$MTD" ] && command -v flash_erase >/dev/null 2>&1; then
+    echo "Found $MTD (\"preloader\") — erasing through the MTD layer."
+    echo ""
+    if flash_erase "$MTD" 0 0; then
+        echo ""
+        echo "Preloader erased successfully."
+    else
+        echo ""
+        echo "ERROR: flash_erase failed on $MTD"
+        FAIL=1
+    fi
 else
-    echo "Preloader erased successfully."
+    echo "No preloader MTD node — driving the SFC directly."
+    echo ""
+
+    SFC_VER=$(sfc_version)
+    echo "SFC hardware version: $SFC_VER"
+
+    if [ $SFC_VER -ge 4 ]; then
+        sfc_write $OFF_LEN_CTRL 1
+    fi
+
+    for block in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+        if ! erase_one_block $block; then
+            echo "  WARNING: block $block failed, continuing..."
+            FAIL=$((FAIL + 1))
+        fi
+    done
+
+    echo ""
+    if [ $FAIL -gt 0 ]; then
+        echo "WARNING: $FAIL block(s) failed to erase."
+    else
+        echo "Preloader erased successfully."
+    fi
 fi
 
 echo ""
 echo "============================================"
-echo "  Done. Rebooting to SD card ..."
+echo "  Done. Rebooting."
 echo "============================================"
+echo ""
+echo "  no SD card       -> MASKROM (connect USB, use xrock)"
+echo "  bootable SD card -> that OS boots from the card"
+echo ""
 
 echo none > /sys/class/leds/charger/trigger 2>/dev/null || true
 

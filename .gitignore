@@ -8,7 +8,10 @@ Image
 boot.img
 empty_ramdisk
 
-# Downloaded / large directories (populated by setup-extra.sh and download scripts)
+# Downloaded / large directories (populated by setup-extra.sh and download scripts).
+# Also holds the vendor SDK/U-Boot/unbrick trees and the lomiyoo.com stock OTA
+# packages (MIYOOOS/). Nothing here is published, so the wiki must never cite a
+# path under Extra/ — readers cannot see it.
 Extra/
 kernel/
 buildroot/
@@ -34,11 +37,22 @@ buildroot-*.tar.xz
 *.tmp
 *.log
 boot_log.txt
+
+# Preloader app runtime output (written on the device, next to the scripts)
+preloader-stock-rocknix/App/*/install-log.txt
+preloader-stock-rocknix/App/*/restore-log.txt
+preloader-stock-rocknix/App/*/backup-log.txt
+preloader-stock-rocknix/App/*/preloader-backup-*.img
+preloader-stock-rocknix/App/*/.verify.img
+preloader-stock-rocknix/App/*/RESTORE
+preloader-stock-rocknix/App/*/BACKUP
 # Reddit draft (not part of wiki; keep local)
 logs/ROCKNIX-Miyoo-Flip-changelog-reddit.md
 
 # Local Cursor context (machine-specific paths; not published)
 CURSOR-CONTEXT.md
+CURSOR-CONTEXT.md.*
+*.kate-swp
 
 # Module build artifacts
 modules/*/*.o

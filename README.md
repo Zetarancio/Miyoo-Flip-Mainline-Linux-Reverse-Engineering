@@ -10,16 +10,56 @@ The distribution repo holds the build system and device sources; **this `main` b
 
 ---
 
-## Stock ↔ ROCKNIX without opening the device
+## Stock + SD distro at once, without opening the device
 
-| Step | What to do |
-|------|------------|
-| **1. Stock → ROCKNIX** | Install the **Preloader Eraser** app on your SD (from [`preloader-stock-rocknix/App/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App)), run it on **stock**, reboot with a **ROCKNIX** SD. |
-| **2. ROCKNIX → stock** | On **ROCKNIX**, run **`write-preloader-mtd.sh`** with **`preloader.img`** (bundled under [`preloader-stock-rocknix/preloader-restore/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/preloader-restore)), reboot → **internal stock** again. |
+**Multiboot** is the recommended setup. It **repairs** the SPI preloader instead of erasing it, so the device simply decides at power-on:
 
-**Article:** [Try ROCKNIX without opening the device](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+| Card in the right-hand slot | Boots |
+|------|-------|
+| none | **stock**, from internal SPI NAND |
+| a card the stock SPL can load a U-Boot from | **that OS**, from SD |
 
-**Safety:** This path **does not brick** the SoC. If anything misbehaves, you can still **open the device**, enter **MASKROM**, and **flash** with **`xrock`** like any other recovery — see the guide’s callout and [Flashing](docs/boot-and-flash/flashing.md).
+Nothing is erased and official Miyoo firmware updates survive it. Method by **[apommel](https://github.com/apommel/baseos-my355)** — see [Thanks](#thanks).
+
+### If ROCKNIX already boots from a card
+
+The patch can only be **written** from ROCKNIX, so this is the whole procedure.
+
+1. Copy the folder **[`preloader-stock-rocknix/App/apommel-multiboot/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App/apommel-multiboot)** onto a card, keeping the folder intact. In ROCKNIX's file manager the cards appear under **`games-external`**.
+2. Run **`check-preloader.sh`** (**Execute** in the file manager). It writes nothing and tells you whether this unit is recognised and whether its DRAM blob matches the bundled image.
+3. If that looks clean, run **`install-multiboot.sh`** the same way.
+4. **Reboot.**
+
+Prefer the device UI? Copy the three scripts in **`rocknix-ports/`** to `/storage/roms/ports/` and they appear in the **Ports** menu as `Multiboot 1 Check`, `2 Install`, `3 Restore`.
+
+### If only stock boots
+
+The preloader cannot be written from stock, so it takes two steps and two reboots. In between, the device is exactly where the eraser has always left it: SD-boot only, MASKROM reachable without disassembly. Stopping after step 1 breaks nothing new.
+
+| # | Boot into | Copy | Run |
+|---|-----------|------|-----|
+| 1 | **stock** | **[`App/PreloaderEraser/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App/PreloaderEraser)** → `SDCARD/App/PreloaderEraser/` | the **“Miyoo Flip MASKROM Access (Preloader Eraser)”** launcher entry, then reboot with a ROCKNIX card inserted |
+| 2 | **ROCKNIX** (from that card) | **`App/apommel-multiboot/`** → any card, visible as `games-external` | **`check-preloader.sh`**, then **`install-multiboot.sh`**, then reboot |
+
+### To undo it
+
+Run **`restore-preloader.sh`** on ROCKNIX and reboot: a stock preloader goes back and the device boots internal stock again, ignoring cards.
+
+### Where this has been tested
+
+| System | Multiboot |
+|--------|-----------|
+| **stock** (internal NAND) | works — tested |
+| **ROCKNIX** | works — tested |
+| **[apommel's MinUI base](https://github.com/apommel/baseos-my355)** | works — the method's own target |
+| **Knulli** | **does not work** — ships an rk3568-evb U-Boot for its own SPL |
+| **GammaOS** | **not expected to work** — same model, expects GammaLoader in NAND |
+
+Because U-Boot now comes from the **card**, each distro has to ship one built for this board. Knulli and GammaOS would only need to change what their images write to the card — nothing in NAND. Until they do, those two still need the erase method, at the cost of internal stock boot: [why, in detail](docs/boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
+
+**Articles:** [SD multiboot via a repaired preloader](docs/boot-and-flash/sd-multiboot-apommel.md) · [Try ROCKNIX without opening the device](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
+
+**Safety:** This path **does not brick** the SoC. The bootrom and USB MASKROM are not stored in SPI, so worst case you **open the device**, enter **MASKROM**, and **flash** with **`xrock`** like any other recovery — [Flashing](docs/boot-and-flash/flashing.md).
 
 ---
 
@@ -48,7 +88,7 @@ The distribution repo holds the build system and device sources; **this `main` b
 
 | Topic | Front page | Subpages |
 | ----- | ---------- | -------- |
-| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [Flashing](docs/boot-and-flash/flashing.md), [Boot from SD](docs/boot-and-flash/boot-from-sd.md), [**Stock ↔ ROCKNIX (no disassembly)**](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [**SD multiboot (recommended)**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Boot from SD](docs/boot-and-flash/boot-from-sd.md), [Stock ↔ ROCKNIX (no disassembly)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
@@ -121,7 +161,7 @@ bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)
 bl31_v1.44_vs_v1.45_diff.patch Diff of disassembly exports (v1.44 vs v1.45)
 logs/                          Boot logs + PMIC/debugfs dumps (reference)
 test-scripts/                  `miyoo-flip-power-dump.sh` — optional on-device capture
-preloader-stock-rocknix/       Stock app + scripts: erase/restore SPI preloader to SD-boot ROCKNIX without opening — see docs/boot-and-flash/stock-rocknix-without-disassembly.md
+preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the preloader → multiboot, and restore it) and PreloaderEraser (erase it → MASKROM) — see docs/boot-and-flash/sd-multiboot-apommel.md
 ```
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
@@ -181,5 +221,7 @@ Documentation and scripts: [GNU GPL v2](https://www.gnu.org/licenses/old-license
 ---
 
 ## Thanks
+
+Thanks to **[apommel](https://github.com/apommel)** for [baseos-my355](https://github.com/apommel/baseos-my355) — the discovery that Miyoo's `fdtgrep` run left `/pinctrl` empty in the SPL device tree, the nine properties that repair it, and a write-up clear enough to reproduce and verify independently. SD multiboot on this device exists because of that work, and it keeps stock intact precisely because it repairs the vendor's own preloader instead of replacing it.
 
 Thanks to [steward-fu](https://github.com/steward-fu) for the Miyoo Flip resource site and assets; [beebono](https://github.com/beebono), [sydarn](https://github.com/sydarn), and the community behind [SpruceOS](https://spruceui.github.io/) for their work and support. This project wouldn’t be where it is without them.

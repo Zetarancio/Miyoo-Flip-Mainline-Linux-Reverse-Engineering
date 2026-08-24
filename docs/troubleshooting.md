@@ -70,7 +70,7 @@ resolve:
 | Fixed | PM: genpd disables unused power domains |
 | Fixed | GPU power domain resolved (mali_kbase binds) |
 | Fixed | GPU devfreq active (200-800 MHz) |
-| Expected on some units | `fan53555-regulator` probe at **0x1c** or **0x40** may log **-ENXIO** on the address that has **no** chip (DTS enables **both** TCS4525 and RK8600 like stock). **Harmless** if the other CPU rail probes and the system boots. |
+| Historical | `fan53555-regulator` probe **-ENXIO** at `0x1c`. Only appeared while the DTS enabled both TCS4525 and RK8600 like stock. Current **`flip`** describes **RK8600 @ 0x40** only, so this should no longer be logged — see [I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
 | Low priority | VPU/RGA/VEPU sync_state pending until first use (mainline drivers: hantro-vpu, rockchip-rga) |
 
 ## Remaining Boot Log Warnings
@@ -78,7 +78,7 @@ resolve:
 | Message | Impact |
 |---------|--------|
 | `rockchip-pm-domain: sync_state() pending due to video-codec/rga/vepu` | Harmless. Mainline VPU/RGA drivers present; domains power down when idle; sync_state clears when a consumer opens the device |
-| `fan53555-regulator 0-001c: error -ENXIO: Failed to get chip ID!` (and/or similar at **0x0040**) | **Often expected** when the DTS lists **both** CPU regulators `okay` but only one is populated ([dual-node alignment](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)). The failed probe is **ignored**; the present rail supplies VDD_CPU. Not a boot failure by itself. |
+| `fan53555-regulator 0-001c: error -ENXIO: Failed to get chip ID!` | **Only in older logs.** It came from the DTS describing both CPU regulators while only RK8600 is populated; the failed probe was ignored and VDD_CPU came up regardless. **`TCS4525 @ 0x1c`** has since been removed ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)), so a current build should not log it. |
 | `gpio gpiochip0: Static allocation of GPIO base is deprecated` | None. Upstream will fix |
 | `Waiting for interface eth0... timeout!` | Harmless. No Ethernet on handheld |
 | `seedrng: can't create directory: Read-only file system` | squashfs is read-only; use tmpfs overlay |

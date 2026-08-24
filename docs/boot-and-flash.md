@@ -37,7 +37,7 @@ Multiboot puts U-Boot **on the card**, so each distro must ship one built for th
 | Audio | RK817 codec, I2S, speaker amplifier |
 | PMIC | RK817 (main) |
 | Battery | Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (typical pack marking) |
-| VDD_CPU (I2C0) | **TCS4525 @ 0x1c** and **RK8600 @ 0x40** are both described in DTS with `status = "okay"`, like 2025 stock. **Two hardware revisions** (only one regulator populated) are **inferred from firmware, not proven**. The empty address fails probe and is ignored; the populated rail supplies VDD_CPU and the device boots. See [Board DTS / PMIC / DDR — I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
+| VDD_CPU (I2C0) | **RK8600 @ 0x40** only. **TCS4525 @ 0x1c** was removed from the DTS after **Miyoo officially confirmed** there is **no second CPU-regulator variant**. The 2025 stock DTS still lists both addresses, but that is BSP legacy rather than evidence of two SKUs. See [Board DTS / PMIC / DDR — I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
 | USB | USB 2.0 OTG |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 

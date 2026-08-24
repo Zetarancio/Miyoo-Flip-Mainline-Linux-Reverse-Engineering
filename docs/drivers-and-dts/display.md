@@ -11,8 +11,10 @@
 
 ## Status: Working
 
-The Miyoo Flip's 640x480 MIPI DSI panel is fully functional on mainline
-Linux 6.19.
+The Miyoo Flip's 640x480 MIPI DSI panel is fully functional on mainline.
+**Linux 6.19** is the **oldest** version it has been verified on, not the
+current one — see the root `README.md` for the kernel current `flip`
+builds actually ship.
 
 ## Problem
 

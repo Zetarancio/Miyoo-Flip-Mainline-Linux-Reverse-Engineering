@@ -100,13 +100,17 @@ VDD_LOGIC powers: DDR controller, VOP2, interconnect, and other logic blocks.
   DDR_SCRAMBLE, AXI_SPLIT, DDR_GRF, MSCH
 - **DDRPHY** is in the **ALIVE** domain (always-on, not power-gated)
 
-### VDD_LOGIC in Suspend — RESOLVED
+### VDD_LOGIC in Suspend — understood, but not enabled
 
-vdd_logic is now set to `regulator-off-in-suspend` in the Miyoo Flip DTS, matching
-stock firmware behavior. The **rk3568-suspend** driver configures BL31
-with `RKPM_SLP_ARMOFF_LOGOFF` so TF-A properly saves/restores the logic domain (deep sleep).
+Turning vdd_logic off in suspend is only safe once the **rk3568-suspend** driver
+has configured BL31 with `RKPM_SLP_ARMOFF_LOGOFF`, so TF-A saves and restores the
+logic domain. That combination was demonstrated to work on this device.
 
-See [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md) for details.
+It is **not** what current `flip` ships: `vdd_logic` stays `regulator-on-in-suspend`,
+the `rk3568-suspend` node is commented out and `CONFIG_RK3568_SUSPEND_MODE` is unset,
+because deep suspend is deferred on an upstream EmulationStation issue.
+
+Current state and rationale: [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md).
 
 ---
 

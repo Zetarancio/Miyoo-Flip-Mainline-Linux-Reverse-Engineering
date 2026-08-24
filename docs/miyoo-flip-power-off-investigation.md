@@ -29,6 +29,8 @@
 
 > **Resolution (wiki):** With this patch applied, off-state current matches stock (~0.05 mA). The investigation below is preserved as a **chronological lab notebook**; §1–§16 include hypotheses later refined in §17–§18.
 >
+> **Read this as a historical capture.** It was written against **mainline 6.18.x**, and every kernel version, source excerpt and DTS quote below is from that tree — including the suspend and `vdd_logic` sections, which describe a configuration that current `flip` does **not** ship (deep suspend is deferred: patches `.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off, `vdd_logic` on-in-suspend). For current state see [Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) and the root `README.md`. The conclusion about SYS_CAN_SD is unaffected and still current.
+>
 > **Investigation history (§1–§17):** Explored and ruled out shutdown
 > sequencing (SLPPIN/DEV_OFF/BL31), GPIO0_PA2 pinctrl management, RK860
 > CPU regulator quiescent draw, WiFi chip, USB PHY topology, IRQ masking,
@@ -192,7 +194,7 @@ The PMIC-internal pinctrl driver (`pinctrl-rk805.c`) writes to `RK817_SYS_CFG(3)
 `ffs(RK817_SLPPIN_FUNC_MSK) - 1 = 3`, so the register write is `2 << 3 = 0x10` →
 which is exactly `SLPPIN_DN_FUN`.
 
-### What our patch 0029 does (verified from patch source)
+### What patch 0029 does (verified from patch source)
 
 File: `projects/ROCKNIX/devices/RK3566/patches/linux/0029-mfd-rk8xx-add-pmic-pinctrl-switching-for-RK817.patch.off`.
 
@@ -226,7 +228,7 @@ Bit  8: RKPM_SLP_OSC_DIS        — disable main oscillator
 Bit 10: RKPM_SLP_32K_PVTM       — use PVTM for 32K clock
 ```
 
-### Our DTS value (verified from `rk3566-miyoo-flip.dts`)
+### The ROCKNIX DTS value (verified from `rk3566-miyoo-flip.dts`)
 
 ```
 RKPM_SLP_CENTER_OFF | RKPM_SLP_ARMOFF_LOGOFF | RKPM_SLP_PMIC_LP
@@ -236,7 +238,7 @@ RKPM_SLP_CENTER_OFF | RKPM_SLP_ARMOFF_LOGOFF | RKPM_SLP_PMIC_LP
 = 0x5ec
 ```
 
-**Our ROCKNIX DTS matches stock exactly for sleep-mode-config.** Both pass `0x5ec` to BL31.
+**The ROCKNIX DTS matched stock exactly for sleep-mode-config.** Both passed `0x5ec` to BL31. (In current `flip` that node is commented out — deep suspend is deferred.)
 
 ### Relevance to power-off drain
 
@@ -247,7 +249,7 @@ does during `suspend-to-RAM`. It has no direct effect on the `PSCI_SYSTEM_OFF` p
 However, for **virtual power-off** (which the stock BSP supports via
 `rockchip,virtual-poweroff` property), the suspend config IS used because virtual
 power-off is implemented as `PSCI_SYSTEM_SUSPEND` (deep suspend that looks like
-power-off). Our ROCKNIX kernel does not use virtual power-off.
+power-off). The ROCKNIX kernel does not use virtual power-off.
 
 ---
 
@@ -366,7 +368,7 @@ effectively dead code for I2C-connected RK817 in the BSP.
 DEV_OFF for RK817 exists only in mainline's unified `rk8xx-core.c` driver
 (which ROCKNIX uses via kernel 6.18.13).
 
-**For our patch 0029**, which modifies `rk8xx-core.c` (the mainline unified path):
+**For patch 0029**, which modifies `rk8xx-core.c` (the mainline unified path):
 `rk8xx_shutdown()` stays vanilla (SLPPIN_DN_FUN in phase 1). **`rk808_power_off()`**
 gains the BSP-style IRQ/pinctrl/SLPPIN/`mdelay` block in the RK809/RK817 `case`
 (phase 2), in addition to whatever **DEV_OFF** logic your tree retains after the
@@ -428,7 +430,7 @@ handler runs last before PSCI SYSTEM_OFF.
 
 **Note:** This change requires `rk808_power_off()` to return early (before the
 shared `regmap_update_bits(rk808->regmap, reg, bit, bit)` at the bottom) since
-we're replacing the `reg`/`bit` switch with inline register writes. The function
+the `reg`/`bit` switch is replaced with inline register writes. The function
 structure changes from a switch-then-write to an early-return for RK817.
 
 ### Option B: Keep DEV_OFF, just test it
@@ -742,8 +744,8 @@ analysis narrow the root cause significantly.
 
 ### Reference paths
 
-- Stock SPI package (example): `/home/ale/Downloads/Steward-fu-FLIP/spi_20241119160817`
-- Erase / SD-boot procedure: `/home/ale/Downloads/Steward-fu-FLIP/docs/boot-and-flash/flashing.md`
+- Stock SPI package: [`spi_20241119160817/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/spi_20241119160817) in this repo
+- Erase / SD-boot procedure: [Flashing](boot-and-flash/flashing.md)
 
 ---
 
@@ -1028,7 +1030,7 @@ Stock `0xf4 = 0x18` decodes as:
 - bit 5 = 0 → SLPPOL = LOW-active
 - bits [6:7] = 00 → RST_FUNC = DEV (full device reset)
 
-Our patch `0xf4 = 0x00` had:
+The attempted `0xf4 = 0x00` had:
 - bits [3:4] = 00 → SLPPIN_FUNC = NULL_FUN (pin ignored) ← WRONG
 - bit 5 = 0 → SLPPOL = LOW-active
 
@@ -1202,7 +1204,7 @@ Every upstream RK3566/RK3568 board with RK817/RK809 uses the same
 minimal approach: `pinctrl-0 = <&pmic_int>` (+ optional i2s1m0_mclk).
 **None of them configure GPIO0_PA2 on the PMIC node.** Power-off is
 purely DEV_OFF via `system-power-controller`. Only exception: PineNote
-includes `pmic_sleep` in its pinctrl-0 (similar to our earlier config).
+includes `pmic_sleep` in its pinctrl-0 (similar to the earlier config here).
 
 This confirms the Miyoo Flip's hardware requires active SLPPIN management
 during shutdown that the generic mainline path doesn't provide.

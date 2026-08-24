@@ -285,3 +285,5 @@ dfi: dfi@fe230000 {
 4. Add the `dmc` node with `center-supply`, completion IRQ, DFI phandle, and OPP table
 5. Optionally add `regulator-off-in-suspend` on `vdd_logic`
 6. Enable `CONFIG_RK3568_SUSPEND_MODE=y` and `CONFIG_ARM_RK3568_DMC_DEVFREQ=y` in kernel config
+
+This is the full list for a board that wants **both** DMC and deep suspend. It is not the Miyoo Flip's current configuration: steps 3, 5 and the `CONFIG_RK3568_SUSPEND_MODE` half of step 6 are the deferred deep-suspend half, and `flip` ships with them off — [suspend and vdd_logic](suspend-and-vdd-logic.md).

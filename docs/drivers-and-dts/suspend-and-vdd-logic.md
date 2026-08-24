@@ -59,7 +59,7 @@ config RK3568_SUSPEND_MODE
     depends on HAVE_ARM_SMCCC && SUSPEND && ARCH_ROCKCHIP
 ```
 
-Enabled in the kernel config with `CONFIG_RK3568_SUSPEND_MODE=y`.
+Enabling it means `CONFIG_RK3568_SUSPEND_MODE=y`. On current `flip` it is **not set** — see the [current state](#miyoo-flip--rocknix-flip-branch-current) above; everything from here on describes how the driver works and what it achieved in testing.
 
 ### Naming
 
@@ -170,6 +170,8 @@ vdd_logic: DCDC_REG1 {
 ---
 
 ## 6. Confirmed Working — Boot Log Evidence
+
+**Historical capture**, from a build where the 1013 patches and `vdd_logic` off-in-suspend were enabled. Current `flip` does not produce these lines.
 
 ```
 rk3568-suspend-config rk3568-suspend: sleep-mode-config=0x5ec wakeup-config=0x10 (smc ret=0)

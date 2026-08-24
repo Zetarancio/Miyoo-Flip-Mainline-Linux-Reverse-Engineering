@@ -45,8 +45,8 @@
 #
 # TO UNDO
 #
-# From ROCKNIX: ../apommel-multiboot/restore-preloader.sh (or
-# launch.sh restore). From MASKROM: xrock. See
+# From ROCKNIX: ../apommel-multiboot/restore-preloader.sh (which is
+# that app's launch.sh in restore mode). From MASKROM: xrock. See
 # docs/boot-and-flash/stock-rocknix-without-disassembly.md.
 #
 # SFC register offsets from mainline drivers/spi/spi-rockchip-sfc.c
@@ -66,6 +66,28 @@ OFF_DATA=0x108
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# ── Banner ────────────────────────────────────────────────────────
+#
+# The art is 79 columns, which is the most that fits the Flip's 640x480
+# console (80 columns at the default 8x16 font). Bold yellow reads as
+# amber on the framebuffer console; a 256-colour orange would not be
+# safe to assume there.
+
+ORANGE=$(printf '\033[1;33m')
+NC=$(printf '\033[0m')
+
+banner() {
+    clear 2>/dev/null || printf '\033[2J\033[H'
+    printf '%s' "$ORANGE"
+    echo '███████╗███████╗████████╗ █████╗ ██████╗  █████╗ ███╗   ██╗ ██████╗██╗ ██████╗ '
+    echo '╚══███╔╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗████╗  ██║██╔════╝██║██╔═══██╗'
+    echo '  ███╔╝ █████╗     ██║   ███████║██████╔╝███████║██╔██╗ ██║██║     ██║██║   ██║'
+    echo ' ███╔╝  ██╔══╝     ██║   ██╔══██║██╔══██╗██╔══██║██║╚██╗██║██║     ██║██║   ██║'
+    echo '███████╗███████╗   ██║   ██║  ██║██║  ██║██║  ██║██║ ╚████║╚██████╗██║╚██████╔╝'
+    echo '╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚═╝ ╚═════╝ '
+    printf '%s\n' "$NC"
+}
+
 # ── LED feedback ──────────────────────────────────────────────────
 echo heartbeat > /sys/class/leds/charger/trigger 2>/dev/null || true
 
@@ -74,11 +96,9 @@ if [ -f "$SCRIPT_DIR/installing.png" ]; then
     /usr/bin/fbdisplay "$SCRIPT_DIR/installing.png" &
 fi
 
-echo ""
-echo "============================================"
+banner
 echo "  Miyoo Flip Preloader Eraser"
 echo "  MASKROM access without disassembly"
-echo "============================================"
 echo ""
 echo "Erasing SPI NAND preloader (blocks 0-15)."
 echo ""
@@ -275,17 +295,36 @@ else
     fi
 fi
 
+banner
+
+if [ $FAIL -gt 0 ]; then
+    echo "  ***  ERASE FAILED  ***"
+    echo ""
+    echo "$FAIL block(s) did not erase. The preloader may be partly"
+    echo "intact, so what the device does on the next boot is not"
+    echo "predictable: it may still boot stock, or drop into MASKROM."
+    echo ""
+    echo "Recover from MASKROM with xrock if it does not come up."
+    echo "The bootrom is not stored in SPI, so this is always possible."
+else
+    echo "  ***  PRELOADER ERASED  —  SUCCESS  ***"
+    echo ""
+    echo "From the next power-on:"
+    echo ""
+    echo "  no SD card       -> MASKROM. Connect USB and use xrock,"
+    echo "                      no screws and no button needed."
+    echo "  bootable SD card -> that OS boots from the card."
+    echo ""
+    echo "Internal stock boot is GONE until a preloader is written"
+    echo "back. From ROCKNIX: run restore-preloader.sh in the"
+    echo "apommel-multiboot app. From a PC: MASKROM + xrock."
+fi
+
 echo ""
-echo "============================================"
-echo "  Done. Rebooting."
-echo "============================================"
-echo ""
-echo "  no SD card       -> MASKROM (connect USB, use xrock)"
-echo "  bootable SD card -> that OS boots from the card"
-echo ""
+echo "Rebooting in 15 seconds ..."
 
 echo none > /sys/class/leds/charger/trigger 2>/dev/null || true
 
-sleep 2
+sleep 15
 sync
 echo b > /proc/sysrq-trigger

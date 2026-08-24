@@ -105,11 +105,41 @@ led() {
 	return 0
 }
 
+# ── Banner ────────────────────────────────────────────────────────
+#
+# Escape codes go to the screen only; putting them through log() would
+# litter the log file. The art is 63 columns, so it fits the Flip's
+# 640x480 console (80 columns at the default 8x16 font).
+
+RED=$(printf '\033[1;31m')
+NC=$(printf '\033[0m')
+
+banner() {
+	clear 2>/dev/null || printf '\033[2J\033[H'
+	printf '%s' "$RED"
+	echo ' █████╗ ██████╗  ██████╗ ███╗   ███╗███╗   ███╗███████╗██╗     '
+	echo '██╔══██╗██╔══██╗██╔═══██╗████╗ ████║████╗ ████║██╔════╝██║     '
+	echo '███████║██████╔╝██║   ██║██╔████╔██║██╔████╔██║█████╗  ██║     '
+	echo '██╔══██║██╔═══╝ ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║     '
+	echo '██║  ██║██║     ╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗███████╗'
+	echo '╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝'
+	printf '%s\n' "$NC"
+	log "SD multiboot for the Miyoo Flip — method by apommel"
+	log "https://github.com/apommel/baseos-my355"
+	log ""
+}
+
 die() {
 	log "ERROR: $*"
-	log "Nothing was written."
+	banner
+	log "  ***  $MODE FAILED  —  NOTHING WAS WRITTEN  ***"
+	log ""
+	log "  $*"
+	log ""
+	log "The preloader is untouched, so the device boots exactly as it"
+	log "did before. Details: $(basename "$LOG")"
 	led none
-	sleep 10
+	sleep 15
 	exit 1
 }
 
@@ -145,9 +175,8 @@ led heartbeat
 [ -f "$SCRIPT_DIR/installing.png" ] && [ -x /usr/bin/fbdisplay ] &&
 	/usr/bin/fbdisplay "$SCRIPT_DIR/installing.png" &
 
-log "============================================"
+banner
 log "  Miyoo Flip Multiboot  —  mode: $MODE"
-log "============================================"
 log "$(date '+%Y-%m-%d %H:%M:%S')  $(uname -srm)"
 log ""
 credits
@@ -551,8 +580,16 @@ if [ "$MODE" = "backup" ]; then
 		log "(discarded the blank copy — an erased preloader is not a"
 		log " restore point, and leaving it would imply otherwise)"
 	fi
-	log "Check only — stopping before the erase. Nothing was written."
+	banner
+	log "  ***  CHECK PASSED  —  NOTHING WAS WRITTEN  ***"
+	log ""
+	log "Every gate this unit has to clear was cleared: board, NAND"
+	log "geometry, no bad blocks, and the DRAM blob matches the"
+	log "bundled image. install-multiboot.sh is safe to run here."
+	log ""
+	log "Full report: $(basename "$LOG")"
 	led none
+	sleep 15
 	exit 0
 fi
 
@@ -623,8 +660,11 @@ if [ "$OK" != "1" ]; then
 			log "Backup restored. The device should boot as it did before."
 		else
 			log "RESTORE ALSO FAILED. Do not power off before reading this:"
-			log "  Recover with MASKROM + xrock, or write $(basename "$BACKUP")"
-			log "  from ROCKNIX with preloader-restore/write-preloader-mtd.sh."
+			log "  Retry from ROCKNIX with:"
+			log "    sh launch.sh restore $(basename "$BACKUP")"
+			log "  If the device no longer boots, recover from MASKROM"
+			log "  with xrock — the bootrom is not in SPI, so this is"
+			log "  always possible. See the wiki, boot-and-flash/flashing.md."
 		fi
 	fi
 	die "$MODE failed"
@@ -639,35 +679,30 @@ fi
 
 # ── Done ──────────────────────────────────────────────────────────
 
-log ""
-log "============================================"
+banner
 if [ "$MODE" = "restore" ]; then
-	log "  Preloader restored."
-	log "============================================"
+	log "  ***  PRELOADER RESTORED  —  SUCCESS  ***"
 	log ""
-	log "The device boots stock from internal SPI NAND again."
-	log "SD multiboot is OFF until you run this app in install mode."
+	log "The device boots stock from internal SPI NAND again, and"
+	log "ignores cards. SD multiboot is OFF."
+	log ""
+	log "To turn it back on: run install-multiboot.sh"
 else
-	log "  Preloader patched successfully."
-	log "============================================"
+	log "  ***  PRELOADER PATCHED  —  SUCCESS  ***"
 	log ""
-	log "With no card inserted the device still boots stock."
-	log "With a bootable card in the RIGHT-hand slot it boots from SD."
+	log "  no card inserted     -> stock, from internal SPI NAND"
+	log "  bootable card, RIGHT -> that OS, from SD"
 	log ""
-	log "Note: the card must carry a U-Boot FIT the stock SPL can load,"
-	log "at sector 16384 or in a GPT partition named uboot, built for"
-	log "this board. ROCKNIX qualifies. Cards made for GammaLoader"
-	log "(Knulli, GammaOS) currently do not."
+	log "The card must carry a U-Boot the stock SPL can load, built"
+	log "for this board. ROCKNIX and apommel's MinUI base qualify;"
+	log "cards made for GammaLoader (Knulli, GammaOS) do not."
+	log ""
+	log "To undo: run restore-preloader.sh"
 fi
 log ""
-log "To undo: sh launch.sh restore"
-log "         (or restore a specific image: sh launch.sh restore FILE)"
-log ""
-credits
-log ""
-log "Rebooting in 5 seconds ..."
+log "Rebooting in 15 seconds ..."
 
 led none
-sleep 5
+sleep 15
 sync
 echo b >/proc/sysrq-trigger

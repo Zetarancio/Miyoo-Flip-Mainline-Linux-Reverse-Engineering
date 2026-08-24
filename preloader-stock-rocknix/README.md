@@ -11,6 +11,6 @@ Restoring a stock preloader is part of the multiboot app: **`restore-preloader.s
 
 **Documentation:** [SD multiboot via a repaired preloader](../docs/boot-and-flash/sd-multiboot-apommel.md) · [Try ROCKNIX without opening the device](../docs/boot-and-flash/stock-rocknix-without-disassembly.md)
 
-**See also:** [Boot and flash](../docs/boot-and-flash.md) · [Flashing](../docs/boot-and-flash/flashing.md) · [Boot from SD](../docs/boot-and-flash/boot-from-sd.md) · [Stock OTA mechanism](../docs/stock-firmware-and-findings/ota-update-mechanism.md)
+**See also:** [Boot and flash](../docs/boot-and-flash.md) · [Flashing](../docs/boot-and-flash/flashing.md) · [Stock OTA mechanism](../docs/stock-firmware-and-findings/ota-update-mechanism.md)
 
 **ROCKNIX images:** [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** (GitHub Actions artifacts).

@@ -1,6 +1,6 @@
 # Flashing and partition layout
 
-Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, and restore. For **booting from SD** with xrock, see [Boot from SD](boot-from-sd.md). For a quick overview, see the [Boot and flash](../boot-and-flash.md) front page.
+Generic guide to flashing the Miyoo Flip SPI NAND: partition layout, xrock, MASKROM, backup, restore, and [booting from SD](#booting-from-sd). For a quick overview, see the [Boot and flash](../boot-and-flash.md) front page.
 
 ---
 
@@ -175,7 +175,9 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
-See [Boot from SD](boot-from-sd.md) for a brief xrock procedure. Below: scenarios, why write zeros, and restore.
+**Two easier options first.** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) boots from SD **while keeping stock on internal NAND**, and erases nothing — that is the recommended route. If you only want SD, the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) app does the same erase from software, with no PC and no MASKROM. Both are described in [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md), together with `extlinux.conf` / `FDT` for `rk3566-miyoo-flip.dtb`.
+
+The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, it destroys internal boot.
 
 To boot from an SD card (e.g. ROCKNIX) instead of internal SPI NAND: zero the preloader so the bootrom falls through to SD. Optionally erase boot and uboot so internal storage is unused.
 

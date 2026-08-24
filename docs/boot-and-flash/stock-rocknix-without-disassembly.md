@@ -131,7 +131,7 @@ This is the **standard** Miyoo Flip recovery: open the device, hold **MASKROM** 
 
 ## Alternative: clear preloader only with xrock
 
-You can instead zero the preloader from **MASKROM** with **`xrock`** — see [Boot from SD](boot-from-sd.md). That path usually needs **hardware MASKROM** (often **disassembly**).
+You can instead zero the preloader from **MASKROM** with **`xrock`** — see [Flashing — booting from SD](flashing.md#booting-from-sd). That path usually needs **hardware MASKROM** (often **disassembly**).
 
 ---
 
@@ -142,6 +142,6 @@ You can instead zero the preloader from **MASKROM** with **`xrock`** — see [Bo
 | **Stock + SD distro at once (apommel's method)** | [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) |
 | Stock OTA internals, root-code hook | [OTA update mechanism](../stock-firmware-and-findings/ota-update-mechanism.md) |
 | Partition layout, backup, `xrock` | [Flashing guide](flashing.md) |
-| SD boot via erase (classic) | [Boot from SD](boot-from-sd.md) |
+| SD boot via erase, from a PC | [Flashing — booting from SD](flashing.md#booting-from-sd) |
 | Boot chain and SPI regions | [Boot and flash (front)](../boot-and-flash.md) |
 | ROCKNIX releases | [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (`flip`) |

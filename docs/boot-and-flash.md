@@ -87,7 +87,7 @@ Quick steps: (1) enter MASKROM, load loader, `xrock flash`. (2) Erase boot and u
 
 **Backup first.** Restore internal boot by reflashing preloader and uboot.
 
-**[Full SD boot procedure →](boot-and-flash/boot-from-sd.md)**
+**[Full SD boot procedure →](boot-and-flash/flashing.md#booting-from-sd)**
 
 **Prefer not to open the device?** Best option is [**SD multiboot**](boot-and-flash/sd-multiboot-apommel.md), which keeps stock bootable. The **Preloader Eraser** app remains the way to reach **MASKROM** from software: [**stock-rocknix-without-disassembly.md**](boot-and-flash/stock-rocknix-without-disassembly.md).
 

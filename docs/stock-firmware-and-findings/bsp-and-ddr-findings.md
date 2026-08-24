@@ -29,7 +29,7 @@ Independent corroboration from the row below: **ROCKNIX boots this hardware with
 - Usage: `xrock extra maskrom --rc4 off --dram rk356x_usbplug_v1.17.bin --delay 10`
 
 **ROCKNIX DDR:**
-- From ROCKNIX boot (see [Boot from SD](../boot-and-flash/boot-from-sd.md), [Flashing](../boot-and-flash/flashing.md#booting-from-sd)): Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
+- From ROCKNIX boot (see [Booting from SD](../boot-and-flash/flashing.md#booting-from-sd)): Boot log shows `DDR ... typ 24/09/03 fwver: v1.23` (ROCKNIX DDR from SD)
 
 ### 2. DMC (Dynamic Memory Controller) configuration
 
@@ -81,7 +81,7 @@ From [Flashing](../boot-and-flash/flashing.md):
 - U-Boot (0x300000): U-Boot FIT (ATF + OP-TEE + U-Boot)
 
 **GammaOS bootloader:**
-From boot-from-SD procedure (see [Boot from SD](../boot-and-flash/boot-from-sd.md), [Flashing](../boot-and-flash/flashing.md#booting-from-sd)):
+From the boot-from-SD procedure (see [Booting from SD](../boot-and-flash/flashing.md#booting-from-sd)):
 - Preloader: Updated DDR init + GammaOS SPL
 - U-Boot: GammaOS U-Boot with ATF + OP-TEE
 

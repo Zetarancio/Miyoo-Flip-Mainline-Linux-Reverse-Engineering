@@ -19,7 +19,7 @@ The distribution repo holds the build system and device sources; **this `main` b
 | none | **stock**, from internal SPI NAND |
 | a card the stock SPL can load a U-Boot from | **that OS**, from SD |
 
-Nothing is erased and official Miyoo firmware updates survive it. Method by **[apommel](https://github.com/apommel/baseos-my355)** — see [Thanks](#thanks).
+Nothing is erased and official Miyoo firmware updates survive it. Because the internal boot chain stays intact, so does the **charging animation while the device is off** — an erased device charges with a black screen, indistinguishable from a dead one. Method by **[apommel](https://github.com/apommel/baseos-my355)** — see [Thanks](#thanks).
 
 ### If ROCKNIX already boots from a card
 

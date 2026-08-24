@@ -316,8 +316,11 @@ else
     echo "  bootable SD card -> that OS boots from the card."
     echo ""
     echo "Internal stock boot is GONE until a preloader is written"
-    echo "back. From ROCKNIX: run restore-preloader.sh in the"
-    echo "apommel-multiboot app. From a PC: MASKROM + xrock."
+    echo "back, and with it the charging animation: plugged in while"
+    echo "off, the device charges behind a black screen."
+    echo ""
+    echo "To put it back, from ROCKNIX: run restore-preloader.sh in"
+    echo "the apommel-multiboot app. From a PC: MASKROM + xrock."
 fi
 
 echo ""

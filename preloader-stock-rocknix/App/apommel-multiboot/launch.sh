@@ -692,6 +692,7 @@ else
 	log ""
 	log "  no card inserted     -> stock, from internal SPI NAND"
 	log "  bootable card, RIGHT -> that OS, from SD"
+	log "  charger while off    -> stock battery animation, as before"
 	log ""
 	log "The card must carry a U-Boot the stock SPL can load, built"
 	log "for this board. ROCKNIX and apommel's MinUI base qualify;"

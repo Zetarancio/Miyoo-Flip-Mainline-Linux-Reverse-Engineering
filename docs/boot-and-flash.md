@@ -89,7 +89,7 @@ Three routes, in order of how much they cost you:
 | [**Preloader Eraser**](boot-and-flash/stock-rocknix-without-disassembly.md) — erase it from software | no | no |
 | [**xrock from MASKROM**](boot-and-flash/flashing.md#booting-from-sd) — zero it from a host | no | yes |
 
-All three end with the bootrom or SPL loading U-Boot from the card instead of internal NAND. The difference is what happens when no card is inserted: multiboot still boots stock, the other two leave the device in MASKROM.
+All three end with the bootrom or SPL loading U-Boot from the card instead of internal NAND. The difference is what happens when no card is inserted: multiboot still boots stock, the other two leave the device in MASKROM — which also means no off-state [charging animation](boot-and-flash/sd-multiboot-apommel.md#where-the-off-state-charging-animation-comes-from), since that is drawn by the internal U-Boot the erase strands.
 
 ---
 

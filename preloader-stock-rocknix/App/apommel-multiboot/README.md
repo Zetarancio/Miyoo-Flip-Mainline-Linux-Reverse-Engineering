@@ -8,7 +8,7 @@ Repairs the SPI NAND preloader so the SPL can read an SD card, giving automatic 
 | card with a U-Boot the stock SPL can load | that OS from SD |
 | card without one | falls through to stock |
 
-Unlike **[PreloaderEraser](../PreloaderEraser/)**, which destroys the preloader so the bootrom drops into MASKROM, this **repairs** it.
+Unlike **[PreloaderEraser](../PreloaderEraser/)**, which destroys the preloader so the bootrom drops into MASKROM, this **repairs** it. Keeping the internal chain also keeps the **off-state charging animation** — it is drawn by the internal U-Boot, so an erased device charges behind a black screen ([why](../../../docs/boot-and-flash/sd-multiboot-apommel.md#where-the-off-state-charging-animation-comes-from)).
 
 ## Credits
 
@@ -20,7 +20,6 @@ Thanks to apommel for doing the hard part and writing it up clearly enough to be
 
 The wiki page **[SD multiboot via a repaired preloader](../../../docs/boot-and-flash/sd-multiboot-apommel.md)** carries the full write-up: independent verification against this project's unit, why stock cannot write the preloader, the provenance of the bundled images, and the DRAM-blob argument. This file is the operator's manual for the app itself.
 
----
 ---
 
 ## Instructions

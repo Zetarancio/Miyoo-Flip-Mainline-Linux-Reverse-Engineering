@@ -44,7 +44,7 @@ Erasing the preloader leaves the bootrom with nothing to load internally, which 
 | **no SD card** | device comes up in **MASKROM** — connect USB and use `xrock` |
 | **bootable SD card** | bootrom loads the **card's own** idbloader and boots that OS |
 
-Everything an opened-case MASKROM session can do — full backup, restore, reflash — becomes reachable from software. The trade-off is that **internal stock boot is gone** until you write a preloader back, which needs ROCKNIX or a PC.
+Everything an opened-case MASKROM session can do — full backup, restore, reflash — becomes reachable from software. The trade-off is that **internal stock boot is gone** until you write a preloader back, which needs ROCKNIX or a PC. That also costs the **off-state charging animation**: it is drawn by the internal U-Boot, which nothing loads any more, so a charger plugged into an erased device charges it behind a black screen ([why](sd-multiboot-apommel.md#where-the-off-state-charging-animation-comes-from)).
 
 1. Copy **`PreloaderEraser`** from [`preloader-stock-rocknix/App/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App) to **`SDCARD/App/PreloaderEraser/`**.
    Optional: add **`icon.png`** next to `launch.sh` for a launcher icon (`config.json` references it).

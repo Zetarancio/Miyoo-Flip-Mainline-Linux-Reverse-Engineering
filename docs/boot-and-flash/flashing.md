@@ -42,7 +42,7 @@ Both yield five partitions with rootfs at `mtdblock3`. If you see six partitions
 3. While holding, connect USB to the host.
 4. Confirm with `lsusb` (Rockchip USB device).
 
-**Without the button (many cases):** If the SPI **preloader** is blank or invalid and **no bootable SD** is inserted, connecting USB often still brings up **MASKROM** — useful when you already used the [stock preloader eraser](stock-rocknix-without-disassembly.md) or zeroed the preloader. Behaviour can vary with cable/port; see the same guide for the full stock ↔ ROCKNIX workflow.
+**Without the button (many cases):** If the SPI **preloader** is blank or invalid and **no bootable SD** is inserted, the device powers on into **MASKROM** — this is the intended use of the [preloader eraser app](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), which reaches MASKROM from software with no disassembly. Behaviour can vary with cable/port. To keep internal stock boot *and* boot from SD, patch the preloader instead: [SD multiboot](sd-multiboot-apommel.md).
 
 ---
 

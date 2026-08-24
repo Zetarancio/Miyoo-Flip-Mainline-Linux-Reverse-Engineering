@@ -1,6 +1,8 @@
 # Booting from SD
 
-To switch between stock and ROCKNIX **without** opening the shell first, see [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md) (stock **Preloader Eraser** app, ROCKNIX restore script, and **`extlinux.conf`** / **`FDT`** for `rk3566-miyoo-flip.dtb`). The steps below use **xrock** from MASKROM instead.
+**Better option first:** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) boots from SD **while keeping stock on internal NAND**, and erases nothing. The procedure below (and the eraser) destroy internal boot instead.
+
+To switch between stock and ROCKNIX **without** opening the shell first, see [Stock ↔ ROCKNIX without disassembly](stock-rocknix-without-disassembly.md) (**Preloader Eraser** app for MASKROM access, restoring internal stock boot from ROCKNIX, and **`extlinux.conf`** / **`FDT`** for `rk3566-miyoo-flip.dtb`). The steps below use **xrock** from MASKROM instead.
 
 ---
 

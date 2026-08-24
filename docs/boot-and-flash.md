@@ -6,14 +6,17 @@ How the Miyoo Flip boots, where distribution images come from, how to flash the 
 
 ## Stock ↔ ROCKNIX (no disassembly)
 
-Switch between **stock on internal SPI** and **ROCKNIX on SD** **without** removing screws for MASKROM:
+**Without** removing screws for MASKROM:
 
 | | |
 |--|--|
-| **Stock → ROCKNIX** | SD-card app erases the SPI **preloader** → reboot with **ROCKNIX** SD. |
-| **ROCKNIX → stock** | Script on ROCKNIX restores **`preloader.img`** → reboot → **stock** from NAND. |
+| **Both at once (recommended)** | **Repair** the SPI preloader so the SPL can read a card: no card → **stock**, bootable card → **SD**. Method by [apommel](https://github.com/apommel/baseos-my355) — [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). |
+| **MASKROM access** | SD-card app **erases** the SPI **preloader** → with no card the device powers on in **MASKROM**. Removes internal stock boot. |
+| **Back to stock only** | **`restore-preloader.sh`** on ROCKNIX writes a stock preloader back → reboot → **stock** from NAND. |
 
-**Article:** [Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+
+Multiboot puts U-Boot **on the card**, so each distro must ship one built for this board: ROCKNIX does, cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
 
 **Not a brick:** you can **always** recover with **USB MASKROM** (and, if needed, **disassemble** and use the hardware MASKROM button) + **`xrock`** — [Flashing](boot-and-flash/flashing.md).
 
@@ -26,7 +29,7 @@ Switch between **stock on internal SPI** and **ROCKNIX on SD** **without** remov
 | SoC | Rockchip RK3566 (quad Cortex-A55 @ 1.8 GHz) |
 | GPU | Mali-G52 2EE (Bifrost), 200–800 MHz |
 | RAM | LPDDR4 |
-| Storage | SPI NAND 128 MB (Winbond, via SFC) |
+| Storage | SPI NAND 128 MB (**ESMT**, via SFC) — 128 KiB blocks, 2 KiB pages, 64 B OOB. Stock and mainline both log `esmt SPI NAND was found`; earlier wiki text said Winbond, which the boot logs do not support. |
 | SD slots | 2× MicroSD (MMC1 @ fe2b0000, MMC2 @ fe2c0000) |
 | Display | **LMY35120-20p** (**2503x** on flex). Sure: 640×480, 2-lane DSI, RGB888 video mode (stock DTS). Presumed: FT8006M — [Display](drivers-and-dts/display.md#module-name-vs-what-is-proven) |
 | Backlight | PWM4 |
@@ -34,7 +37,7 @@ Switch between **stock on internal SPI** and **ROCKNIX on SD** **without** remov
 | Audio | RK817 codec, I2S, speaker amplifier |
 | PMIC | RK817 (main) |
 | Battery | Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (typical pack marking) |
-| VDD_CPU (I2C0) | **TCS4525 @ 0x1c** and **RK8600 @ 0x40** are both described in DTS with `status = "okay"`, like 2025 stock. **Two hardware revisions** (only one regulator populated) are **inferred from firmware, not proven**. The empty address fails probe and is ignored; the populated rail supplies VDD_CPU and the device boots. See [Board DTS / PMIC / DDR — I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator-tcs4525-and-rk8600). |
+| VDD_CPU (I2C0) | **TCS4525 @ 0x1c** and **RK8600 @ 0x40** are both described in DTS with `status = "okay"`, like 2025 stock. **Two hardware revisions** (only one regulator populated) are **inferred from firmware, not proven**. The empty address fails probe and is ignored; the populated rail supplies VDD_CPU and the device boots. See [Board DTS / PMIC / DDR — I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
 | USB | USB 2.0 OTG |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 
@@ -86,7 +89,7 @@ Quick steps: (1) enter MASKROM, load loader, `xrock flash`. (2) Erase boot and u
 
 **[Full SD boot procedure →](boot-and-flash/boot-from-sd.md)**
 
-**Prefer not to open the device?** Use the **Preloader Eraser** app and restore script — same section as above: [**stock-rocknix-without-disassembly.md**](boot-and-flash/stock-rocknix-without-disassembly.md).
+**Prefer not to open the device?** Best option is [**SD multiboot**](boot-and-flash/sd-multiboot-apommel.md), which keeps stock bootable. The **Preloader Eraser** app remains the way to reach **MASKROM** from software: [**stock-rocknix-without-disassembly.md**](boot-and-flash/stock-rocknix-without-disassembly.md).
 
 ---
 

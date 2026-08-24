@@ -13,7 +13,8 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [Boot and flash](boot-and-flash.md) | Hardware specs, where to get images, boot chain, flashing overview, SD boot overview |
 | [→ Flashing (full guide)](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, restore, boot.img format, mtdparts |
 | [→ Boot from SD](boot-and-flash/boot-from-sd.md) | Brief xrock procedure to boot from SD |
-| [→ Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md) | Preloader eraser (stock), restore script + `preloader.img`, USB MASKROM without opening, recovery |
+| [→ SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) | **Stock + SD distro at once** (method by [apommel](https://github.com/apommel/baseos-my355)): what it patches, verification, install/restore, why Knulli/GammaOS cards do not work |
+| [→ Stock ↔ ROCKNIX without disassembly](boot-and-flash/stock-rocknix-without-disassembly.md) | Preloader eraser as **MASKROM access**, restoring internal stock boot, recovery |
 | [RK3566 reference](rk3566-reference.md) | SoC overview: DDR specs, voltage domains, PLLs |
 | [→ Datasheet specs](rk3566-reference/datasheet-specs.md) | DDR types/frequencies, voltage rails, IO leakage, OPP validation |
 | [→ TRM Part 1](rk3566-reference/trm-part1-registers-dpll.md) | DDR registers, DPLL, CRU, DDR_GRF, PMU |
@@ -22,6 +23,7 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [Stock firmware and findings](stock-firmware-and-findings.md) | Stock dumps, BSP analysis overview |
 | [→ BSP and DDR findings](stock-firmware-and-findings/bsp-and-ddr-findings.md) | BSP sources, DMC driver, BL31/ATF, kernel config |
 | [→ SPI and boot chain](stock-firmware-and-findings/spi-and-boot-chain.md) | SPI layout, FIT, BL31 strings, DDR scaling, V2 SIP |
+| [→ OTA update mechanism](stock-firmware-and-findings/ota-update-mechanism.md) | `miyoo355_fw.img` format and update script, why it spares the preloader, version gating, root-code hook on stock |
 | [Drivers and DTS](drivers-and-dts.md) | Board DTS evolution, drivers, display, suspend overview |
 | [→ Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) | Required DTS nodes for patches, RK817, I2C0 RK8600, DMC, SD, joypad, final state |
 | [→ Patch portability](drivers-and-dts/patch-portability.md) | Detailed analysis: what each patch reads from DTS, BSP vs ROCKNIX, portability to other RK3566/RK3568 boards |

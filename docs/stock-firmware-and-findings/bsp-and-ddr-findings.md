@@ -1,9 +1,6 @@
-# BSP File Listing & DDR Findings
+# BSP and DDR findings
 
-## Complete file listing
-
-### `docs/` (device wiki and reference)
-- `firmware-dumps.md`, `board-dts-pmic-ddr-updates.md`, plus `obtain-and-flash.md`, `serial.md`, `flashing.md`, `boot-from-sd.md`, `hardware.md`, `display.md`, `drivers.md`, `dts-porting.md`, `troubleshooting.md`, `boot-chain.md`, `spi-and-boot-chain.md`, `suspend-and-vdd-logic.md`, `wifi-bt-power-off.md`, `unused-pins-power-saving.md`, `bsp-and-ddr-findings.md`, `trm-part1-registers-dpll.md`, `trm-part2-dmc-hwffc-dcf.md`, `rk3566-datasheet-specs.md`, `README.md`
+What the stock BSP 5.10 tree reveals about DRAM init, DMC, BL31 and power management, and how each part maps onto mainline. Page index: [docs/README.md](../README.md).
 
 ---
 
@@ -66,16 +63,12 @@ From `kernel_config`:
 - `rockchip_dfi_probe`
 - `rockchip_dfi_enable`
 
-**Mainline status:**
-From [DTS porting](../drivers-and-dts/dts-porting.md):
-> "DMC/DFI -- DDR frequency scaling (closed-source dependencies)" - BSP-only
-
-Note: An out-of-tree `rk3568_dmc.c` driver has been implemented for [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`), using the same V2 SIP + MCU/IRQ protocol as the BSP `rockchip_dmc.c`.
+**Mainline status:** no in-tree equivalent — the BSP path depends on Rockchip's V2 SIP interface, which mainline does not implement. An **out-of-tree `rk3568_dmc.c` driver covers it** for [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`), speaking the same V2 SIP + MCU/IRQ protocol as the BSP `rockchip_dmc.c`. Scaling and resume are confirmed working; see [SPI and boot chain](spi-and-boot-chain.md) and § 6 below.
 
 ### 3. BL31 and ATF firmware
 
 **ATF memory reservation (U-Boot):**
-From `miyoo-flip-main/u-boot/arch/arm/mach-rockchip/board.c`:
+From the vendor U-Boot tree, `arch/arm/mach-rockchip/board.c`:
 ```c
 /* ATF */
 mem = param_parse_atf_mem();
@@ -155,7 +148,7 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 - BSP kernel has DMC devfreq driver (`CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ=y`)
 - DFI (DDR Frequency Interface) event monitoring enabled
 - DDRCLK SIP (Secure IP) support for frequency control
-- Mainline: no equivalent (closed-source dependencies)
+- Mainline: nothing in-tree, but the out-of-tree `rk3568_dmc.c` driver provides it on `flip` (working, including after resume)
 
 **DMC configuration:**
 - DTS enables `&dfi` and `&dmc` nodes
@@ -178,7 +171,7 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 - USB plug: `rk356x_usbplug_v1.17.bin` 
 
 **Documentation:**
-- [DTS porting](../drivers-and-dts/dts-porting.md): notes DMC/DFI as BSP-only
+- [DTS porting](../drivers-and-dts/dts-porting.md): BSP-to-mainline node translation
 - [Flashing](../boot-and-flash/flashing.md): DDR init process for MASKROM mode
 - [Boot and flash](../boot-and-flash.md): obtain/flash guidance; legacy local build scripts are on branch `buildroot`
 

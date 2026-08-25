@@ -6,60 +6,15 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
-**Wiki `flip` stamp:** [`1becfbd`](https://github.com/Zetarancio/distribution/commit/1becfbd094) — *Merge upstream/next into flip* (2026-07-08). **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir; SM* platforms on 7.1.2 only). **Recent Miyoo / RK3566 commits on `flip`:** [RK3566: raise PipeWire idle timeout to 60s](https://github.com/Zetarancio/distribution/commit/32fa5f3308) · [Miyoo Flip: low-battery feedback via existing led_flash](https://github.com/Zetarancio/distribution/commit/f559f5e5aa) · [RK3566 linux: disable CONFIG_RK3568_SUSPEND_MODE while 1013 patches are .testing-disabled](https://github.com/Zetarancio/distribution/commit/ca7bb4a903) · [RK3566 patches: renumber dfi pm 1011 → 1010](https://github.com/Zetarancio/distribution/commit/3fe4002ecf) · earlier: [DTS cleanup](https://github.com/Zetarancio/distribution/commit/1f129e89df), [audio prime](https://github.com/Zetarancio/distribution/commit/79453c8d9b). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
+**Wiki `flip` stamp:** [`3c149fbbf9`](https://github.com/Zetarancio/distribution/commit/3c149fbbf9b2) — *RTL8733BU: switch to 7.1-port tree and drop local patches* (2026-08-25). **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir; SM* platforms on 7.1 / 7.2 only). **Recent Miyoo / RK3566 commits on `flip`:** [RTL8733BU 7.1-port, drop local patches](https://github.com/Zetarancio/distribution/commit/3c149fbbf9) · [Miyoo Flip DTS: enable upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044) · [Merge upstream/next into flip](https://github.com/Zetarancio/distribution/commit/e59615f198) (upstream through `75e12cfecf`; RK3566 stays 7.0.2). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
 ## Stock + SD distro at once, without opening the device
 
-**Multiboot** is the recommended setup. It **repairs** the SPI preloader instead of erasing it, so the device simply decides at power-on:
+**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS. Firmware updates and the off-state charging animation both survive. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
 
-| Card in the right-hand slot | Boots |
-|------|-------|
-| none | **stock**, from internal SPI NAND |
-| a card the stock SPL can load a U-Boot from | **that OS**, from SD |
-
-Nothing is erased and official Miyoo firmware updates survive it. Because the internal boot chain stays intact, so does the **charging animation while the device is off** — an erased device charges with a black screen, indistinguishable from a dead one. Method by **[apommel](https://github.com/apommel/baseos-my355)** — see [Thanks](#thanks).
-
-### If ROCKNIX already boots from a card
-
-The patch can only be **written** from ROCKNIX, so this is the whole procedure.
-
-1. Copy the folder **[`preloader-stock-rocknix/App/apommel-multiboot/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App/apommel-multiboot)** onto a card, keeping the folder intact. In ROCKNIX's file manager the cards appear under **`games-external`**.
-2. Run **`check-preloader.sh`** (**Execute** in the file manager). It writes nothing and tells you whether this unit is recognised and whether its DRAM blob matches the bundled image.
-3. If that looks clean, run **`install-multiboot.sh`** the same way.
-4. **Reboot.**
-
-Prefer the device UI? Copy the three scripts in **`rocknix-ports/`** to `/storage/roms/ports/` and they appear in the **Ports** menu as `Multiboot 1 Check`, `2 Install`, `3 Restore`.
-
-### If only stock boots
-
-The preloader cannot be written from stock, so it takes two steps and two reboots. In between, the device is exactly where the eraser has always left it: SD-boot only, MASKROM reachable without disassembly. Stopping after step 1 breaks nothing new.
-
-| # | Boot into | Copy | Run |
-|---|-----------|------|-----|
-| 1 | **stock** | **[`App/PreloaderEraser/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App/PreloaderEraser)** → `SDCARD/App/PreloaderEraser/` | the **“Miyoo Flip MASKROM Access (Preloader Eraser)”** launcher entry, then reboot with a ROCKNIX card inserted |
-| 2 | **ROCKNIX** (from that card) | **`App/apommel-multiboot/`** → any card, visible as `games-external` | **`check-preloader.sh`**, then **`install-multiboot.sh`**, then reboot |
-
-### To undo it
-
-Run **`restore-preloader.sh`** on ROCKNIX and reboot: a stock preloader goes back and the device boots internal stock again, ignoring cards.
-
-### Where this has been tested
-
-| System | Multiboot |
-|--------|-----------|
-| **stock** (internal NAND) | works — tested |
-| **ROCKNIX** | works — tested |
-| **[apommel's MinUI base](https://github.com/apommel/baseos-my355)** | works — the method's own target |
-| **Knulli** | **does not work** — ships an rk3568-evb U-Boot for its own SPL |
-| **GammaOS** | **not expected to work** — same model, expects GammaLoader in NAND |
-
-Because U-Boot now comes from the **card**, each distro has to ship one built for this board. Knulli and GammaOS would only need to change what their images write to the card — nothing in NAND. Until they do, those two still need the erase method, at the cost of internal stock boot: [why, in detail](docs/boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
-
-**Articles:** [SD multiboot via a repaired preloader](docs/boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](docs/boot-and-flash/stock-rocknix-without-disassembly.md)
-
-**Safety:** This path **does not brick** the SoC. The bootrom and USB MASKROM are not stored in SPI, so worst case you **open the device**, enter **MASKROM**, and **flash** with **`xrock`** like any other recovery — [Flashing](docs/boot-and-flash/flashing.md).
+Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md). Recovery: [Flashing](docs/boot-and-flash/flashing.md).
 
 ---
 
@@ -110,8 +65,10 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
 | Audio (RK817)            | Working               | PipeWire + rk817 UCM; `099-audio_prime` + **idle.timeout=60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)) |
-| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu on kernel 7.0+. Optional GPIO power-off driver; see [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
+| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu from [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) (pinned for kernel 7.0.2; no local patches). Optional GPIO power-off: [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
+| USB (upper USB-C)        | Working               | USB 2.0 **host** (`usb_host0_ehci` / `usb2phy1_otg`, VBUS `vcc5v0_host`). A high-inrush hub already inserted at power-on can brown out the board on battery. |
+| USB (lower USB-C)        | Working               | Charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). |
 | GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
 | Storage                  | Working               | SPI NAND MTD, both SD slots |
 | HDMI                     | Working               | Video and audio (when enabled in DTS) |
@@ -145,6 +102,8 @@ Findings that made mainline work on this device (details in the wiki).
 - **Full power-off / off-state drain:** The **~8 mA** battery drain while “off” was traced to RK817 **SYS_CAN_SD** (charger block stays active). **Kernel patch 0007** clears that bit in `rk817_battery_init()` (BSP parity). See [Power-off investigation](docs/miyoo-flip-power-off-investigation.md), [Troubleshooting](docs/troubleshooting.md), and [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). Earlier guidance to omit `system-power-controller` to “fix drain” is **obsolete** once 0007 is applied; DTS follows the current `flip` tree (e.g. upstream-style `pmic_pins`, [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)).
 
 - **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+
+- **USB ports:** The upper USB-C is **host** on `usb_host0_ehci` / `usb2phy1_otg` (VBUS `vcc5v0_host`). The lower USB-C is charge/gadget on `usb_host0_xhci`. Treating `usb2phy1_otg` as unused and disabling it is what broke host. [Board DTS — USB](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
 
 - **VDD_CPU / I2C0:** **`flip`** DTS uses **RK8600 only**; **TCS4525** dropped after **Miyoo’s official confirmation** there is no alternate CPU-regulator SKU ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). [Board DTS — I2C0](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator).
 

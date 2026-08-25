@@ -535,9 +535,9 @@ Added `070-wifi_shutdown` quirk that installs a systemd unit to unload `8733bu`
 
 After unbind, the log showed the normal progression through CPU off and `PM: suspend exit` on resume.
 
-**Root cause (hypothesis → validated in-tree):** On this board, nothing is routed to the `usb2phy1_otg`–backed host pair (`usb_host0_ehci` / `usb_host0_ohci`). Stock DTS still enables them; their suspend callbacks on mainline 6.18.x deadlock or stall the global suspend sequence. Likewise, `usb_host1_ohci` is only the USB 1.1 companion to the WiFi EHCI controller; the RTL8733BU is high-speed and does not need OHCI. Disabling those controllers in the device tree removes the bad suspend path while keeping `usb_host1_ehci` + `usb_host1_xhci` (on `usb2phy0_host`) for the intended topology.
+**Root cause (hypothesis at the time; later shown wrong on the EHCI):** Unbinding `fd800000.usb` (EHCI) plus the two OHCI companions unblocked suspend on **6.18**. That was read as “nothing is routed to `usb2phy1_otg` / `usb_host0_ehci`,” and those nodes were disabled in the DTS. **That mapping was false.** The upper USB-C host *is* that EHCI path; disabling it is what broke OTG/host. Current `flip` enables `usb2phy1_otg` + `usb_host0_ehci` with `phy-supply = <&vcc5v0_host>` ([06fd5cd0](https://github.com/Zetarancio/distribution/commit/06fd5cd044)). The OHCI companions stay disabled (the RTL8733BU is high-speed and does not need them). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
 
-**Device tree follow-up:** Comments in `rk3566-miyoo-flip.dts` document controller addresses, which blocks stay disabled, and why (`usb_host1_xhci` uses `usb2phy0_host` so it does not share a PHY with the WiFi EHCI on `usb2phy1_host`). This work is orthogonal to the power-off / patch 0029 discussion below.
+**Device tree follow-up (historical):** Comments of that era documented the controllers as disabled. That comment block is obsolete; current topology is in [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). Orthogonal to the power-off / patch 0029 discussion below.
 
 ### Outstanding hypotheses (2026-03-31)
 

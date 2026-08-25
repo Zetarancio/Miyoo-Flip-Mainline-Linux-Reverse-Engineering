@@ -2,7 +2,7 @@
 
 ## Miyoo Flip — ROCKNIX `flip` branch (current)
 
-Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** (device images; merges `upstream/next` periodically — wiki stamp **`1becfbd`**, 2026-07-08).
+Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** (device images; merges `upstream/next` periodically — wiki stamp **`3c149fbbf9`**, 2026-08-25).
 
 | Mode | Miyoo Flip today | Notes |
 |------|------------------|--------|

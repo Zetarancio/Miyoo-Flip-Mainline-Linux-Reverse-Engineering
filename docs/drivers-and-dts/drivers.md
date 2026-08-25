@@ -7,7 +7,21 @@ Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware an
 ### Overview
 
 The Miyoo Flip uses a Realtek RTL8733BU USB combo module for WiFi
-(802.11ac) and Bluetooth. **WiFi works** with the out-of-tree 8733bu driver (built from [ROCKNIX/RTL8733BU](https://github.com/ROCKNIX/RTL8733BU), branch `v5.15.12-126-wb`). The driver handles USB, WiFi, and Bluetooth; rfkill provides software on/off for the radios.
+(802.11ac) and Bluetooth. **WiFi works** with the out-of-tree 8733bu driver from
+[Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver)
+(wirenboard base, in-tree Kbuild port). `flip` pins
+[`c46aa25e`](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver/commit/c46aa25e237cb43f33390cf58eee5c69d9b32883)
+— the last commit that still builds against Linux **7.0.2**. The branch tip
+rewires `cfg80211_ops` for 7.1 MLO and will not compile until RK3566 moves
+kernel. That tree already carries Kbuild, USB/CFG80211, and WPA3/SAE
+(`IEEE80211W`); **there are no local driver patches** on `flip`
+([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)).
+The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`;
+rfkill is software on/off.
+
+Runtime tunables live in `modprobe.d/8733bu.conf` (`rtw_ips_mode=0
+rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`). WOWLAN is compiled in
+on this tree — watch it during suspend testing.
 
 ### Optional: GPIO-level power-off
 
@@ -30,7 +44,7 @@ init script handles load ordering:
 
 ### Building
 
-Clone [ROCKNIX/RTL8733BU](https://github.com/ROCKNIX/RTL8733BU) (branch `v5.15.12-126-wb`) and build against your kernel tree. There are patches avalaible to improve the driver. Legacy build scripts are on branch `buildroot`.
+Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Do not re-apply the old eight local patches (compat, WPA3, autosuspend, LPS, …) — they are in that tree or no longer needed. Legacy build scripts are on branch `buildroot`.
 
 ### Testing
 
@@ -79,10 +93,8 @@ The RK3566 has a **Mali-G52 2EE** (Bifrost architecture) GPU.
 `bifrost_port`). Loaded at boot via `/etc/init.d/S00mali`. Creates
 `/dev/mali0`.
 
-**libmali (g24p0)** -- Rockchip userspace blob from
-[JeffyCN/mirrors](https://github.com/JeffyCN/mirrors) (branch
-`libmali`). Single "mega-library" providing EGL, GLES, GBM, OpenCL.
-Blob: `libmali-bifrost-g52-g24p0-gbm.so`.
+**libmali (g29p1 on RK3566 `flip`)** -- Rockchip userspace blob.
+Blob: `libmali-bifrost-g52-g29p1-gbm.so` ([9f571902](https://github.com/Zetarancio/distribution/commit/9f57190200)). Older wiki text and captures may still say g24p0.
 
 **DTS Patch** -- `0008-arm64-dts-rockchip-add-support-for-mali-bifrost-driv.patch`
 adds `resets`, `power_policy`, and `power_model` to the GPU DTS node.
@@ -90,7 +102,7 @@ Required for IPA (thermal) and devfreq.
 
 ### Building
 
-Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. For userspace, fetch `libmali-bifrost-g52-g24p0-gbm.so` from [JeffyCN/mirrors](https://github.com/JeffyCN/mirrors) (branch `libmali`). Legacy build scripts are on branch `buildroot`.
+Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. Userspace on current `flip` is **g29p1**, not g24p0. Legacy build scripts are on branch `buildroot`.
 
 ### GPU OPP Table
 

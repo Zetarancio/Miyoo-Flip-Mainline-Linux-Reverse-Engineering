@@ -81,12 +81,3 @@ If the rootfs was not built with serial getty, you will see kernel messages but 
 2. Check for `VFS: Mounted root` in the log — if missing, the kernel may hang before mounting root (see [Troubleshooting](troubleshooting.md)).
 3. Try `init=/bin/sh` in DTS bootargs for a debug shell.
 4. Verify the UART is ttyS2 (fe660000). Some boards use ttyS1 (fe650000); try the other TX/RX pads if available.
-
----
-
-## SD card slot mapping
-
-| Physical location | SPL name | U-Boot device | DT address |
-|-------------------|----------|---------------|------------|
-| Left (near volume) | MMC2 | mmc@fe2c0000 | fe2c0000 |
-| Right (near power) | MMC1 | mmc@fe2b0000 | fe2b0000 |

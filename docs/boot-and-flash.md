@@ -30,7 +30,7 @@ Multiboot puts U-Boot **on the card**, so each distro must ship one built for th
 | GPU | Mali-G52 2EE (Bifrost), 200–800 MHz |
 | RAM | LPDDR4 |
 | Storage | SPI NAND 128 MB (**ESMT**, via SFC) — 128 KiB blocks, 2 KiB pages, 64 B OOB. Stock and mainline both log `esmt SPI NAND was found`; earlier wiki text said Winbond, which the boot logs do not support. |
-| SD slots | 2× MicroSD (MMC1 @ fe2b0000, MMC2 @ fe2c0000) |
+| SD slots | Right (near power): **MMC1** @ `fe2b0000`. Left (near volume): **MMC2** @ `fe2c0000`. |
 | Display | **LMY35120-20p** (**2503x** on flex). Sure: 640×480, 2-lane DSI, RGB888 video mode (stock DTS). Presumed: FT8006M — [Display](drivers-and-dts/display.md#module-name-vs-what-is-proven) |
 | Backlight | PWM4 |
 | WiFi/BT | RTL8733BU (USB combo) |
@@ -41,7 +41,7 @@ Multiboot puts U-Boot **on the card**, so each distro must ship one built for th
 | USB | Two USB-C: **upper** = USB 2.0 host (`usb_host0_ehci` / `usb2phy1_otg`, VBUS `vcc5v0_host`); **lower** = charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 
-Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm), [specs](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm). SD slot mapping is in [Serial — SD card slot mapping](serial.md).
+Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm), [specs](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm). Serial: [serial.md](serial.md).
 
 ---
 

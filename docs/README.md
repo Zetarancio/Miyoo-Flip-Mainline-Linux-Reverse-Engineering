@@ -33,4 +33,4 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | Standard vs deep suspend; **`next`** branch status; rk3568-suspend disabled pending ES upstream; standby estimates |
 | [Power-off / RK817 drain (full investigation)](miyoo-flip-power-off-investigation.md) | ~8 mA off-state drain: **SYS_CAN_SD** (reg 0xe6), patch 0007, BL31/PMIC evidence |
 | [Troubleshooting](troubleshooting.md) | Boot hangs, kernel notes, debug bootargs, power-off summary |
-| [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login, SD slot mapping |
+| [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login |

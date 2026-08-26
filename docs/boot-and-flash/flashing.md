@@ -185,7 +185,7 @@ To boot from an SD card (e.g. ROCKNIX) instead of internal SPI NAND: zero the pr
 
 **Why write zeros:** `xrock flash erase 0 4096` does not clear the preloader (IDBLOCK is at raw NAND level). Use `dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096` then `xrock flash write 0 /tmp/zeros.img`.
 
-**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. SPL often loads from MMC2 (left slot), U-Boot from MMC1 (right) — see [Serial — SD slot mapping](../serial.md). **GammaOS:** Same steps apply; zeroing preloader avoids SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
+**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. SPL often loads from MMC2 (left slot), U-Boot from MMC1 (right) — [slot map](../boot-and-flash.md#hardware-overview). **GammaOS:** Same steps apply; zeroing preloader avoids SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
 
 ---
 

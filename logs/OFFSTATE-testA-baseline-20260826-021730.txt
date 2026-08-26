@@ -1,0 +1,17 @@
+=== OFF-STATE TEST A: clean UNPLUGGED shutdown ===
+shutdown_time_iso:   2026-08-26T02:17:30+02:00
+shutdown_time_epoch: 1787703450
+charger:             Discharging  (0xEB=0x80 USB_EXS must be 0)
+capacity:            82 %
+charge_now:          2453408 uAh
+charge_full:         3000000 uAh
+voltage_avg:         3842130 uV
+current_avg:         -759036 uA (awake)
+gauge SOC_REG0/1/2:  0x74 0x3f 0x01
+OFF_SOURCE (before): 0x04
+SYS_CFG3 0xf4:       0x20  (SLPPIN_NULL + SLPPOL_H)
+BOOST_EN 0xb4:       0x02  (bit1 = boost)
+preloader:           patched c2009762b1704d5ed2ebbfa4346e6ecc
+
+TOMORROW: boot, then read capacity/charge_now + date, and OFF_SOURCE (0xf6).
+  drain_mA = (charge_now_before - charge_now_after) / hours_off / 1000

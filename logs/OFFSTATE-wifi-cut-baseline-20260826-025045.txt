@@ -1,0 +1,19 @@
+=== OFF-STATE TEST: wifi chip cut via rtl8733bu-power, then poweroff ===
+time_iso:    2026-08-26T02:50:52+02:00
+time_epoch:  1787705452
+uptime:      108 s
+
+--- battery baseline ---
+status:      Discharging
+capacity:    66 %
+charge_now:  1986772 uAh
+charge_full: 3000000 uAh
+voltage_avg: 3785130 uV
+current_avg: -815280 uA (awake)
+
+--- charger absent? ---
+USB_EXS 0xeb: 0x80   (0x80 = unplugged)
+
+--- PMIC going in (all defaults, nothing hacked) ---
+0xf4: 0x20   0xb4: 0x02   0xe6: 0x40
+ON_SOURCE 0xf5: 0x02   OFF_SOURCE 0xf6: 0x04

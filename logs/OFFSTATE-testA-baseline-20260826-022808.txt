@@ -1,0 +1,27 @@
+=== OFF-STATE TEST A baseline: UNPLUGGED, powered off from the UI, registers untouched ===
+time_iso:     2026-08-26T02:28:10+02:00
+time_epoch:   1787704090
+uptime:       55 s
+
+--- battery (the numbers that matter tomorrow) ---
+status:       Discharging
+capacity:     76 %
+charge_now:   2294136 uAh
+charge_full:  3000000 uAh
+voltage_now:   uV
+cat: can't open '/sys/class/power_supply/battery/voltage_now': No such file or directory
+voltage_avg:  3785270 uV
+current_avg:  -959244 uA (awake)
+
+--- charger must be absent ---
+USB_EXS 0xeb: 0x80   (bit7 set = no USB present)
+
+--- PMIC state going in ---
+SYS_CFG3 0xf4:  0x20  (expect 0x20, untouched default)
+ON_SOURCE 0xf5: 0x80
+OFF_SOURCE 0xf6:0x08
+CHRG_TERM 0xe6: 0x40  (SYS_CAN_SD must be clear)
+POWER_EN3 0xb4: 0x02  (bit1 = boost still on)
+
+--- raw gauge, in case the fuel gauge resets across the power cycle ---
+  0x9a=0xb7   0x9b=0x2a   0x9c=0x01 

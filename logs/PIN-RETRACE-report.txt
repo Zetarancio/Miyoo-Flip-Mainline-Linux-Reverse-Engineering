@@ -1,0 +1,90 @@
+PIN RETRACE  stock vs ROCKNIX (preloader restored)
+  mux entries : stock=160 rocknix=160
+  conf entries: stock=160 rocknix=160
+
+==============================================================================
+1. PINMUX: 48 identical, 112 differ
+   of which 79 are ROCKNIX claiming a pin stock leaves UNCLAIMED via unused-pins
+   and 33 are genuine functional differences:
+
+   GPIO0_A0  stock=UNCLAIMED                    rocknix=wireless-wlan/wifi-enable-h
+   GPIO0_A1  stock=UNCLAIMED                    rocknix=tsadc/tsadc-shutorg
+   GPIO0_A2  stock=pmic/soc_slppin_gpio         rocknix=pmic/pmic-pins
+   GPIO0_A3  stock=UNCLAIMED                    rocknix=pmic/pmic-int-l
+   GPIO0_C4  stock=UNCLAIMED                    rocknix=pwm5/pwm5-pins
+   GPIO0_C6  stock=UNCLAIMED                    rocknix=hall-sensor/hall-int-l
+   GPIO1_C7  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO1_D0  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO1_D1  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO1_D2  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO1_D3  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO1_D4  stock=UNCLAIMED                    rocknix=fspi/fspi-pins
+   GPIO2_C0  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO2_C1  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A1  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A3  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A4  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A5  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A6  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_A7  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-vol
+   GPIO3_B0  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-vol
+   GPIO3_B1  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_B2  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_B3  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_B4  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_B5  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_B6  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_C0  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_C1  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_C2  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO3_C3  stock=UNCLAIMED                    rocknix=gpio-control/btn-pins-ctrl
+   GPIO4_A0  stock=UNCLAIMED                    rocknix=gpio-lcd/lcd-rst
+   GPIO4_C2  stock=UNCLAIMED                    rocknix=audio-amplifier/spk-amp-enable-h
+
+==============================================================================
+2. PINCONF BIAS: 118 identical, 42 differ
+   (bias is the leakage-relevant property: a pull-up on a pin held low sinks current)
+
+   ROCKNIX pull-up where stock is NOT pull-up: 24
+   GPIO0_A0  stock=pull down  rocknix=pull up    owner=wireless-wlan/wifi-enable-h <<<
+   GPIO0_A2  stock=pull down  rocknix=disabled   owner=pmic/pmic-pins
+   GPIO0_B0  stock=disabled   rocknix=pull up    owner=unused-pins/unused-gpio0-pins <<<
+   GPIO0_C4  stock=pull down  rocknix=disabled   owner=pwm5/pwm5-pins
+   GPIO0_C6  stock=pull down  rocknix=pull up    owner=hall-sensor/hall-int-l <<<
+   GPIO0_D2  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio0-d-pins
+   GPIO0_D7  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio0-d-pins
+   GPIO1_A0  stock=disabled   rocknix=pull up    owner=unused-pins/unused-gpio1-a01-pins <<<
+   GPIO1_A1  stock=disabled   rocknix=pull up    owner=unused-pins/unused-gpio1-a01-pins <<<
+   GPIO1_C5  stock=pull down  rocknix=pull up    owner=UNCLAIMED <<<
+   GPIO1_C6  stock=pull down  rocknix=disabled   owner=UNCLAIMED
+   GPIO1_C7  stock=pull down  rocknix=disabled   owner=fspi/fspi-pins
+   GPIO1_D0  stock=pull down  rocknix=disabled   owner=fspi/fspi-pins
+   GPIO1_D1  stock=pull up    rocknix=disabled   owner=fspi/fspi-pins
+   GPIO1_D2  stock=pull up    rocknix=disabled   owner=fspi/fspi-pins
+   GPIO1_D3  stock=pull up    rocknix=disabled   owner=fspi/fspi-pins
+   GPIO1_D4  stock=pull up    rocknix=disabled   owner=fspi/fspi-pins
+   GPIO3_A1  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_A3  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_A4  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_A5  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_A6  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_A7  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-vol <<<
+   GPIO3_B0  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-vol <<<
+   GPIO3_B1  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_B2  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_B3  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_B4  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_B5  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_B6  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_C0  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_C1  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_C2  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO3_C3  stock=pull down  rocknix=pull up    owner=gpio-control/btn-pins-ctrl <<<
+   GPIO4_A0  stock=pull down  rocknix=disabled   owner=gpio-lcd/lcd-rst
+   GPIO4_C5  stock=disabled   rocknix=pull down  owner=usb/vcc5v0-host-en
+   GPIO4_C6  stock=pull down  rocknix=pull up    owner=headphone/hp-det <<<
+   GPIO4_D3  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio4-d2-pins
+   GPIO4_D4  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio4-d2-pins
+   GPIO4_D5  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio4-d2-pins
+   GPIO4_D6  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio4-d2-pins
+   GPIO4_D7  stock=disabled   rocknix=pull down  owner=unused-pins/unused-gpio4-d2-pins

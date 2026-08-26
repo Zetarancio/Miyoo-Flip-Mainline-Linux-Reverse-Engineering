@@ -1,0 +1,22 @@
+=== OFF-STATE TEST A baseline v2: UNPLUGGED, SLPPOL_L applied, power off from the UI ===
+
+--- confirm the previous attempt was the broken path ---
+ON_SOURCE  0xf5: 0x02
+OFF_SOURCE 0xf6: 0x08   (0x04 = failed power-down, 0x08 = good SLPPIN_DN)
+uptime:          96 s
+
+--- apply BSP polarity ---
+0xf4 before: 0x20
+0xf4 after:  0x00   (SLPPOL_L; shutdown adds DN_FUN -> 0x10)
+
+--- baseline for tomorrow ---
+time_iso:    2026-08-26T02:30:31+02:00
+time_epoch:  1787704231
+status:      Discharging
+capacity:    75 %
+charge_now:  2258016 uAh
+charge_full: 3000000 uAh
+voltage_avg: 3821810 uV
+USB_EXS 0xeb:0x80   (0x80 = unplugged, required)
+CHRG_TERM 0xe6: 0x40
+POWER_EN3 0xb4: 0x02

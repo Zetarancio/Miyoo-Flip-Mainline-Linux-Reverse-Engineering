@@ -1,0 +1,12 @@
+=== OFF-STATE TEST A, FINAL BASELINE ===
+config:      SLPPOL_L (0xf4=0x00) + boost/OTG disabled (0xb4 mask write 0x60), UNPLUGGED
+time_iso:    2026-08-26T02:31:33+02:00
+time_epoch:  1787704293
+status:      Discharging
+capacity:    75 %
+charge_now:  2243396 uAh
+charge_full: 3000000 uAh
+voltage_avg: 3821530 uV
+USB_EXS 0xeb:0x80   (0x80 = unplugged)
+0xf4:        0x00
+0xb4 before: 0x02   (bit1 = boost on)

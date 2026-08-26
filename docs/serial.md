@@ -22,6 +22,10 @@ Use a USB-to-TTL adapter with **3.3V logic** (e.g. FT232RL, CP2102, CH340G). Set
 
 ## Wiring
 
+UART test pads on the opened board (photo from [steward-fu](https://steward-fu.github.io/website/handheld/miyoo_flip_uart.htm)):
+
+![Miyoo Flip UART pads](pictures/miyoo_flip_uart.jpg)
+
 | Miyoo Flip | Adapter |
 |------------|---------|
 | TX | RX |

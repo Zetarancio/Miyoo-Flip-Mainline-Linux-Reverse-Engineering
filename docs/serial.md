@@ -44,6 +44,8 @@ Do not connect adapter VCC to the Flip if the Flip is powered by battery or USB.
 
 ## Connecting
 
+If `/dev/ttyUSB0` is permission denied, add yourself to group `uucp` and log in again: `sudo usermod -aG uucp "$USER"`.
+
 ```bash
 # Find the adapter
 ls /dev/ttyUSB*

@@ -8,7 +8,7 @@ Commit history: [`next` (integration)](https://github.com/Zetarancio/distributio
 
 ## Board DTS, PMIC, DDR — recent evolution
 
-What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–004**), upper USB-C host. **Kernel:** **7.0.2** on `flip` (tip **`86de6632e5`**).
+What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–006**), upper USB-C host. **Kernel:** **7.0.2** on `flip` (tip **`47fb7252bc`**).
 
 **[Full board DTS details →](drivers-and-dts/board-dts-pmic-ddr-updates.md)** | **[Patch portability analysis →](drivers-and-dts/patch-portability.md)**
 
@@ -16,7 +16,7 @@ What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree p
 
 ## Drivers: WiFi/Bluetooth and GPU
 
-RTL8733BU WiFi/BT combo from [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) (pinned for 7.0.2; **local patches 001–004**), architecture, firmware, optional GPIO power-off. Mali-G52: mali_kbase vs Panfrost, OPP table (200–800 MHz), **libmali g29p1**, DTS patch, known harmless warnings.
+RTL8733BU WiFi/BT combo from [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) (pinned for 7.0.2; **local patches 001–006**), architecture, firmware, optional GPIO power-off. Mali-G52: mali_kbase vs Panfrost, OPP table (200–800 MHz), **libmali g29p1**, DTS patch, known harmless warnings.
 
 **[Full drivers guide →](drivers-and-dts/drivers.md)**
 

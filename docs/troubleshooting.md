@@ -64,6 +64,12 @@ resolve:
 
 **Bluetooth scan empty in EmulationStation:** the agent died after the dbussy bump (`get_running_loop` NameError). Fixed by [86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5) — pass an explicit event loop.
 
+**Wi-Fi will not reconnect; NetworkManager says “Secrets were required, but not provided”:** two separate bugs used that string. A disconnect that left the interface up kept `wdev->connected` set, so iwd’s randomized scans failed (`-EOPNOTSUPP`) — **004** now indicates the disconnect once ([ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9)). A WPA2/WPA3 AP that finishes SAE and then never associates is **006** ([69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b)); the 7.1-port tree did not carry those SAE fixes.
+
+**After suspend the board is on a different network or lease:** concurrent mode registered **wlan0** and **wlan1**; `wifictl pin` always targeted wlan0. **005** drops `CONFIG_CONCURRENT_MODE` ([6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87)).
+
+**Bluetooth or Wi-Fi dead after sleep:** chip power for suspend is **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)). The Miyoo Flip post-sleep rfkill quirk is gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); `bluetooth.service` still has the `060-btusb_power` drop-in.
+
 **Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. The **~8 mA** leak is **SYS_CAN_SD**. Prefer **`ON_SOURCE`** over **`OFF_SOURCE`** when reading the old notebook.
 
 ## Power/Battery Status

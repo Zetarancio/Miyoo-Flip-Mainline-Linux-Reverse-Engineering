@@ -14,16 +14,18 @@ The Miyoo Flip uses a Realtek RTL8733BU USB combo module for WiFi
 — the last commit that still builds against Linux **7.0.2**. The branch tip
 rewires `cfg80211_ops` for 7.1 MLO and will not compile until RK3566 moves
 kernel. That tree already carries Kbuild, USB/CFG80211, and WPA3/SAE
-(`IEEE80211W`). The 7.1-port switch ([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)) dropped eight old patches; four **local** ones are back on `flip` because the upstream tree still lacks them:
+(`IEEE80211W`). The 7.1-port switch ([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)) dropped eight old patches. Six **local** ones are on `flip` because the upstream tree still lacks the defects they fix, or because ROCKNIX does not want the fork's concurrent-mode build:
 
 | Patch | Why it exists |
 |-------|----------------|
 | **001** [39d9bb5](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3) | `usb_register_driver()` overwrites `driver.shutdown`; hook `usb_driver.shutdown` so `rtw_dev_shutdown()` actually runs. |
 | **002** same commit | Bound the `bips_processing` wait at 500 ms; dedicated `reset_resume`. |
 | **003** [6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf) | Shutdown path must not indicate disconnect after cfg80211 already released the BSS (`cfg80211_put_bss` UAF → panic → **warm reboot** instead of power-off). |
-| **004** [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b) | Same double-release on a userspace disconnect (`nmcli device disconnect wlan1`). |
+| **004** [ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9) (rewrote [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b)) | Indicate a disconnect **once**. The driver reports it from several paths; `__cfg80211_disconnected()` releases BSSes on each. Testing `wdev->connected` makes later calls no-ops. An earlier version suppressed the cfg80211 path and left `wdev->connected` set after `nmcli device disconnect`, so iwd's randomized scans returned `-EOPNOTSUPP` and NetworkManager reported “Secrets were required, but not provided”. |
+| **005** [6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87) | Drop `CONFIG_CONCURRENT_MODE`. The fork registered **wlan0** and **wlan1** for one radio; `wifictl` always picks the first `wlan*`, NetworkManager often associated on wlan1, and `wifictl pin` before suspend pinned nothing. |
+| **006** [69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b) | Restore SAE/WPA3 fixes dropped with the 7.1-port switch. PMF compiled in is not SAE. Symptom: connect against a WPA2/WPA3 AP never finishes the association (same NM “Secrets were required” string). |
 
-Do not re-apply the dropped compat/WPA3/LPS/autosuspend set — those live in the 7.1-port tree. The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`; rfkill is software on/off.
+Do not re-apply the dropped compat/LPS/autosuspend set — those live in the 7.1-port tree. The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`; rfkill is software on/off.
 
 Runtime tunables live in `modprobe.d/8733bu.conf` (`rtw_ips_mode=0
 rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`). WOWLAN is compiled in
@@ -31,7 +33,7 @@ on this tree — watch it during suspend testing.
 
 ### Optional: GPIO-level power-off
 
-The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. If you want to **shut down the combo at the GPIO level** (full hardware power-off when both radios are off, for maximum battery savings), you can use an **optional separate driver** that owns the enable GPIO and ties it to rfkill. See [WiFi/BT power-off](wifi-bt-power-off.md) for the rationale and typical implementation.
+The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. **RTL8733BU-POWER** owns that GPIO, ties it to two rfkill devices, and now also cuts power in **`.suspend_late`** and restores it in **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), so the Miyoo Flip `sleep.d` pre/post rfkill quirks are gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). See [WiFi/BT power-off](wifi-bt-power-off.md).
 
 ### Architecture
 
@@ -50,7 +52,7 @@ init script handles load ordering:
 
 ### Building
 
-Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply only the four `flip` patches above (001–004). Legacy build scripts are on branch `buildroot`.
+Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply the six `flip` patches above (001–006). Legacy build scripts are on branch `buildroot`.
 
 ### Testing
 

@@ -18,7 +18,9 @@ To actually **power off** the combo (and save maximum battery when both WiFi and
 
 Without a driver that does this (e.g. **RTL8733BU-POWER** or a similar power-control driver), the WiFi/BT combo **cannot be fully powered off**; it can only be “soft” disabled via rfkill while the chip remains powered.
 
-**Zetarancio `flip` (2026-04):** Miyoo Flip quirks and modprobe ordering for this combo evolve in-tree — see [f397258](https://github.com/Zetarancio/distribution/commit/f397258), [1af2a32](https://github.com/Zetarancio/distribution/commit/1af2a32), [2a51ce0](https://github.com/Zetarancio/distribution/commit/2a51ce0), [e57d731](https://github.com/Zetarancio/distribution/commit/e57d731); summary line on the [wiki README](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/README.md).
+**Zetarancio `flip`:** **RTL8733BU-POWER** owns the enable GPIO and two rfkill devices. It cuts the GPIO in **`.suspend_late`** and restores it in **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), after USB `.suspend` has run, so a PM_SUSPEND_PREPARE cut (HCI close racing a dead device → freeze abort) and a `.suspend` cut (power pulled under a still-suspending USB function) are both avoided. The Miyoo Flip `sleep.d` **pre** hook went with that commit; the **post** rfkill quirk went in [47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc) once `.resume` powered the chip before `bluetooth.service` and `wifictl`. `060-btusb_power` still writes a `bluetooth.service` drop-in (block BT rfkill in `ExecStopPost`, unblock in `ExecStartPre`).
+
+Older quirk commits, for history: [f397258](https://github.com/Zetarancio/distribution/commit/f397258), [1af2a32](https://github.com/Zetarancio/distribution/commit/1af2a32), [2a51ce0](https://github.com/Zetarancio/distribution/commit/2a51ce0), [e57d731](https://github.com/Zetarancio/distribution/commit/e57d731).
 
 ---
 

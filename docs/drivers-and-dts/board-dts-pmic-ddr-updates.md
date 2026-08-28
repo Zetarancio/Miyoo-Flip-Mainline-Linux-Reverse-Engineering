@@ -1,8 +1,8 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`3c149fbbf9`** — *RTL8733BU: switch to 7.1-port tree and drop local patches*, 2026-08-25; RK3566 **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`86de6632e5`** — *rocknix-bluetooth-agent: pass an explicit event loop to dbussy*, 2026-08-28; RK3566 **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
 
-**Post-merge Miyoo / RK3566 work on `flip`:** [Upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044) (`usb2phy1_otg` / `usb_host0_ehci`); [RTL8733BU 7.1-port tree, no local patches](https://github.com/Zetarancio/distribution/commit/3c149fbbf9); [Merge upstream/next](https://github.com/Zetarancio/distribution/commit/e59615f198) (RK3566 stays 7.0.2). Earlier: PipeWire **`pulse.idle.timeout = 60`** ([32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)); LED low-battery via shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); DFI PM patch at **`1010`** (upstream took **1011** for goodix — [3fe4002](https://github.com/Zetarancio/distribution/commit/3fe4002ecf)); **`CONFIG_RK3568_SUSPEND_MODE`** off while **1013** is `.testing-disabled` ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) (adc-keys removed, hall lid, **TCS4525** dropped — [I2C0](#i2c0-cpu-regulator)); [*prime rk817 Playback Mux*](https://github.com/Zetarancio/distribution/commit/79453c8d9b) (`099-audio_prime`).
+**Post-merge Miyoo / RK3566 work on `flip`:** RTL8733BU **001–004** ([39d9bb5](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3), [6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b)); Bluetooth agent loop ([86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5)); [Upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044); [7.1-port tree](https://github.com/Zetarancio/distribution/commit/3c149fbbf9); [Merge upstream/next](https://github.com/Zetarancio/distribution/commit/e59615f198) (RK3566 stays 7.0.2). Earlier: PipeWire **`pulse.idle.timeout = 60`** ([32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)); LED low-battery via shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); DFI PM at **`1010`**; **`CONFIG_RK3568_SUSPEND_MODE`** off while **1013** is `.testing-disabled` ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). [*DTS cleanup*](https://github.com/Zetarancio/distribution/commit/1f129e89df) (adc-keys, hall, **TCS4525** dropped — [I2C0](#i2c0-cpu-regulator)); [*prime rk817 Playback Mux*](https://github.com/Zetarancio/distribution/commit/79453c8d9b).
 
 ---
 
@@ -101,7 +101,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | Topic | Notes |
 |-------|--------|
 | **rk8xx suspend/resume** | Kernel patches align RK817 sleep/resume with BSP ordering (e.g. `SLPPIN_SLP_FUN`, resume path). DTS may use `pmic-reset` tied to sleep-pin GPIO for reliable resume. |
-| **Full power-off** | Off-state **current** is dominated by **SYS_CAN_SD** until patch **0007** clears it (BSP parity). **OFF_SOURCE** on this board points to **SLPPIN_DN + BL31** for software `poweroff`; `system-power-controller` / DEV_OFF is not the recorded mechanism. Details: [investigation](../miyoo-flip-power-off-investigation.md), [troubleshooting](../troubleshooting.md). |
+| **Full power-off** | Off-state **current** is **SYS_CAN_SD** until patch **0007** (BSP parity). Validate a real off with **`ON_SOURCE = 0x80`**; **`0x02` is a warm reboot** (was the 8733bu panic). Prefer `ON_SOURCE` over `OFF_SOURCE`. Multiboot preloader does not change drain. Details: [investigation](../miyoo-flip-power-off-investigation.md#re-verification-2026-08-27), [troubleshooting](../troubleshooting.md). |
 | **Deep sleep** | **1013** + **`vdd_logic` off-in-suspend** — **deferred** on **`flip`** (`.testing-disabled`, Kconfig off) until EmulationStation upstream fix. Standard suspend still works. See [suspend and vdd_logic](suspend-and-vdd-logic.md). |
 | **vcc9 / BOOST** | Document clearly that RK817 `vcc9` needs the correct supply (e.g. avoid fw_devlink cycles vs `dcdc_boost`). |
 
@@ -140,7 +140,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | Topic | Notes |
 |-------|--------|
 | **DSI / panel** | Module **LMY35120-20p**; DSI facts from stock DTS — see [Display — sure vs presumed](display.md#module-name-vs-what-is-proven). Init/flags aligned with **`miyoo355_fw_20250527`** where they diverged from 2024 dumps. |
-| **RTL8733BU** | GPIO power rail (`rtl8733bu-power`) plus the 7.1-port driver tree (no local patches). Runtime `modprobe` still sets IPS/LPS/USB autosuspend. See [drivers](drivers.md), [WiFi/BT power-off](wifi-bt-power-off.md). |
+| **RTL8733BU** | GPIO power rail (`rtl8733bu-power`) plus the 7.1-port driver tree and local patches **001–004**. Runtime `modprobe` still sets IPS/LPS/USB autosuspend. See [drivers](drivers.md), [WiFi/BT power-off](wifi-bt-power-off.md). |
 
 ---
 
@@ -205,7 +205,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 |------|-------------|
 | **RK817 power-off / off-state drain** | **~8 mA “off” drain** is fixed by kernel **patch 0007** (clear **SYS_CAN_SD** in `rk817_charger`). See [investigation](../miyoo-flip-power-off-investigation.md) and [troubleshooting](../troubleshooting.md). DTS for `system-power-controller` and SLPPIN pinctrl follows the live `flip` tree ([560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb), [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)). Omitting `system-power-controller` was **not** the real fix for the mA-level leak. |
 | **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
-| **WiFi (RTL8733BU)** | Driver tree is [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) pinned at `c46aa25e` (last commit that still builds on 7.0.2). **No local patches.** GPIO cut-off is the separate **RTL8733BU-POWER** driver. Runtime: `rtw_ips_mode=0 rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`. |
+| **WiFi (RTL8733BU)** | Driver tree is [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) pinned at `c46aa25e`. **Local patches 001–004** (shutdown hook, suspend bound, two cfg80211 BSS double-release fixes). GPIO cut-off is **RTL8733BU-POWER**. Runtime: `rtw_ips_mode=0 rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
 | **DMC / suspend** | Out-of-tree **DMC** + **DFI 1010** PM patch. **1013** rk3568-suspend **`.testing-disabled`**; `CONFIG_RK3568_SUSPEND_MODE` **not set** ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)) until EmulationStation upstream fix — [suspend](suspend-and-vdd-logic.md). |
 | **VDD_CPU (I2C0)** | **RK8600 @ 0x40** only; **TCS4525** removed per **Miyoo official confirmation** (no second regulator SKU) ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
@@ -223,7 +223,7 @@ After each merge from `upstream/next`, re-check these **Miyoo Flip invariants** 
 | Must keep | Why |
 |-----------|-----|
 | `rk3566-miyoo-flip` in `config.xml` | Device profile |
-| `ADDITIONAL_DRIVERS` … `RTL8733BU RTL8733BU-POWER` | WiFi/BT stack (driver tree has **no** local patches; POWER is the GPIO cut-off) |
+| `ADDITIONAL_DRIVERS` … `RTL8733BU RTL8733BU-POWER` | WiFi/BT stack. Keep patches **001–004**; POWER is the GPIO cut-off |
 | Upper USB-C host: `usb2phy1_otg` + `usb_host0_ehci` + `phy-supply = <&vcc5v0_host>` | Do not re-disable as “unused” |
 | `CONFIG_ARM_RK3568_DMC_DEVFREQ=y`; patches **0007**, **1010**, **1012a/b** | DMC + off-state drain |
 | **1013** `.testing-disabled`; `CONFIG_RK3568_SUSPEND_MODE` **off** | Deep suspend deferred (ES) |

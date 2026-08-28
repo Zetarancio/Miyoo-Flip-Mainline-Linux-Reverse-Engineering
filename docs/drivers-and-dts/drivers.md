@@ -14,10 +14,16 @@ The Miyoo Flip uses a Realtek RTL8733BU USB combo module for WiFi
 — the last commit that still builds against Linux **7.0.2**. The branch tip
 rewires `cfg80211_ops` for 7.1 MLO and will not compile until RK3566 moves
 kernel. That tree already carries Kbuild, USB/CFG80211, and WPA3/SAE
-(`IEEE80211W`); **there are no local driver patches** on `flip`
-([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)).
-The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`;
-rfkill is software on/off.
+(`IEEE80211W`). The 7.1-port switch ([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)) dropped eight old patches; four **local** ones are back on `flip` because the upstream tree still lacks them:
+
+| Patch | Why it exists |
+|-------|----------------|
+| **001** [39d9bb5](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3) | `usb_register_driver()` overwrites `driver.shutdown`; hook `usb_driver.shutdown` so `rtw_dev_shutdown()` actually runs. |
+| **002** same commit | Bound the `bips_processing` wait at 500 ms; dedicated `reset_resume`. |
+| **003** [6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf) | Shutdown path must not indicate disconnect after cfg80211 already released the BSS (`cfg80211_put_bss` UAF → panic → **warm reboot** instead of power-off). |
+| **004** [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b) | Same double-release on a userspace disconnect (`nmcli device disconnect wlan1`). |
+
+Do not re-apply the dropped compat/WPA3/LPS/autosuspend set — those live in the 7.1-port tree. The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`; rfkill is software on/off.
 
 Runtime tunables live in `modprobe.d/8733bu.conf` (`rtw_ips_mode=0
 rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`). WOWLAN is compiled in
@@ -44,7 +50,7 @@ init script handles load ordering:
 
 ### Building
 
-Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Do not re-apply the old eight local patches (compat, WPA3, autosuspend, LPS, …) — they are in that tree or no longer needed. Legacy build scripts are on branch `buildroot`.
+Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply only the four `flip` patches above (001–004). Legacy build scripts are on branch `buildroot`.
 
 ### Testing
 

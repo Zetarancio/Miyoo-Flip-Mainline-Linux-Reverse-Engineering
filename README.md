@@ -6,7 +6,7 @@ This repository is the **maintained wiki and reference** for the **Miyoo Flip** 
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 
-**Wiki `flip` stamp:** [`3c149fbbf9`](https://github.com/Zetarancio/distribution/commit/3c149fbbf9b2) — *RTL8733BU: switch to 7.1-port tree and drop local patches* (2026-08-25). **RK3566 kernel:** **Linux 7.0.2** (`7.0` patch dir; SM* platforms on 7.1 / 7.2 only). **Recent Miyoo / RK3566 commits on `flip`:** [RTL8733BU 7.1-port, drop local patches](https://github.com/Zetarancio/distribution/commit/3c149fbbf9) · [Miyoo Flip DTS: enable upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044) · [Merge upstream/next into flip](https://github.com/Zetarancio/distribution/commit/e59615f198) (upstream through `75e12cfecf`; RK3566 stays 7.0.2). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
+**Wiki `flip` stamp:** [`86de6632e5`](https://github.com/Zetarancio/distribution/commit/86de6632e5bf) — *rocknix-bluetooth-agent: pass an explicit event loop to dbussy* (2026-08-28). **RK3566 kernel:** **Linux 7.0.2**. **Recent Miyoo / RK3566 commits on `flip`:** [Bluetooth agent event loop](https://github.com/Zetarancio/distribution/commit/86de6632e5) · [RTL8733BU cfg80211 BSS double-release (userspace)](https://github.com/Zetarancio/distribution/commit/71db6a938b) · [same, shutdown path](https://github.com/Zetarancio/distribution/commit/6126f46bdf) · [re-add shutdown-hook + suspend-hardening](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3) · [7.1-port tree](https://github.com/Zetarancio/distribution/commit/3c149fbbf9) · [upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044) · [Merge upstream/next](https://github.com/Zetarancio/distribution/commit/e59615f198). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
@@ -65,7 +65,7 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 | Display (DSI panel)      | Working               | 640x480, panel driver |
 | Backlight                | Working               | PWM4 |
 | Audio (RK817)            | Working               | PipeWire + rk817 UCM; `099-audio_prime` + **idle.timeout=60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)) |
-| WiFi (RTL8733BU)         | Working               | Out-of-tree 8733bu from [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) (pinned for kernel 7.0.2; no local patches). Optional GPIO power-off: [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
+| WiFi (RTL8733BU)         | Working               | 7.1-port tree + local patches **001–004** (shutdown hook, suspend bound, two cfg80211 BSS double-release fixes). Optional GPIO cut-off: [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
 | Bluetooth                | Working               | Unified firmware, btusb re-probe |
 | USB (upper USB-C)        | Working               | USB 2.0 **host** (`usb_host0_ehci` / `usb2phy1_otg`, VBUS `vcc5v0_host`). A high-inrush hub already inserted at power-on can brown out the board on battery. |
 | USB (lower USB-C)        | Working               | Charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). |
@@ -104,6 +104,8 @@ Findings that made mainline work on this device (details in the wiki).
 - **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
 
 - **USB ports:** The upper USB-C is **host** on `usb_host0_ehci` / `usb2phy1_otg` (VBUS `vcc5v0_host`). The lower USB-C is charge/gadget on `usb_host0_xhci`. Treating `usb2phy1_otg` as unused and disabling it is what broke host. [Board DTS — USB](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
+
+- **Power-off vs Wi-Fi panic:** A board that “comes back on” after `poweroff` with **`ON_SOURCE = 0x02`** was a **warm reboot** (8733bu cfg80211 BSS double-free), not a charger event. **`ON_SOURCE = 0x80`** is a genuine power-off. Patches **003/004** stop the panic. The restored multiboot preloader does not change off-state drain. [Power-off investigation — 2026-08-27](docs/miyoo-flip-power-off-investigation.md#re-verification-2026-08-27).
 
 - **VDD_CPU / I2C0:** **`flip`** DTS uses **RK8600 only**; **TCS4525** dropped after **Miyoo’s official confirmation** there is no alternate CPU-regulator SKU ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). [Board DTS — I2C0](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator).
 

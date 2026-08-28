@@ -2,7 +2,7 @@
 
 Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
-**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`3c149fbbf9`** (*RTL8733BU: switch to 7.1-port tree and drop local patches*, 2026-08-25), RK3566 kernel **7.0.2**.
+**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`86de6632e5`** (*rocknix-bluetooth-agent: pass an explicit event loop to dbussy*, 2026-08-28), RK3566 kernel **7.0.2**.
 
 ---
 
@@ -31,6 +31,6 @@ Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKN
 | [→ Display](drivers-and-dts/display.md) | DSI panel bring-up, init sequence, pipeline |
 | [→ WiFi/BT power-off](drivers-and-dts/wifi-bt-power-off.md) | Optional GPIO-level power-off for RTL8733BU |
 | [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | Standard vs deep suspend; **`next`** branch status; rk3568-suspend disabled pending ES upstream; standby estimates |
-| [Power-off / RK817 drain (full investigation)](miyoo-flip-power-off-investigation.md) | ~8 mA off-state drain: **SYS_CAN_SD** (reg 0xe6), patch 0007, BL31/PMIC evidence |
+| [Power-off / RK817 drain (full investigation)](miyoo-flip-power-off-investigation.md) | ~8 mA off-state drain: **SYS_CAN_SD** (reg 0xe6), patch 0007; 2026-08-27: preloader irrelevant, Wi-Fi panic was the false “self-wake” |
 | [Troubleshooting](troubleshooting.md) | Boot hangs, kernel notes, debug bootargs, power-off summary |
 | [Serial](serial.md) | How to obtain serial: wiring, adapter, baud (1.5M), getty, login |

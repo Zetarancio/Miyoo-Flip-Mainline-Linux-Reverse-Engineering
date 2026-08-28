@@ -12,7 +12,7 @@ The distribution repo holds the build system and device sources; **this `main` b
 
 ## Stock + SD distro at once, without opening the device
 
-**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS. Firmware updates and the off-state charging animation both survive. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
+**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS (ROCKNIX, SpruceOS, apommel's MinUI base). Firmware updates and the off-state charging animation both survive. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
 
 Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md). Recovery: [Flashing](docs/boot-and-flash/flashing.md).
 

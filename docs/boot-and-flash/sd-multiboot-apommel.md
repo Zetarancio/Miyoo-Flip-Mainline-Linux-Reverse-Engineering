@@ -87,11 +87,12 @@ Once patched, **the card owns U-Boot proper.** Each distro must therefore ship a
 |--------|--------|-----|
 | **stock** (internal NAND, no card) | yes, tested | the patch repairs Miyoo's own preloader, so internal boot is unchanged |
 | **ROCKNIX** | yes, tested | ships a Miyoo Flip `u-boot.itb` at sector 16384 |
+| **SpruceOS** | yes, tested | card U-Boot the stock SPL can load |
 | **apommel's MinUI base** ([baseos-my355](https://github.com/apommel/baseos-my355)) | yes | the method's own target; card built for the repaired SPL |
 | **Knulli** | no | ships an **rk3568-evb** U-Boot intended for its own SPL |
 | **GammaOS** | expected no | same model — expects **GammaLoader** in NAND |
 
-Only the three "yes" rows have been exercised on real hardware. Anything not listed is untested rather than known-good.
+Only the "yes" rows have been exercised on real hardware. Anything not listed is untested rather than known-good.
 
 What the other two would need to change is small and entirely on their side: ship a **Miyoo Flip** U-Boot FIT in the card's `uboot` partition (or at sector 16384), built so the stock SPL can load it — ROCKNIX's `flip` build is a working reference. Nothing in NAND changes and no user-side flashing is involved. Until then, users of those distros keep the [erase method](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), which boots the card's own idbloader from sector 64, at the cost of internal stock boot. The measured failure is dissected [below](#why-knulli-fails).
 
@@ -117,7 +118,7 @@ Checked against this project's own unit (`spi_20241119160817.img`, stock preload
 
 The patched image differs from stock in **4360 bytes**, all between **`0x200e8`** and **`0xc9e1c`**, and both IDB copies still carry `RKNS` at `0x20000` and `0x80000`.
 
-Tested end state on that unit: **stock boots with no card, ROCKNIX boots with its card inserted.**
+Tested end state on that unit: **stock boots with no card, ROCKNIX boots with its card inserted.** SpruceOS and apommel's MinUI base cards also boot under the same repaired SPL — [distro compatibility](#distro-compatibility).
 
 ### Where the SPL looks for U-Boot on the card
 

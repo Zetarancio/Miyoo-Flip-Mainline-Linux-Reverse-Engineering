@@ -13,7 +13,6 @@
 | `logs/Rocknix-dump-Before-ChargerFIX.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` @ 0x20, debugfs; **before** kernel patch 0007 (SYS_CAN_SD). |
 | `logs/PMIC-oncharger-20260826-015047.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/PMIC-oncharger-20260826-015047.txt) | ROCKNIX, charger attached (2026-08-26 re-verification). |
 | `logs/PINS-nocharger-20260826-021557.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/PINS-nocharger-20260826-021557.txt) | ROCKNIX pins + PMIC, unplugged. |
-| `logs/OFFSTATE-wifi-cut-2026-08-26.md` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/OFFSTATE-wifi-cut-2026-08-26.md) | Overnight gauge test used in the 2026-08-27 write-up. |
 | `logs/PMIC-uboot-baseline-20260828-082049.txt` | U-Boot `pmic dump` after a warm reboot (Linux 0007 had already cleared 0xe6 → `0x40`). Multiboot SPL + ROCKNIX U-Boot, charger on. Stops at 0xeb. |
 | `logs/PMIC-uboot-postPOR-20260828-083530.txt` | Same dump after battery disconnect (genuine cold start, `ON_SOURCE = 0x80`). **0xe6 = 0xc5, SYS_CAN_SD set.** SPL/U-Boot do not clear the bit; it is battery-backed. |
 
@@ -53,14 +52,14 @@
 
 ## Re-verification 2026-08-27
 
-After the [apommel multiboot](boot-and-flash/sd-multiboot-apommel.md) preloader was restored, registers and overnight off-state were measured again (`logs/PMIC-oncharger-20260826-015047.txt`, `logs/PINS-nocharger-20260826-021557.txt`, `logs/OFFSTATE-wifi-cut-2026-08-26.md`).
+After the [apommel multiboot](boot-and-flash/sd-multiboot-apommel.md) preloader was restored, registers and overnight off-state were measured again (`logs/PMIC-oncharger-20260826-015047.txt`, `logs/PINS-nocharger-20260826-021557.txt`).
 
 **The restored preloader changes nothing measurable about power-off.** It only adds nine pinctrl properties on seven SD pins in the SPL FDT. The DDR blob and SPL code are identical to stock. Off-state charging animation returns because internal U-Boot runs again — that is not a PMIC change.
 
 | Claim from 2026-08-26 first pass | What it actually was |
 |----------------------------------|----------------------|
 | “37.5 mA drain” (gauge % drop while unplugged) | Fuel-gauge **OCV re-seed** at boot (`RK817_GAS_GAUGE_OFF_CNT >= 3`). Terminal voltage matched to **140 µV** over 5.7 h off. **~20 h powered off, battery unchanged at 30 %.** Mainline `rk817_charger.c` never reads `factory-internal-resistance-micro-ohms`. |
-| Board “wakes itself” (`ON_SOURCE = 0x02`, no USB) | **Kernel panic** in 8733bu: cfg80211 released a BSS twice (`cfg80211_put_bss`). The PMIC records a **warm reboot**, not a charger event. Fixed by RTL8733BU patches **003** and **004** ([6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b)). **`ON_SOURCE = 0x80`** (power key) is the marker of a genuine power-off. |
+| Board “wakes itself” (`ON_SOURCE = 0x02`, no USB) | **Kernel panic** in 8733bu: cfg80211 released a BSS twice (`cfg80211_put_bss`). The PMIC records a **warm reboot**, not a charger event. Fixed by RTL8733BU patches **003** and **004** ([6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9)). **`ON_SOURCE = 0x80`** (power key) is the marker of a genuine power-off. |
 
 **SYS_CAN_SD** (0xe6 bit 7) is **clear on stock and on ROCKNIX** once Linux patch **0007** has run. A **U-Boot dump after a true POR** (battery off, `ON_SOURCE = 0x80`) reads **0xe6 = 0xc5** — the bit is **set**, and neither the stock 2017.09 SPL nor ROCKNIX U-Boot 2026.01 clears it. The bit lives in the battery-backed domain, so a warm reboot still shows `0x40` from the previous kernel. `gpio0-0` (`rtl8733bu-power`, `GPIO_ACTIVE_LOW` + pull-up) parks Wi-Fi **off**; it is not a leak path.
 

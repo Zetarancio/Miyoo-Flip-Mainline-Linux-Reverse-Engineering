@@ -56,11 +56,15 @@ resolve:
 
 **Root cause (2026-04):** Bit **SYS_CAN_SD** (bit 7 of RK817 register **0xe6**, `CHRG_TERM`). The BSP charger driver clears it at probe; mainline `rk817_charger.c` did not, leaving the hardware default. With the bit set, the PMIC **charger monitoring block stays active** after system-off.
 
-**Fix:** Kernel patch **`0007-power-supply-rk817-disable-idle-charger-monitoring-f.patch`** — clears `SYS_CAN_SD` during `rk817_battery_init()`. Landed on the Miyoo Flip branch as [Zetarancio/distribution@560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d9d262d621d66f1108c859399db7777) (“fix ~8 mA off-state battery drain on RK817 boards”). **No DTS change is required** for this fix.
+**Fix:** Kernel patch **`0007-power-supply-rk817-disable-idle-charger-monitoring-f.patch`** — clears `SYS_CAN_SD` during `rk817_battery_init()`. Landed as [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). **No DTS change is required** for this fix. Re-checked 2026-08-27 with the multiboot preloader restored: 0xe6 bit 7 clear on stock and ROCKNIX; **~20 h off, battery unchanged**.
 
-**Full narrative:** step-by-step investigation (shutdown path, WiFi/USB dead ends, RK860, register binary search) — **[Miyoo Flip — power-off battery drain investigation](miyoo-flip-power-off-investigation.md)**.
+**Full narrative:** [Power-off investigation](miyoo-flip-power-off-investigation.md) (lab notebook) and [2026-08-27 re-verification](miyoo-flip-power-off-investigation.md#re-verification-2026-08-27).
 
-**Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. Measurement and **OFF_SOURCE** logging showed the effective shutdown path is **SLPPIN_DN + BL31** on this board; the **~8 mA** leak was **not** explained by that race alone. After patch 0007, treat **drain** as addressed; DTS choices for `system-power-controller` and SLPPIN pinctrl are documented in [Board DTS / PMIC / DDR](drivers-and-dts/board-dts-pmic-ddr-updates.md) and the investigation doc.
+**If `poweroff` comes back on by itself:** that was an 8733bu **panic** (`ON_SOURCE = 0x02` = warm reboot), not a charger. Current `flip` has patches **003/004**. A real off is **`ON_SOURCE = 0x80`**. Gauge % after a long off is not an ammeter — the charger re-seeds OCV.
+
+**Bluetooth scan empty in EmulationStation:** the agent died after the dbussy bump (`get_running_loop` NameError). Fixed by [86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5) — pass an explicit event loop.
+
+**Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. The **~8 mA** leak is **SYS_CAN_SD**. Prefer **`ON_SOURCE`** over **`OFF_SOURCE`** when reading the old notebook.
 
 ## Power/Battery Status
 

@@ -9,8 +9,13 @@
 | `bl31_v1.44_stock_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.44_stock_disasm) | Disassembly of stock-adjacent `rk3568_bl31_v1.44.elf` (Steward-fu rkbin snapshot). |
 | `bl31_v1.45_rocknix_disasm/` | [tree](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/bl31_v1.45_rocknix_disasm) | Disassembly of ROCKNIX `rk3568_bl31_v1.45.elf`. |
 | `bl31_v1.44_vs_v1.45_diff.patch` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/bl31_v1.44_vs_v1.45_diff.patch) | Diff between v1.44 and v1.45 disassembly exports. |
-| `logs/Stock-dump.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary, partial PMIC reads. |
+| `logs/Stock-dump.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Stock-dump.txt) | Stock BSP runtime: GPIO, pinmux, regulator summary. RK817 `i2cdump` starts at **`=== PMIC RK817`** (line 955) — do not read past 16 rows into the RK860 dump. |
 | `logs/Rocknix-dump-Before-ChargerFIX.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/Rocknix-dump-Before-ChargerFIX.txt) | ROCKNIX PMIC `i2cdump` @ 0x20, debugfs; **before** kernel patch 0007 (SYS_CAN_SD). |
+| `logs/PMIC-oncharger-20260826-015047.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/PMIC-oncharger-20260826-015047.txt) | ROCKNIX, charger attached (2026-08-26 re-verification). |
+| `logs/PINS-nocharger-20260826-021557.txt` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/PINS-nocharger-20260826-021557.txt) | ROCKNIX pins + PMIC, unplugged. |
+| `logs/OFFSTATE-wifi-cut-2026-08-26.md` | [blob](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/blob/main/logs/OFFSTATE-wifi-cut-2026-08-26.md) | Overnight gauge test used in the 2026-08-27 write-up. |
+| `logs/PMIC-uboot-baseline-20260828-082049.txt` | U-Boot `pmic dump` after a warm reboot (Linux 0007 had already cleared 0xe6 → `0x40`). Multiboot SPL + ROCKNIX U-Boot, charger on. Stops at 0xeb. |
+| `logs/PMIC-uboot-postPOR-20260828-083530.txt` | Same dump after battery disconnect (genuine cold start, `ON_SOURCE = 0x80`). **0xe6 = 0xc5, SYS_CAN_SD set.** SPL/U-Boot do not clear the bit; it is battery-backed. |
 
 > **Date:** 2026-03-29 — 2026-04-05
 >
@@ -38,6 +43,34 @@
 > (§14) established 8 mA as the board's hardware default and 0.05 mA as
 > stock's target.  Full PMIC register comparison (§17) identified 21
 > config differences; systematic binary search (§18) narrowed to one bit.
+>
+> **Re-read §14–§17 with [2026-08-27](#re-verification-2026-08-27):** those
+> ammeter runs were **preloader-erased**. The restored multiboot preloader
+> does not change drain. `ON_SOURCE = 0x02` is a warm reboot, not a plug-in.
+> The “21 config diffs” count mixed in RK860 rows from `Stock-dump.txt`.
+
+---
+
+## Re-verification 2026-08-27
+
+After the [apommel multiboot](boot-and-flash/sd-multiboot-apommel.md) preloader was restored, registers and overnight off-state were measured again (`logs/PMIC-oncharger-20260826-015047.txt`, `logs/PINS-nocharger-20260826-021557.txt`, `logs/OFFSTATE-wifi-cut-2026-08-26.md`).
+
+**The restored preloader changes nothing measurable about power-off.** It only adds nine pinctrl properties on seven SD pins in the SPL FDT. The DDR blob and SPL code are identical to stock. Off-state charging animation returns because internal U-Boot runs again — that is not a PMIC change.
+
+| Claim from 2026-08-26 first pass | What it actually was |
+|----------------------------------|----------------------|
+| “37.5 mA drain” (gauge % drop while unplugged) | Fuel-gauge **OCV re-seed** at boot (`RK817_GAS_GAUGE_OFF_CNT >= 3`). Terminal voltage matched to **140 µV** over 5.7 h off. **~20 h powered off, battery unchanged at 30 %.** Mainline `rk817_charger.c` never reads `factory-internal-resistance-micro-ohms`. |
+| Board “wakes itself” (`ON_SOURCE = 0x02`, no USB) | **Kernel panic** in 8733bu: cfg80211 released a BSS twice (`cfg80211_put_bss`). The PMIC records a **warm reboot**, not a charger event. Fixed by RTL8733BU patches **003** and **004** ([6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [71db6a9](https://github.com/Zetarancio/distribution/commit/71db6a938b)). **`ON_SOURCE = 0x80`** (power key) is the marker of a genuine power-off. |
+
+**SYS_CAN_SD** (0xe6 bit 7) is **clear on stock and on ROCKNIX** once Linux patch **0007** has run. A **U-Boot dump after a true POR** (battery off, `ON_SOURCE = 0x80`) reads **0xe6 = 0xc5** — the bit is **set**, and neither the stock 2017.09 SPL nor ROCKNIX U-Boot 2026.01 clears it. The bit lives in the battery-backed domain, so a warm reboot still shows `0x40` from the previous kernel. `gpio0-0` (`rtl8733bu-power`, `GPIO_ACTIVE_LOW` + pull-up) parks Wi-Fi **off**; it is not a leak path.
+
+**Do not treat as proven by the original notebook:**
+
+- §15 “stock software poweroff produces `OFF_SOURCE = 0x80`” — stock `0xf6` reads **`0x04`**, same class of value ROCKNIX shows after a long-press. Prefer **`ON_SOURCE`**.
+- §17c “21 configuration differences” — `Stock-dump.txt` has more than one `i2cdump`; reading past 16 rows pulled **RK860** data. Anchor on `=== PMIC RK817` (line 955). Power-relevant leftover diffs are a shorter set (0xb3–0xb6, 0xbb, 0xd4, 0xe4–0xe6, 0xf1, 0xf4).
+- §16 SLPPIN/SLPPOL (stock `SLPPIN_RST_FUN + SLPPOL_L` vs ROCKNIX `SLPPIN_NULL_FUN + SLPPOL_H`) — real DTS/driver difference, **no correlation** with drain or failed power-off in six trials. Align with BSP for correctness only.
+
+Still open: write `SLPPOL` to match the BSP (mainline `rk8xx_shutdown()` sets function bits only); OCV table vs stock in the 3.55–3.90 V band if percentage accuracy matters.
 
 ---
 

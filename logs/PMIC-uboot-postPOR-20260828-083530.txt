@@ -1,0 +1,33 @@
+PMIC dump at the ROCKNIX U-Boot prompt, before Linux runs.
+Date: 2026-08-28T08:35:30+02:00
+Condition: POST-POR - battery physically disconnected ~1 min, charger OUT,
+           FTDI unplugged during the window so the rails could fully collapse.
+Boot chain: stock SPL 2017.09 (SPI, multiboot preloader) -> U-Boot 2026.01 (SD).
+U-Boot banner: PMIC RK817 (on=0x80, off=0x00)  [on=0x80 = power key, genuine cold start]
+
+RESULT: 0xe6 = 0xc5, SYS_CAN_SD (bit 7) SET.
+Neither the stock 2017.09 SPL nor ROCKNIX U-Boot clears it, so kernel patch
+0007 is still the only thing that does. Baseline before the disconnect read 0x40
+purely because 0007 had cleared it on an earlier boot and the bit is in the
+battery-backed domain.
+
+Dump pmic: pmic@20 registers
+
+0x00: 13 00 09 04 08 17 05 00 00 00 01 01 00 00 82 00 
+0x10: 00 00 03 00 00 00 00 06 c8 00 00 00 00 00 00 00 
+0x20: 00 00 00 ff ff 00 00 70 00 66 00 00 00 00 00 0f 
+0x30: 82 00 00 00 a5 00 00 00 20 ff ff 00 00 e0 0f 09 
+0x40: 69 4c 04 58 30 19 65 01 01 00 00 17 00 00 17 00 
+0x50: 8c 00 01 00 01 b0 44 10 00 60 00 00 00 00 00 00 
+0x60: 00 00 00 00 00 00 00 00 00 00 00 e6 8b ff b2 00 
+0x70: 00 00 00 00 ff ff 81 25 db dd ec 87 00 00 00 00 
+0x80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+0x90: 60 80 20 80 04 df ce 80 20 7f 00 00 00 00 00 00 
+0xa0: 00 00 00 00 07 00 00 00 00 00 00 00 24 00 07 03 
+0xb0: 77 0f 0f 0f 01 05 25 ff ff 00 64 20 20 64 20 20 
+0xc0: 64 00 00 64 62 62 64 ff ff ff ff ff 30 30 0c 0c 
+0xd0: 0c 0c 6c 00 6c 6c 6c 6c 30 30 30 00 58 00 08 30 
+0xe0: 00 00 00 55 a2 c8 c5 40 00 ff 22 80 
+=> 
+Dump pmic: pmic@20 registers
+

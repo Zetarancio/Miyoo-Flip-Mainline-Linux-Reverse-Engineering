@@ -70,6 +70,8 @@ resolve:
 
 **Bluetooth or Wi-Fi dead after sleep:** chip power for suspend is **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)). The Miyoo Flip post-sleep rfkill quirk is gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); `bluetooth.service` still has the `060-btusb_power` drop-in.
 
+**Upper USB-C powers a hub but nothing enumerates:** the EHCI handed the port to its OHCI companion (`usb_host0_ohci` `fd840000`) while that node was disabled. Current `flip` enables it ([7194f26](https://github.com/Zetarancio/distribution/commit/7194f260cd)). High-speed sticks never take that handoff, so they are a bad test for this fault. The **lower** USB-C is charge/gadget only — it cannot host a bus-powered device.
+
 **Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. The **~8 mA** leak is **SYS_CAN_SD**. Prefer **`ON_SOURCE`** over **`OFF_SOURCE`** when reading the old notebook.
 
 ## Power/Battery Status

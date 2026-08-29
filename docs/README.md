@@ -2,7 +2,7 @@
 
 Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
-**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`47fb7252bc`** (*Miyoo Flip: drop the post-sleep rfkill quirk*, 2026-08-29), RK3566 kernel **7.0.2**.
+**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`7194f260cd`** (*Miyoo Flip: enable the upper port's OHCI companion*, 2026-08-29), RK3566 kernel **7.0.2**.
 
 ---
 

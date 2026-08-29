@@ -38,7 +38,7 @@ Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for
 | PMIC | RK817 (main) |
 | Battery | Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (typical pack marking) |
 | VDD_CPU (I2C0) | **RK8600 @ 0x40** only. **TCS4525 @ 0x1c** was removed from the DTS after **Miyoo officially confirmed** there is **no second CPU-regulator variant**. The 2025 stock DTS still lists both addresses, but that is BSP legacy rather than evidence of two SKUs. See [Board DTS / PMIC / DDR — I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
-| USB | Two USB-C: **upper** = USB 2.0 host (`usb_host0_ehci` / `usb2phy1_otg`, VBUS `vcc5v0_host`); **lower** = charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). |
+| USB | Two USB-C: **upper** (top) = USB 2.0 host (`usb_host0_ehci` + `usb_host0_ohci`, `usb2phy1_otg`, VBUS `vcc5v0_host`); **lower** (bottom) = charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`, no VBUS). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 
 Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm), [specs](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm). Serial: [serial.md](serial.md).

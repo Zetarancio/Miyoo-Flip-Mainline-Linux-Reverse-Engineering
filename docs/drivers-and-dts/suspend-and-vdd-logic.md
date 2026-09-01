@@ -2,11 +2,11 @@
 
 ## Miyoo Flip — ROCKNIX `flip` branch (current)
 
-Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** (device images; merges `upstream/next` periodically — wiki stamp **`7194f260cd`**, 2026-08-29).
+Source tree: **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`** (device images; merges `upstream/next` periodically — wiki stamp **`9c5dee6d29`**, 2026-09-02).
 
 | Mode | Miyoo Flip today | Notes |
 |------|------------------|--------|
-| **Standard suspend** (suspend-to-RAM / `echo mem > /sys/power/state`) | **Works** without the deep-sleep driver stack. | Normal Linux suspend. Combo chip power for sleep is **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)); the Miyoo Flip `sleep.d` 001-btusb pre/post hooks are gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). `060-btusb_power` still writes a `bluetooth.service` drop-in. Re-check after upstream **`rocknix-fake-suspend`** changes. |
+| **Standard suspend** (suspend-to-RAM / `echo mem > /sys/power/state`) | **Works** without the deep-sleep driver stack. | Normal Linux suspend. Combo chip power for sleep is **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)); the Miyoo Flip `sleep.d` 001-btusb pre/post hooks are gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). `060-btusb_power` still writes a `bluetooth.service` drop-in. Enabling **`usb_host0_ohci` without the PHY 480 MHz clock** hung here in `suspend_ops->enter()` (firmware SMC); the fourth clock is on the node now ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)). Re-check after upstream **`rocknix-fake-suspend`** changes. |
 | **Deep suspend** (BL31 `ARMOFF_LOGOFF`, lowest sleep current, **`vdd_logic` off-in-suspend**) | **Deferred** | Patches **1013a** / **1013b** are **`*.testing-disabled`**. Kernel config: **`CONFIG_RK3568_SUSPEND_MODE` is not set** ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). DTS: **`rk3568-suspend`** commented out; **`vdd_logic`** stays **`regulator-on-in-suspend`**. |
 
 **Why deep suspend is turned off even though it works:** re-enabling it is blocked on an **upstream EmulationStation** fix. Until that lands, shipping deep suspend would regress the handheld UX for typical users.

@@ -77,11 +77,11 @@ The display pipeline was the hardest subsystem to port. See
 
 ## USB
 
-Stock enables almost every USB2 host and both OTG PHYs. Mainline must name which connector is which. The wrong call — treating `usb2phy1_otg` / `usb_host0_ehci` as unused — disabled the **upper USB-C host**. Leaving `usb_host0_ohci` disabled then broke full-speed devices on that same port. Current mapping: [Board DTS — USB](board-dts-pmic-ddr-updates.md#usb).
+Stock enables almost every USB2 host and both OTG PHYs. Mainline must name which connector is which. The wrong call — treating `usb2phy1_otg` / `usb_host0_ehci` as unused — disabled the **upper USB-C host**. Leaving `usb_host0_ohci` disabled then broke full-speed devices on that same port. Enabling the companion without the PHY **480 MHz** clock hung suspend. Current mapping: [Board DTS — USB](board-dts-pmic-ddr-updates.md#usb).
 
 | Stock (enabled) | Mainline | Function |
 |-----------------|----------|----------|
-| `&usb2phy1_otg` + `&usb_host0_ehci` + `&usb_host0_ohci` | **okay**, `phy-supply = <&vcc5v0_host>` | **Upper** (top) USB-C **host**. The OHCI companion is required. |
+| `&usb2phy1_otg` + `&usb_host0_ehci` + `&usb_host0_ohci` | **okay**, `phy-supply = <&vcc5v0_host>`; OHCI `clocks` add `<&usb2phy1>` (**480 MHz**, stock `"utmi"`) | **Upper** (top) USB-C **host**. The OHCI companion is required; the extra clock is required for suspend. |
 | `&usb2phy0_otg` + `&usb_host0_xhci` | okay, `dr_mode = "otg"` | **Lower** (bottom) USB-C charge / gadget. No VBUS. |
 | `&usb2phy1_host` + `&usb_host1_ehci` | okay, `phy-supply = <&vcc_3v3>` | RTL8733BU |
 | `&usb2phy0_host` + `&usb_host1_xhci` | okay, no external connector | Kept off the WiFi PHY |

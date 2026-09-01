@@ -8,7 +8,7 @@ Repairs the SPI NAND preloader so the SPL can read an SD card, giving automatic 
 | card with a U-Boot the stock SPL can load | that OS from SD |
 | card without one | falls through to stock |
 
-Unlike **[PreloaderEraser](../PreloaderEraser/)**, which destroys the preloader so the bootrom drops into MASKROM, this **repairs** it. Keeping the internal chain also keeps the **off-state charging animation** — it is drawn by the internal U-Boot, so an erased device charges behind a black screen ([why](../../../docs/boot-and-flash/sd-multiboot-apommel.md#where-the-off-state-charging-animation-comes-from)).
+Unlike **[PreloaderEraser](../PreloaderEraser/)**, which destroys the preloader so the bootrom drops into MASKROM, this **repairs** it so internal stock boot keeps working.
 
 ## Credits
 

@@ -54,7 +54,7 @@
 
 After the [apommel multiboot](boot-and-flash/sd-multiboot-apommel.md) preloader was restored, registers and overnight off-state were measured again (`logs/PMIC-oncharger-20260826-015047.txt`, `logs/PINS-nocharger-20260826-021557.txt`).
 
-**The restored preloader changes nothing measurable about power-off.** It only adds nine pinctrl properties on seven SD pins in the SPL FDT. The DDR blob and SPL code are identical to stock. Off-state charging animation returns because internal U-Boot runs again — that is not a PMIC change.
+**The restored preloader changes nothing measurable about power-off.** It only adds nine pinctrl properties on seven SD pins in the SPL FDT. The DDR blob and SPL code are identical to stock.
 
 | Claim from 2026-08-26 first pass | What it actually was |
 |----------------------------------|----------------------|

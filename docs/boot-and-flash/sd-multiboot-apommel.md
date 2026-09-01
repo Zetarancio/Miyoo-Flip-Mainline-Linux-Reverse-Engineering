@@ -10,8 +10,6 @@ Run an SD distro **and** keep stock on internal SPI NAND, with no card swap ritu
 
 This supersedes the erase-based method for dual boot. The [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) is now only for reaching **MASKROM**.
 
-It also gives back something erasing takes away: the **charging animation while the device is off**. Plug a charger into an erased device and the screen stays black — it charges, but silently, so a charging device looks the same as a dead one. With the preloader repaired, plugging in with the card removed draws stock's battery animation again, exactly as before. [Why](#where-the-off-state-charging-animation-comes-from).
-
 ## Credits
 
 **The method is apommel's.** It was researched, documented and published at **[apommel/baseos-my355](https://github.com/apommel/baseos-my355)**:
@@ -130,27 +128,6 @@ Two places, in this order:
 ROCKNIX works because its build writes `u-boot.itb` to absolute sector 16384. (`uboot.bin` goes to sector 64, with `u-boot.itb` at seek 16320 inside it.)
 
 **One nuance about the fallback.** "Falls through to stock" applies when the SPL **cannot load** a U-Boot from the card. Once it has loaded one and jumped into it, there is no going back — a card whose U-Boot loads but then dies leaves the device hanging, not booting stock. That distinction is what identifies the Knulli failure below.
-
-### Where the off-state charging animation comes from
-
-It is Rockchip's **`charge-animation`**, running in **stock U-Boot** — not the kernel, not MainUI. The stock device tree enables it (20250527 OTA, node at line 5021):
-
-```
-charge-animation {
-	compatible = "rockchip,uboot-charge";
-	rockchip,uboot-charge-on = <0x01>;        /* U-Boot draws it */
-	rockchip,android-charge-on = <0x00>;
-	rockchip,uboot-low-power-voltage = <0xd16>;   /* 3350 mV */
-	rockchip,screen-on-voltage = <0xd48>;         /* 3400 mV */
-	status = "okay";
-};
-```
-
-and `uboot.img` carries the driver with its frames: `battery_0.bmp` … `battery_5.bmp`, `battery_fail.bmp`, alongside strings such as `Enable charge animation display` and `Exit charge: due to charger offline`.
-
-That code sits in **`mtd1`** (uboot), which only the preloader loads. Erasing the preloader strands it: the bootrom finds no valid IDB, goes to MASKROM, and the panel never comes up. The RK817 still charges in hardware, so what is lost is the indication rather than the charge — and while the device is off, that animation is the only indication there is. Repairing the preloader restores the whole internal chain, this included.
-
-With a card in the slot the SPL hands that same power-on to the card's U-Boot, so the behaviour is then the SD distro's rather than stock's; untested here. Remove the card for stock's.
 
 ### Why stock cannot write the preloader
 

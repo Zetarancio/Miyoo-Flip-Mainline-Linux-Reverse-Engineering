@@ -8,7 +8,7 @@ Commit history: [`next` (integration)](https://github.com/Zetarancio/distributio
 
 ## Board DTS, PMIC, DDR — recent evolution
 
-What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–006**), upper USB-C host (EHCI **and** OHCI companion, with PHY clock). **Kernel:** **7.0.2** on `flip` (tip **`9c5dee6d29`**).
+What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–006**), upper USB-C host (EHCI **and** OHCI companion, with PHY clock). **Kernel:** **7.0.2** on `flip` (tip **`d249b09bd9`**).
 
 **[Full board DTS details →](drivers-and-dts/board-dts-pmic-ddr-updates.md)** | **[Patch portability analysis →](drivers-and-dts/patch-portability.md)**
 

@@ -2,7 +2,7 @@
 
 Reference boot logs (mainline, stock) are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **historical capture** and may **not** match the latest kernel/DTS.
 
-**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`9c5dee6d29`** (*Merge upstream/next into flip*, 2026-09-02), RK3566 kernel **7.0.2**.
+**`flip` images:** [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/) — wiki README: tip **`d249b09bd9`** (*Merge commit '1ebff24f36' into flip*, 2026-09-02), RK3566 kernel **7.0.2**.
 
 ---
 

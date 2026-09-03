@@ -54,7 +54,7 @@ Run **`check-preloader.sh`** first. It is the same code path as install, stopped
 
 Each script writes its own log beside itself (`install-log.txt`, `restore-log.txt`, `backup-log.txt`), which matters because a file manager usually shows no console. From a shell the same thing is `sh launch.sh [install|restore|backup]`. For the ROCKNIX **Ports** menu, copy the three scripts in `rocknix-ports/` to `/storage/roms/ports/`.
 
-**From a stock-only device** it takes two steps and two reboots: run the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) on stock, boot ROCKNIX from a card, then run the app there. In between, the device is exactly where the eraser has always left it — SD-only boot, MASKROM reachable without disassembly — so stopping halfway breaks nothing new.
+**From a stock-only device** it takes two steps and two reboots: run the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) on stock, boot ROCKNIX from a card ([Where to get images](../boot-and-flash.md#where-to-get-images) — decompress **Specific** `.img.gz` from `ROCKNIX-image-RK3566-*` and flash the **`.img`**, not the update tar), then run the app there. In between, the device is exactly where the eraser has always left it — SD-only boot, MASKROM reachable without disassembly — so stopping halfway breaks nothing new.
 
 ### Restore
 

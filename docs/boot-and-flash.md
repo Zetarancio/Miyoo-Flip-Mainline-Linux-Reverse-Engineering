@@ -47,12 +47,27 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 ## Where to get images
 
-Use **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** (branch `flip`) for GitHub Actions image artifacts.
+Miyoo Flip builds are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**: [Actions filtered to `flip`](https://github.com/Zetarancio/distribution/actions?query=branch%3Aflip). A GitHub login is required to download them.
 
-- **Generic** and **device-specific** builds are published.
-- For Miyoo Flip, use the **device-specific** image.
+There is **no** artifact named after the handheld. Each successful RK3566 job uploads two zips named by **SoC and date** (the date is the build day). [Build 245](https://github.com/Zetarancio/distribution/actions/runs/33621892655) (2026-09-02) is a typical layout; later builds only change the date suffix:
 
-The [stock ↔ ROCKNIX](#stock--rocknix-no-disassembly) procedure and typical SD tests use the **device-specific** Miyoo Flip artifacts from that repository.
+| Artifact on the Actions page | What is inside after unzipping | Use for |
+|------------------------------|--------------------------------|---------|
+| **`ROCKNIX-image-RK3566-YYYYMMDD`** | **both** the Generic and Specific SD images (`.img.gz` + `.sha256`) | writing a microSD for first boot |
+| **`ROCKNIX-update-RK3566-YYYYMMDD`** | the OTA tarball (`.tar` + `.sha256`) | upgrading a device that already runs ROCKNIX |
+
+For that 245 example the names are `ROCKNIX-image-RK3566-20260902` and `ROCKNIX-update-RK3566-20260902`.
+
+Unzip the **image** zip. The files look like:
+
+| File inside `ROCKNIX-image-RK3566-YYYYMMDD` | Handhelds | Miyoo Flip? |
+|---------------------------------------------|-----------|-------------|
+| `ROCKNIX-RK3566.aarch64-YYYYMMDD-Generic.img.gz` | Anbernic RG353 family and similar | **no** |
+| `ROCKNIX-RK3566.aarch64-YYYYMMDD-Specific.img.gz` | Powkiddy X55 / X35s, Anbernic RG DS, **Miyoo Flip** | **yes — this one** |
+
+Decompress the **Specific** `.img.gz` (it is gzip, not a ready disk image). Flash the resulting **`.img`** to the card — never the `.gz`, and never the update `.tar`. General ROCKNIX install steps: [rocknix.org/play/install](https://rocknix.org/play/install/).
+
+The Specific image is shared with those other boards, so its default device tree is **not** the Flip (it ships as the X55 DTB). After writing the card, set `FDT /device_trees/rk3566-miyoo-flip.dtb` in `ROCKNIX/extlinux/extlinux.conf` before the first boot — steps: [ROCKNIX on the SD card](boot-and-flash/stock-rocknix-without-disassembly.md#rocknix-on-the-sd-card-extlinuxconf-and-the-device-tree).
 
 ---
 

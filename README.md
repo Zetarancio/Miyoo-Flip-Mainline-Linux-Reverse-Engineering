@@ -2,7 +2,7 @@
 
 This repository is the **maintained wiki and reference** for the **Miyoo Flip** handheld (Rockchip RK3566) on mainline Linux. The documentation is kept up to date as the canonical device reference.
 
-**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** — GitHub Actions publishes **generic** and **device-specific** builds on branch **`flip`** (use the **device-specific** artifact for Miyoo Flip). Day-to-day DTS and kernel integration for this wiki tracks branch **`next`** ahead of those freezes.
+**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. There is no separate “Miyoo Flip” download: both the Generic and Specific SD images sit inside the **`ROCKNIX-image-RK3566-YYYYMMDD`** Actions zip; the Flip uses **`*-Specific.img.gz`**, which must be decompressed — flash the **`.img`**, not the `.gz`. The **`ROCKNIX-update-RK3566-YYYYMMDD`** zip is the OTA tarball, not a card image. [Where to get images](docs/boot-and-flash.md#where-to-get-images). Day-to-day DTS and kernel integration for this wiki tracks branch **`next`** ahead of those freezes.
 
 The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
 

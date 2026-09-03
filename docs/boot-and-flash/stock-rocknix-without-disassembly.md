@@ -11,7 +11,7 @@ Erasing still has two jobs, and this page covers both:
 - **reaching MASKROM without opening the device**
 - getting a **stock-only** unit far enough to install the multiboot patch, which can only be written from ROCKNIX
 
-Miyoo Flip **ROCKNIX** images are published as GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Use the **device-specific** build for this handheld. Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo.
+Miyoo Flip **ROCKNIX** images are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Download the **`ROCKNIX-image-RK3566-YYYYMMDD`** zip (not the update tar), take **`*-Specific.img.gz`** from inside it, decompress it, and flash the **`.img`** — not the `.gz`. There is no separate Flip artifact. Layout and an example from build 245: [Where to get images](../boot-and-flash.md#where-to-get-images). Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo.
 
 ---
 
@@ -21,7 +21,7 @@ Miyoo Flip **ROCKNIX** images are published as GitHub Actions artifacts on **[Ze
 
 | You need | Why |
 |----------|-----|
-| A microSD with a **ROCKNIX** image for Miyoo Flip (**device-specific** Actions build) | After the preloader is erased, the handheld boots from this SD. |
+| A microSD written from the decompressed **Specific** `.img` (not the `.gz`) from the `ROCKNIX-image-RK3566-*` zip, FDT set to the Flip DTB | After the preloader is erased, the handheld boots from this SD. [Where to get images](../boot-and-flash.md#where-to-get-images). |
 | The **`App/PreloaderEraser/`** folder | Does the erase, from stock or from ROCKNIX. |
 | The **`App/apommel-multiboot/`** folder | To get internal boot back afterwards: it bundles a stock preloader and restores it with validation and rollback. |
 
@@ -33,7 +33,7 @@ After you write a ROCKNIX image to the microSD, open the **boot** filesystem (th
 FDT /device_trees/rk3566-miyoo-flip.dtb
 ```
 
-If it still references another board's `rk3566-*.dtb`, change it, so the kernel, regulators and peripherals match this device. **Device-specific** artifacts from the `flip` branch usually ship the correct line already — still worth checking before the first SD boot. U-Boot reads this path when chainloading Linux.
+If it still references another board's `rk3566-*.dtb`, change it, so the kernel, regulators and peripherals match this device. The **Specific** image is shared with Powkiddy X55 / X35s and Anbernic RG DS, so this line often still says `rk3566-powkiddy-x55.dtb` until it is edited. U-Boot reads this path when chainloading Linux.
 
 ### Preloader Eraser — MASKROM access
 

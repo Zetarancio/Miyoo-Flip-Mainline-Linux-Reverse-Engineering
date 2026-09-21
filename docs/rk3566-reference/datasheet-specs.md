@@ -106,11 +106,12 @@ Turning vdd_logic off in suspend is only safe once the **rk3568-suspend** driver
 has configured BL31 with `RKPM_SLP_ARMOFF_LOGOFF`, so TF-A saves and restores the
 logic domain. That combination was demonstrated to work on this device.
 
-It is **not** what current `flip` ships: `vdd_logic` stays `regulator-on-in-suspend`,
+It is **not** what the archived ROCKNIX `flip` tree shipped: `vdd_logic` stays `regulator-on-in-suspend`,
 the `rk3568-suspend` node is commented out and `CONFIG_RK3568_SUSPEND_MODE` is unset,
-because deep suspend is deferred on an upstream EmulationStation issue.
+because deep suspend was left off there pending an upstream EmulationStation issue.
+Zlyme’s choice is not recorded here.
 
-Current state and rationale: [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md).
+Mechanism and the archived fork’s choice: [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md).
 
 ---
 

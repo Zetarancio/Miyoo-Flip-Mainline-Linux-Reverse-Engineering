@@ -9,9 +9,9 @@
 Erasing still has two jobs, and this page covers both:
 
 - **reaching MASKROM without opening the device**
-- getting a **stock-only** unit far enough to install the multiboot patch, which can only be written from ROCKNIX
+- getting a **stock-only** unit far enough to install the multiboot patch, which the app can only write from a Linux that exposes the preloader as MTD (the archived ROCKNIX fork did; stock does not)
 
-Miyoo Flip **ROCKNIX** images are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Download the **`ROCKNIX-image-RK3566-YYYYMMDD`** zip (not the update tar), take **`*-Specific.img.gz`** from inside it, decompress it, and flash the **`.img`** — not the `.gz`. There is no separate Flip artifact. Layout and an example from build 245: [Where to get images](../boot-and-flash.md#where-to-get-images). Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo.
+Miyoo Flip images from the **archived** ROCKNIX fork are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Those builds are not maintained. If you still use one: download the **`ROCKNIX-image-RK3566-YYYYMMDD`** zip (not the update tar), take **`*-Specific.img.gz`** from inside it, decompress it, and flash the **`.img`** — not the `.gz`. There is no separate Flip artifact. Layout and an example from build 245: [Where to get images](../boot-and-flash.md#where-to-get-images). Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo. The directory name is historical.
 
 ---
 
@@ -56,7 +56,7 @@ Distros whose cards are built for **GammaLoader** (Knulli, GammaOS) still need t
 
 ### ROCKNIX → stock (restore the preloader)
 
-Current Miyoo Flip images from the **`flip`** branch expose the **`preloader`** MTD partition (first 2 MiB), which is what makes writing possible there.
+The archived Miyoo Flip ROCKNIX images from the **`flip`** branch expose the **`preloader`** MTD partition (first 2 MiB), which is what makes writing possible there. That is a property of that Linux, not of stock.
 
 1. Copy the **`App/apommel-multiboot/`** folder onto a card (in ROCKNIX's file manager the cards appear under **`games-external`**).
 2. Run it as **root**:

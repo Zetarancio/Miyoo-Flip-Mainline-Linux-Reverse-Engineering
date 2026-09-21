@@ -1,14 +1,14 @@
 # Drivers and DTS
 
-Distro-agnostic reference: board DTS evolution and required nodes for out-of-tree patches, WiFi/GPU drivers, display bring-up, BSP-to-mainline DTS porting, optional WiFi/BT GPIO power-off, and rk3568-suspend / vdd_logic deep sleep.
+Board DTS evolution, WiFi/GPU drivers, display bring-up, BSP-to-mainline DTS porting, optional WiFi/BT GPIO power-off, and rk3568-suspend / vdd_logic deep sleep.
 
-Commit history: [`next` (integration)](https://github.com/Zetarancio/distribution/commits/next/) · [`flip` (device images)](https://github.com/Zetarancio/distribution/commits/flip/).
+Commit history of the **archived** Miyoo Flip ROCKNIX fork: [`flip` (device images)](https://github.com/Zetarancio/distribution/commits/flip/) · [`next` (former integration branch)](https://github.com/Zetarancio/distribution/commits/next/). Active OS: [Zlyme](implementations/zlyme.md). Last documented `flip` tip: **`d249b09bd9`**, kernel **7.0.2**.
 
 ---
 
 ## Board DTS, PMIC, DDR — recent evolution
 
-What changed on the Miyoo Flip port since early mainline bring-up: out-of-tree patches (DMC **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–006**), upper USB-C host (EHCI **and** OHCI companion, with PHY clock). **Kernel:** **7.0.2** on `flip` (tip **`d249b09bd9`**).
+What changed on the Miyoo Flip port since early mainline bring-up, as recorded on that archived fork: out-of-tree patches (DMC carried as **1012**, DFI **1010**, deferred **1013**, **0007** RK817 drain), **I2C0 RK8600** only (TCS4525 dropped per Miyoo confirmation), joypad, audio/PipeWire quirks, RTL8733BU stack (**001–006**), upper USB-C host (EHCI **and** OHCI companion, with PHY clock).
 
 **[Full board DTS details →](drivers-and-dts/board-dts-pmic-ddr-updates.md)** | **[Patch portability analysis →](drivers-and-dts/patch-portability.md)**
 
@@ -48,6 +48,6 @@ WiFi works with the 8733bu driver. An optional separate driver shuts down the RT
 
 ## Suspend and vdd_logic off-in-suspend
 
-**Standard suspend** works on **`flip`**. **Deep suspend** (1013 + `vdd_logic` off) is **deferred** — patches `.testing-disabled`, Kconfig off; EmulationStation upstream blocker.
+**Standard suspend** was demonstrated on the archived ROCKNIX fork. **Deep suspend** (rk3568-suspend + `vdd_logic` off) was **left off** there — patches `.testing-disabled`, Kconfig off, pending an EmulationStation fix. Not claimed for Zlyme.
 
 **[Full suspend guide →](drivers-and-dts/suspend-and-vdd-logic.md)**

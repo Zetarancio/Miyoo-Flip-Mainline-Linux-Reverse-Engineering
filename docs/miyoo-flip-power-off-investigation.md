@@ -33,7 +33,7 @@
 
 > **Resolution (wiki):** With this patch applied, off-state current matches stock (~0.05 mA). The investigation below is preserved as a **chronological lab notebook**; §1–§16 include hypotheses later refined in §17–§18.
 >
-> **Read this as a historical capture.** It was written against **mainline 6.18.x**, and every kernel version, source excerpt and DTS quote below is from that tree — including the suspend and `vdd_logic` sections, which describe a configuration that current `flip` does **not** ship (deep suspend is deferred: patches `.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off, `vdd_logic` on-in-suspend). For current state see [Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) and the root `README.md`. The conclusion about SYS_CAN_SD is unaffected and still current.
+> **Read this as a historical capture.** It was written against **mainline 6.18.x**, and every kernel version, source excerpt and DTS quote below is from that tree — including the suspend and `vdd_logic` sections, which describe a configuration that the archived ROCKNIX `flip` tree (stamp `d249b09bd9`) does **not** ship (deep suspend left off: patches `.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off, `vdd_logic` on-in-suspend). For that fork’s later state see [Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md). The conclusion about SYS_CAN_SD is unaffected. Measurements taken on that fork remain valid evidence. Zlyme is not described here.
 >
 > **Investigation history (§1–§17):** Explored and ruled out shutdown
 > sequencing (SLPPIN/DEV_OFF/BL31), GPIO0_PA2 pinctrl management, RK860
@@ -270,7 +270,7 @@ RKPM_SLP_CENTER_OFF | RKPM_SLP_ARMOFF_LOGOFF | RKPM_SLP_PMIC_LP
 = 0x5ec
 ```
 
-**The ROCKNIX DTS matched stock exactly for sleep-mode-config.** Both passed `0x5ec` to BL31. (In current `flip` that node is commented out — deep suspend is deferred.)
+**The ROCKNIX DTS matched stock exactly for sleep-mode-config.** Both passed `0x5ec` to BL31. (On the later archived `flip` tree that node is commented out — deep suspend was left off.)
 
 ### Relevance to power-off drain
 
@@ -567,7 +567,7 @@ Added `070-wifi_shutdown` quirk that installs a systemd unit to unload `8733bu`
 
 After unbind, the log showed the normal progression through CPU off and `PM: suspend exit` on resume.
 
-**Root cause (hypothesis at the time; later shown wrong on the EHCI):** Unbinding `fd800000.usb` (EHCI) plus the two OHCI companions unblocked suspend on **6.18**. That was read as “nothing is routed to `usb2phy1_otg` / `usb_host0_ehci`,” and those nodes were disabled in the DTS. **That mapping was false.** The upper USB-C host *is* that EHCI path; disabling it is what first broke host. Current `flip` enables `usb2phy1_otg` + `usb_host0_ehci` + **`usb_host0_ohci`** (PHY **480 MHz** as a fourth clock) with `phy-supply = <&vcc5v0_host>` ([06fd5cd0](https://github.com/Zetarancio/distribution/commit/06fd5cd044), [54d8b02425](https://github.com/Zetarancio/distribution/commit/54d8b02425)). The WiFi OHCI (`usb_host1_ohci`) stays disabled. See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
+**Root cause (hypothesis at the time; later shown wrong on the EHCI):** Unbinding `fd800000.usb` (EHCI) plus the two OHCI companions unblocked suspend on **6.18**. That was read as “nothing is routed to `usb2phy1_otg` / `usb_host0_ehci`,” and those nodes were disabled in the DTS. **That mapping was false.** The upper USB-C host *is* that EHCI path; disabling it is what first broke host. The archived `flip` tree enables `usb2phy1_otg` + `usb_host0_ehci` + **`usb_host0_ohci`** (PHY **480 MHz** as a fourth clock) with `phy-supply = <&vcc5v0_host>` ([06fd5cd0](https://github.com/Zetarancio/distribution/commit/06fd5cd044), [54d8b02425](https://github.com/Zetarancio/distribution/commit/54d8b02425)). The WiFi OHCI (`usb_host1_ohci`) stays disabled. See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
 
 **Device tree follow-up (historical):** Comments of that era documented the controllers as disabled. That comment block is obsolete; current topology is in [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). Orthogonal to the power-off / patch 0029 discussion below.
 

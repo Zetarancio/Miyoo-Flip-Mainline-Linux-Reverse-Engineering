@@ -11,10 +11,8 @@
 
 ## Status: Working
 
-The Miyoo Flip's 640x480 MIPI DSI panel is fully functional on mainline.
-**Linux 6.19** is the **oldest** version it has been verified on, not the
-current one — see the root `README.md` for the kernel current `flip`
-builds actually ship.
+The Miyoo Flip's 640x480 MIPI DSI panel has been brought up on mainline.
+**Linux 6.19** is the **oldest** version it has been verified on. The archived ROCKNIX fork’s RK3566 images used **7.0.2** — see the root `README.md`. That is not a claim about Zlyme’s kernel.
 
 ## Problem
 

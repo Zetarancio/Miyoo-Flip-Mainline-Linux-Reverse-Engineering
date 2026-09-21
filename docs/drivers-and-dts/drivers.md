@@ -1,6 +1,6 @@
 # Drivers: WiFi/Bluetooth & GPU
 
-Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware and driver behaviour** are distro-agnostic. Build/test flows are distribution-specific; for current images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch `flip`.
+Device reference for the RTL8733BU WiFi/BT combo and Mali-G52 GPU. **Hardware and driver behaviour** are distro-agnostic. The patch list below is what the **archived** Miyoo Flip ROCKNIX fork shipped on branch `flip` (Linux 7.0.2, stamp `d249b09bd9`). It is evidence, not the active OS. Active implementation: [Zlyme](../implementations/zlyme.md).
 
 ## RTL8733BU WiFi/Bluetooth
 
@@ -14,7 +14,7 @@ The Miyoo Flip uses a Realtek RTL8733BU USB combo module for WiFi
 — the last commit that still builds against Linux **7.0.2**. The branch tip
 rewires `cfg80211_ops` for 7.1 MLO and will not compile until RK3566 moves
 kernel. That tree already carries Kbuild, USB/CFG80211, and WPA3/SAE
-(`IEEE80211W`). The 7.1-port switch ([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)) dropped eight old patches. Six **local** ones are on `flip` because the upstream tree still lacks the defects they fix, or because ROCKNIX does not want the fork's concurrent-mode build:
+(`IEEE80211W`). The 7.1-port switch on that fork ([3c149fbb](https://github.com/Zetarancio/distribution/commit/3c149fbbf9)) dropped eight old patches. Six **local** ones were on `flip` because the upstream tree still lacked the defects they fix, or because that fork did not want a concurrent-mode build:
 
 | Patch | Why it exists |
 |-------|----------------|
@@ -33,7 +33,7 @@ on this tree — watch it during suspend testing.
 
 ### Optional: GPIO-level power-off
 
-The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. **RTL8733BU-POWER** owns that GPIO, ties it to two rfkill devices, and now also cuts power in **`.suspend_late`** and restores it in **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), so the Miyoo Flip `sleep.d` pre/post rfkill quirks are gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). See [WiFi/BT power-off](wifi-bt-power-off.md).
+The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. On the archived ROCKNIX fork, **RTL8733BU-POWER** owned that GPIO, tied it to two rfkill devices, and cut power in **`.suspend_late`** / **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), so that tree’s Miyoo Flip `sleep.d` pre/post rfkill quirks were removed ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). See [WiFi/BT power-off](wifi-bt-power-off.md). Zlyme’s equivalent is not recorded here.
 
 ### Architecture
 
@@ -110,7 +110,7 @@ Required for IPA (thermal) and devfreq.
 
 ### Building
 
-Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. Userspace on current `flip` is **g29p1**, not g24p0. Legacy build scripts are on branch `buildroot`.
+Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. Userspace on the archived `flip` tree is **g29p1**, not g24p0. That repository is official ROCKNIX’s GPU driver tree, which the fork also used. Legacy build scripts are on branch `buildroot`.
 
 ### GPU OPP Table
 

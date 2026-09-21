@@ -188,6 +188,8 @@ vdd_logic: DCDC_REG1 {
 
 ## Patch 1012 — `RK3568 DMC devfreq driver`
 
+The durable name is **RK3566/RK3568 V2-SIP DMC devfreq**. The archived ROCKNIX fork carried this driver as **patch 1012**. Another OS does not have to keep that number.
+
 **What the driver reads from DTS:**
 
 ```c
@@ -286,4 +288,4 @@ dfi: dfi@fe230000 {
 5. Optionally add `regulator-off-in-suspend` on `vdd_logic`
 6. Enable `CONFIG_RK3568_SUSPEND_MODE=y` and `CONFIG_ARM_RK3568_DMC_DEVFREQ=y` in kernel config
 
-This is the full list for a board that wants **both** DMC and deep suspend. It is not the Miyoo Flip's current configuration: steps 3, 5 and the `CONFIG_RK3568_SUSPEND_MODE` half of step 6 are the deferred deep-suspend half, and `flip` ships with them off — [suspend and vdd_logic](suspend-and-vdd-logic.md).
+This is the full list for a board that wants **both** DMC and deep suspend. It is not what the archived Miyoo Flip ROCKNIX fork shipped: steps 3, 5 and the `CONFIG_RK3568_SUSPEND_MODE` half of step 6 are the deep-suspend half, and that `flip` tree left them off — [suspend and vdd_logic](suspend-and-vdd-logic.md).

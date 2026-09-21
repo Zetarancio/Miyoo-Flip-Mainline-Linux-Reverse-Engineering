@@ -47,14 +47,16 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 ## Where to get images
 
-Miyoo Flip builds are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**: [Actions filtered to `flip`](https://github.com/Zetarancio/distribution/actions?query=branch%3Aflip). A GitHub login is required to download them.
+The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). This wiki does not yet document Zlyme image names.
 
-There is **no** artifact named after the handheld. Each successful RK3566 job uploads two zips named by **SoC and date** (the date is the build day). [Build 245](https://github.com/Zetarancio/distribution/actions/runs/33621892655) (2026-09-02) is a typical layout; later builds only change the date suffix:
+The names below are the **archived** Miyoo Flip ROCKNIX fork, [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Those GitHub Actions artifacts are historical. They are not a maintained download channel. A GitHub login is required to download whatever still remains: [Actions filtered to `flip`](https://github.com/Zetarancio/distribution/actions?query=branch%3Aflip).
+
+There is **no** artifact named after the handheld. Each successful RK3566 job uploaded two zips named by **SoC and date** (the date is the build day). [Build 245](https://github.com/Zetarancio/distribution/actions/runs/33621892655) (2026-09-02) is a typical layout; other builds of that fork only change the date suffix:
 
 | Artifact on the Actions page | What is inside after unzipping | Use for |
 |------------------------------|--------------------------------|---------|
 | **`ROCKNIX-image-RK3566-YYYYMMDD`** | **both** the Generic and Specific SD images (`.img.gz` + `.sha256`) | writing a microSD for first boot |
-| **`ROCKNIX-update-RK3566-YYYYMMDD`** | the OTA tarball (`.tar` + `.sha256`) | upgrading a device that already runs ROCKNIX |
+| **`ROCKNIX-update-RK3566-YYYYMMDD`** | the OTA tarball (`.tar` + `.sha256`) | upgrading a device that already ran that fork’s ROCKNIX |
 
 For that 245 example the names are `ROCKNIX-image-RK3566-20260902` and `ROCKNIX-update-RK3566-20260902`.
 

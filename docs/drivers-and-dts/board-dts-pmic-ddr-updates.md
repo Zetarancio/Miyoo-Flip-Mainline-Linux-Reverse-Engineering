@@ -1,18 +1,26 @@
 # Miyoo Flip board DTS, PMIC, DDR — recent evolution
 
-Distro-agnostic summary of **what changed** on the Miyoo Flip port since early mainline bring-up. Full history: [Zetarancio/distribution commits on branch `flip`](https://github.com/Zetarancio/distribution/commits/flip/) (wiki README: tip **`d249b09bd9`** — *Merge commit '1ebff24f36' into flip*, 2026-09-02; RK3566 **7.0.2**). Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+This page mixes three kinds of statement. They are not the same thing:
 
-**Post-merge Miyoo / RK3566 work on `flip`:** Upper USB-C **OHCI companion + PHY clock** ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)); RTL8733BU **001–006** ([39d9bb5](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3), [6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9), [6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87), [69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b)); POWER **`.suspend_late`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)); drop post-sleep rfkill quirk ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); Bluetooth agent loop ([86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5), also [upstream PR 3246](https://github.com/Zetarancio/distribution/commit/6831fdc68a)); [Upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044); [7.1-port tree](https://github.com/Zetarancio/distribution/commit/3c149fbbf9); [Merge commit 1ebff24f36](https://github.com/Zetarancio/distribution/commit/d249b09bd9) (RK3566 stays 7.0.2). Earlier: PipeWire **`pulse.idle.timeout = 60`** ([32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)); LED low-battery via shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); DFI PM at **`1010`**; **`CONFIG_RK3568_SUSPEND_MODE`** off while **1013** is `.testing-disabled` ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). [*DTS cleanup*](https://github.com/Zetarancio/distribution/commit/1f129e89df) (adc-keys, hall, **TCS4525** dropped — [I2C0](#i2c0-cpu-regulator)); [*prime rk817 Playback Mux*](https://github.com/Zetarancio/distribution/commit/79453c8d9b).
+1. **Hardware conclusions** (USB map, RK8600 only, shared SD `vqmmc`, hall on GPIO0_PC6). These stay true for any OS. USB detail is [below](#usb); input detail is [Input](../hardware/input.md).
+2. **Firmware mechanisms** (V2-SIP DMC, `SYS_CAN_SD`, `ARMOFF_LOGOFF`). Patch numbers are historical filenames.
+3. **Archived ROCKNIX fork history** — [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch `flip`, tip **`d249b09bd9`** (*Merge commit '1ebff24f36' into flip*, 2026-09-02), RK3566 kernel **7.0.2**. That fork is not the active OS. Active status: [Zlyme](../implementations/zlyme.md). When this page says `flip`, it means that archived tree.
+
+Align DTS with **`miyoo355_fw_20250527`** stock where noted in [Stock firmware and findings](../stock-firmware-and-findings.md).
+
+**Work recorded on that `flip` tip:** Upper USB-C **OHCI companion + PHY clock** ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)); RTL8733BU **001–006** ([39d9bb5](https://github.com/Zetarancio/distribution/commit/39d9bb5fe3), [6126f46](https://github.com/Zetarancio/distribution/commit/6126f46bdf), [ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9), [6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87), [69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b)); POWER **`.suspend_late`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)); drop post-sleep rfkill quirk ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); Bluetooth agent loop ([86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5), also merged from upstream as [6831fdc](https://github.com/Zetarancio/distribution/commit/6831fdc68a)); [Upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044); [7.1-port tree](https://github.com/Zetarancio/distribution/commit/3c149fbbf9). Earlier: PipeWire **`pulse.idle.timeout = 60`** ([32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)); LED low-battery via shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); DFI PM at **`1010`**; **`CONFIG_RK3568_SUSPEND_MODE`** off while **1013** is `.testing-disabled` ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)). [*DTS cleanup*](https://github.com/Zetarancio/distribution/commit/1f129e89df) (adc-keys, hall, **TCS4525** dropped — [I2C0](#i2c0-cpu-regulator)); [*prime rk817 Playback Mux*](https://github.com/Zetarancio/distribution/commit/79453c8d9b).
 
 ---
 
 ## Required DTS nodes for out-of-tree patches
 
-Each out-of-tree kernel patch below needs specific DTS nodes to function. Patches live under `projects/ROCKNIX/devices/RK3566/patches/linux/` in the distribution tree.
+Each out-of-tree kernel patch below needs specific DTS nodes to function. On the archived ROCKNIX fork the files lived under `projects/ROCKNIX/devices/RK3566/patches/linux/`. Zlyme does not have to keep those filenames.
 
-**For detailed portability analysis** (what each patch reads from DTS, BSP vs ROCKNIX differences, minimum DTS for other RK3566/RK3568 boards), see [Patch portability and DTS requirements](patch-portability.md).
+**For detailed portability analysis** (what each patch reads from DTS, BSP vs that fork, minimum DTS for other RK3566/RK3568 boards), see [Patch portability and DTS requirements](patch-portability.md).
 
-### Patch 1012 — DMC devfreq driver (DDR frequency scaling)
+### RK3566/RK3568 V2-SIP DMC devfreq (archived fork: patch 1012)
+
+The mechanism is the Rockchip V2 SIP shared-memory / MCU-completion protocol. The archived ROCKNIX fork carried the mainline driver as **patch 1012**. The number is not the feature.
 
 **See [Patch portability — 1012](patch-portability.md#patch-1012--rk3568-dmc-devfreq-driver) for detailed analysis.**
 
@@ -86,7 +94,7 @@ The BSP-style **0029** mfd patch (PMIC pinctrl / extra `rk808_power_off()` seque
 
 **Portability reference** (if you revive 0029 elsewhere): [Patch portability — 0029](patch-portability.md#patch-0029--mfd-rk8xx-bsp-style-pmic-pinctrl-switching).
 
-**Current DTS direction:** Miyoo Flip aligns SLPPIN-related pinctrl with **upstream `pmic_pins`** where possible ([a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)) — see the live `rk3566-miyoo-flip.dts` in the distribution tree.
+**Current DTS on the archived fork:** Miyoo Flip SLPPIN-related pinctrl was aligned with **upstream `pmic_pins`** ([a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)). See `rk3566-miyoo-flip.dts` in that tree. Zlyme’s DTS is not recorded on this page.
 
 ### Patch 0030 — rk8xx ON/OFF source logging
 
@@ -118,7 +126,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 ## I2C0 CPU regulator
 
-**Current `flip`:** **RK8600 @ 0x40** only — **TCS4525 @ 0x1c** removed in [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) after **Miyoo officially confirmed** to this project that there is **no second CPU-regulator hardware variant** (only RK8600 is populated on retail units).
+**Archived `flip` DTS:** **RK8600 @ 0x40** only — **TCS4525 @ 0x1c** removed in [*Miyoo Flip DTS: cleanup and fixes*](https://github.com/Zetarancio/distribution/commit/1f129e89df) after **Miyoo officially confirmed** to this project that there is **no second CPU-regulator hardware variant** (only RK8600 is populated on retail units). That confirmation is a hardware fact, not a property of the fork.
 
 **2025 stock** (`miyoo355_fw_20250527`) still lists **both** I2C addresses in the BSP DTS; that is **not** proof of two production SKUs. Earlier port commits briefly enabled both nodes ([b7525be](https://github.com/Zetarancio/distribution/commit/b7525bed1d9d262d621d66f1108c859399db7777), [6882112](https://github.com/Zetarancio/distribution/commit/68821122aa0476ed453cdc1b073922b0805d0214)) before this trim.
 
@@ -131,7 +139,7 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 | **Shared vqmmc** | Both MicroSD slots share a **single `vqmmc` rail** (vccio_sd). They must operate at the same I/O voltage. Tested: **two 1.8 V cards** (works). Untested but plausible: **two 3.3 V cards**. Also works: **one single 3.3 V card**. **You cannot mix a 1.8 V and a 3.3 V card.** |
 | **SDR50 on slot 2** | Removed from second slot — shared vqmmc limits stable UHS negotiation when both slots are populated. Slot 0 (boot) keeps SDR12/SDR25/SDR50/SDR104. |
 | **Karlman MMC** | Not useful for this board. The Karlman warm-reboot MMC patch was tried and removed — the actual constraint is the shared vqmmc rail, not a warm-reboot bug. |
-| **CPU rail / I2C0** | See [I2C0 CPU regulator](#i2c0-cpu-regulator) — **RK8600** only on current `flip`. |
+| **CPU rail / I2C0** | See [I2C0 CPU regulator](#i2c0-cpu-regulator) — **RK8600** only. Retail hardware; the archived fork’s DTS matches that. |
 
 ---
 
@@ -154,6 +162,8 @@ No DTS changes needed (reads ON_SOURCE / OFF_SOURCE registers at probe for debug
 
 ## Joypad / input
 
+Hardware: [Input](../hardware/input.md). The table below is the **archived ROCKNIX fork’s** DTS and driver, not a Zlyme status.
+
 The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard ADC joypad.
 
 | Topic | Notes |
@@ -169,7 +179,7 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 
 ## USB
 
-Two USB-C connectors. Names used in this wiki: **upper** (top of the unit) and **lower** (bottom).
+Two USB-C connectors. Names used in this wiki: **upper** (top of the unit) and **lower** (bottom). The topology below is a **hardware fact**. Commits cited in the following paragraphs are provenance from the archived ROCKNIX fork, not a requirement that another OS reproduce that git history.
 
 | Connector | Role | Controller | PHY | VBUS / notes |
 |-----------|------|------------|-----|----------------|
@@ -199,7 +209,7 @@ The lower port staying host-capable for a bus-powered device is a **charger-driv
 | **CPU clock-latency** | `clock-latency-ns = 300000000` on the 408 MHz CPU OPP reduces I2C storm to the PMIC during rapid frequency transitions. |
 | **LEDs** | Green power + red status/charging via `010-led_control` / `bin/ledcontrol`. Low-battery blink uses shared **`led_flash`** ([f559f5e5](https://github.com/Zetarancio/distribution/commit/f559f5e5aa)); `DEVICE_BATTERY_LED_STATUS="false"`. |
 | **PipeWire** | `99-rk3566-power.conf`: **`pulse.idle.timeout = 60`** (was 5s; fixes ~1.7s sink wake after idle) — [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308). |
-| **SFC** | **Disabled** in ROCKNIX DTS (boots from SD). BSP SPI NAND layout preserved in DTS comments as reference. |
+| **SFC** | **Disabled** in the archived ROCKNIX DTS (that image boots from SD). BSP SPI NAND layout preserved in DTS comments as reference. |
 
 ---
 
@@ -209,7 +219,7 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 
 | Area | Final state |
 |------|-------------|
-| **RK817 power-off / off-state drain** | **~8 mA “off” drain** is fixed by kernel **patch 0007** (clear **SYS_CAN_SD** in `rk817_charger`). See [investigation](../miyoo-flip-power-off-investigation.md) and [troubleshooting](../troubleshooting.md). DTS for `system-power-controller` and SLPPIN pinctrl follows the live `flip` tree ([560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb), [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)). Omitting `system-power-controller` was **not** the real fix for the mA-level leak. |
+| **RK817 power-off / off-state drain** | **~8 mA “off” drain** is fixed by clearing **SYS_CAN_SD** in `rk817_charger`. The archived fork carried that as kernel **patch 0007**. See [investigation](../miyoo-flip-power-off-investigation.md) and [troubleshooting](../troubleshooting.md). DTS for `system-power-controller` and SLPPIN pinctrl on that fork: [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb), [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4). Omitting `system-power-controller` was **not** the real fix for the mA-level leak. |
 | **Battery OCV** | OCV table must be **descending**. Keep the corrected 2025-style battery curve/settings. Hardware pack: Miyoo **755060**, **3.7 V** nominal, **3000 mAh**, **11.1 Wh** (see [Hardware overview](../boot-and-flash.md)). |
 | **WiFi (RTL8733BU)** | Driver tree is [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) pinned at `c46aa25e`. **Local patches 001–006** (shutdown hook, suspend bound, two cfg80211 BSS double-release fixes, drop concurrent mode, restore SAE/WPA3). GPIO cut-off is **RTL8733BU-POWER** (`.suspend_late` / `.resume`). Runtime: `rtw_ips_mode=0 rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`. |
 | **SD shared vqmmc** | Both slots at same voltage (two 1.8 V tested, two 3.3 V plausible, one 3.3 V works); **cannot mix 1.8 V and 3.3 V**. SDR50 removed from second slot (shared vqmmc limits stable UHS on slot 2). |
@@ -218,13 +228,13 @@ Several ideas were tested and later reverted. Use the **final validated state**:
 | **Audio** | `099-audio_prime` sets rk817 **Playback Mux** at boot and after sink resume; PipeWire idle **60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)). |
 | **USB** | **Upper** (top) host: `usb2phy1_otg` + `usb_host0_ehci` + **`usb_host0_ohci`** (fourth clock `<&usb2phy1>`, **480 MHz**) + `vcc5v0_host`. **Lower** (bottom): charge/gadget, no VBUS. Do not re-disable the upper EHCI/PHY/OHCI or drop that PHY clock. [USB](#usb). |
 
-Reference stream: [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).
+Reference stream: [archived `flip` commits](https://github.com/Zetarancio/distribution/commits/flip/).
 
 ---
 
-## Fork vs upstream (`flip` maintenance)
+## Archived fork vs upstream ROCKNIX
 
-After each merge from `upstream/next`, re-check these **Miyoo Flip invariants** (none of the fork’s suspend/DMC/RK817 patches are in upstream `next` as of merge **`d249b09bd9`**):
+Checklist used while the fork was maintained. After each merge from official `upstream/next`, these **Miyoo Flip invariants** were re-checked (none of the fork’s suspend/DMC/RK817 patches were in upstream `next` as of merge **`d249b09bd9`**). This is historical maintenance procedure, not a Zlyme requirement.
 
 | Must keep | Why |
 |-----------|-----|

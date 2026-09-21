@@ -77,7 +77,7 @@ The display pipeline was the hardest subsystem to port. See
 
 ## USB
 
-Stock enables almost every USB2 host and both OTG PHYs. Mainline must name which connector is which. The wrong call — treating `usb2phy1_otg` / `usb_host0_ehci` as unused — disabled the **upper USB-C host**. Leaving `usb_host0_ohci` disabled then broke full-speed devices on that same port. Enabling the companion without the PHY **480 MHz** clock hung suspend. Current mapping: [Board DTS — USB](board-dts-pmic-ddr-updates.md#usb).
+Stock enables almost every USB2 host and both OTG PHYs. Mainline must name which connector is which. The wrong call — treating `usb2phy1_otg` / `usb_host0_ehci` as unused — disabled the **upper USB-C host**. Leaving `usb_host0_ohci` disabled then broke full-speed devices on that same port. Enabling the companion without the PHY **480 MHz** clock hung suspend. Hardware mapping: [Board DTS — USB](board-dts-pmic-ddr-updates.md#usb).
 
 | Stock (enabled) | Mainline | Function |
 |-----------------|----------|----------|

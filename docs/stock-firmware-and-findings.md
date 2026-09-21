@@ -23,7 +23,7 @@ This repo includes **partially unpacked** Miyoo Flip stock firmware for comparis
 
 ## BSP and DDR findings
 
-Analysis of the BSP kernel sources: DDR init binaries, DMC devfreq driver (`rockchip_dmc.c`), BL31/ATF firmware, power management regulators, relevant kernel config options, and the mainline status of each subsystem. Includes the out-of-tree `rk3568_dmc.c` driver implementing V2 SIP for mainline **7.0+** (current `flip`).
+Analysis of the BSP kernel sources: DDR init binaries, DMC devfreq driver (`rockchip_dmc.c`), BL31/ATF firmware, power management regulators, relevant kernel config options, and the mainline status of each subsystem. Includes the out-of-tree `rk3568_dmc.c` driver implementing V2 SIP. The archived ROCKNIX fork carried that driver as **patch 1012** (Linux **7.0.2** at stamp `d249b09bd9`).
 
 **[Full BSP and DDR findings →](stock-firmware-and-findings/bsp-and-ddr-findings.md)**
 

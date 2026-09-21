@@ -267,7 +267,7 @@ kernel `rk3568-dmc` devfreq driver (MCU+IRQ completion protocol).
 
 ### Mainline implementation
 
-An out-of-tree driver implementing the BSP `rockchip_dmc.c` protocol exists for mainline kernel **7.0+** (V2 SIP shared-memory + MCU/IRQ completion).
+An out-of-tree driver implementing the BSP `rockchip_dmc.c` protocol exists for mainline (V2 SIP shared-memory + MCU/IRQ completion). The archived ROCKNIX fork ran it on Linux **7.0.2**. The mechanism does not depend on that distribution.
 
 **Runtime test results (when using that driver):**
 - ATF version 0x102 detected, shared memory and completion IRQ registered
@@ -471,7 +471,7 @@ All same size: 402,376 bytes.
 
 | Variant | File | Notes |
 |---------|------|-------|
-| Standard | rk3568_bl31_v1.44.elf | Currently used |
+| Standard | rk3568_bl31_v1.44.elf | Stock-adjacent snapshot in this repo (`bl31_v1.44_stock_disasm/`) |
 | Ultra | rk3568_bl31_ultra_v2.17.elf | Adds ddrdbg_* functions |
 | RT | rk3568_bl31_rt_v1.02.elf | Real-time variant |
 | CPU3 | rk3568_bl31_cpu3_v1.01.elf | 3-CPU variant |

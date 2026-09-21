@@ -7,10 +7,10 @@
 
 Restoring a stock preloader is part of the multiboot app — **`restore-preloader.sh`**, or `sh launch.sh restore [FILE]` — so there is no separate restore tool. The app bundles a verified stock image, and it validates, backs up, verifies the readback and rolls back on failure.
 
-**For dual boot use `apommel-multiboot`, not the eraser.** The eraser is for reaching MASKROM from software, and for getting a stock-only unit onto ROCKNIX so the multiboot app can be written there.
+**For dual boot use `apommel-multiboot`, not the eraser.** The eraser is for reaching MASKROM from software, and for getting a stock-only unit onto a Linux that exposes the preloader as `mtd0` so the multiboot app can write it. On the archived ROCKNIX fork that node was `mtd0`.
+
+The directory name `preloader-stock-rocknix` is historical. The tools were not renamed when active OS work moved to Zlyme. Image downloads from the archived fork: [Where to get images](../docs/boot-and-flash.md#where-to-get-images).
 
 **Documentation:** [SD multiboot via a repaired preloader](../docs/boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](../docs/boot-and-flash/stock-rocknix-without-disassembly.md)
 
 **See also:** [Boot and flash](../docs/boot-and-flash.md) · [Flashing](../docs/boot-and-flash/flashing.md) · [Stock OTA mechanism](../docs/stock-firmware-and-findings/ota-update-mechanism.md)
-
-**ROCKNIX images:** [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** (GitHub Actions artifacts).

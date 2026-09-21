@@ -63,7 +63,7 @@ From `kernel_config`:
 - `rockchip_dfi_probe`
 - `rockchip_dfi_enable`
 
-**Mainline status:** no in-tree equivalent — the BSP path depends on Rockchip's V2 SIP interface, which mainline does not implement. An **out-of-tree `rk3568_dmc.c` driver covers it** for [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`), speaking the same V2 SIP + MCU/IRQ protocol as the BSP `rockchip_dmc.c`. Scaling and resume are confirmed working; see [SPI and boot chain](spi-and-boot-chain.md) and § 6 below.
+**Mainline status:** no in-tree equivalent — the BSP path depends on Rockchip's V2 SIP interface, which mainline does not implement. An **out-of-tree `rk3568_dmc.c` driver** speaks the same V2 SIP + MCU/IRQ protocol as the BSP `rockchip_dmc.c`. The archived Miyoo Flip ROCKNIX fork ([Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip`) carried it as **patch 1012** and confirmed scaling and resume. See [SPI and boot chain](spi-and-boot-chain.md) and § 6 below. Official [ROCKNIX](https://rocknix.org/) is a separate upstream and is not that fork.
 
 ### 3. BL31 and ATF firmware
 
@@ -178,4 +178,4 @@ CONFIG_MALI_BIFROST_DEVFREQ=y
 The DMC/DDR frequency scaling functionality is present in the BSP kernel via
 `rockchip_dmc.c` (CONFIG_ARM_ROCKCHIP_DMC_DEVFREQ). It uses the proprietary
 BL31 SIP interface (V2 shared-memory protocol with MCU-based DCF completion).
-An out-of-tree `rk3568_dmc.c` driver implementing the same protocol is available in [ROCKNIX](https://rocknix.org/) ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) for mainline kernel **7.0+** (current `flip`). Recent trees also tune that driver (e.g. self-refresh idle, transition ratelimit) — see [board DTS / PMIC / DDR updates](../drivers-and-dts/board-dts-pmic-ddr-updates.md) and [flip branch commits](https://github.com/Zetarancio/distribution/commits/flip/).
+An out-of-tree `rk3568_dmc.c` driver implementing the same protocol was carried by the archived Miyoo Flip ROCKNIX fork ([Zetarancio/distribution](https://github.com/Zetarancio/distribution), branch `flip`) as **patch 1012**, on mainline kernel **7.0.2** at stamp `d249b09bd9` (older notes said 7.0+). That tree also tuned the driver (self-refresh idle, transition ratelimit) — see [board DTS / PMIC / DDR updates](../drivers-and-dts/board-dts-pmic-ddr-updates.md). Zlyme’s packaging of the same mechanism is not recorded here.

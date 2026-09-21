@@ -1,6 +1,8 @@
 # Troubleshooting
 
-Distro-agnostic notes on boot failures, display hangs, and kernel debugging for the Miyoo Flip.
+## Hardware and mainline Linux
+
+Boot failures, display hangs, and kernel debugging for the Miyoo Flip. These are not specific to one distribution.
 
 ## Boot Hang: fan53555 / VDD_CPU (Kernel 6.4+)
 
@@ -56,25 +58,33 @@ resolve:
 
 **Root cause (2026-04):** Bit **SYS_CAN_SD** (bit 7 of RK817 register **0xe6**, `CHRG_TERM`). The BSP charger driver clears it at probe; mainline `rk817_charger.c` did not, leaving the hardware default. With the bit set, the PMIC **charger monitoring block stays active** after system-off.
 
-**Fix:** Kernel patch **`0007-power-supply-rk817-disable-idle-charger-monitoring-f.patch`** — clears `SYS_CAN_SD` during `rk817_battery_init()`. Landed as [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). **No DTS change is required** for this fix. Re-checked 2026-08-27 with the multiboot preloader restored: 0xe6 bit 7 clear on stock and ROCKNIX; **~20 h off, battery unchanged**.
+**Fix:** Kernel change that clears `SYS_CAN_SD` during `rk817_battery_init()`. The archived ROCKNIX fork shipped that as patch **0007** ([560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb)). **No DTS change is required** for this fix. Re-checked 2026-08-27 with the multiboot preloader restored: 0xe6 bit 7 clear on stock and on that fork; **~20 h off, battery unchanged**.
 
 **Full narrative:** [Power-off investigation](miyoo-flip-power-off-investigation.md) (lab notebook) and [2026-08-27 re-verification](miyoo-flip-power-off-investigation.md#re-verification-2026-08-27).
 
-**If `poweroff` comes back on by itself:** that was an 8733bu **panic** (`ON_SOURCE = 0x02` = warm reboot), not a charger. Current `flip` has patches **003/004**. A real off is **`ON_SOURCE = 0x80`**. Gauge % after a long off is not an ammeter — the charger re-seeds OCV.
+**If `poweroff` comes back on by itself:** on the archived fork that was an 8733bu **panic** (`ON_SOURCE = 0x02` = warm reboot), not a charger. Patches **003/004** on that tree stopped it. A real off is **`ON_SOURCE = 0x80`**. Gauge % after a long off is not an ammeter — the charger re-seeds OCV.
 
-**Bluetooth scan empty in EmulationStation:** the agent died after the dbussy bump (`get_running_loop` NameError). Fixed by [86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5) — pass an explicit event loop.
-
-**Wi-Fi will not reconnect; NetworkManager says “Secrets were required, but not provided”:** two separate bugs used that string. A disconnect that left the interface up kept `wdev->connected` set, so iwd’s randomized scans failed (`-EOPNOTSUPP`) — **004** now indicates the disconnect once ([ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9)). A WPA2/WPA3 AP that finishes SAE and then never associates is **006** ([69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b)); the 7.1-port tree did not carry those SAE fixes.
-
-**After suspend the board is on a different network or lease:** concurrent mode registered **wlan0** and **wlan1**; `wifictl pin` always targeted wlan0. **005** drops `CONFIG_CONCURRENT_MODE` ([6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87)).
-
-**Bluetooth or Wi-Fi dead after sleep:** chip power for suspend is **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)). The Miyoo Flip post-sleep rfkill quirk is gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); `bluetooth.service` still has the `060-btusb_power` drop-in.
-
-**Upper USB-C powers a hub but nothing enumerates:** the EHCI handed the port to its OHCI companion (`usb_host0_ohci` `fd840000`) while that node was disabled. Current `flip` enables it **and** lists the PHY as a fourth clock (`<&usb2phy1>`, **480 MHz**) ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)). Without that clock, suspend hangs in firmware after every driver callback has returned. High-speed sticks never take the OHCI handoff, so they are a bad test for the enumerate fault. The **lower** USB-C is charge/gadget only — it cannot host a bus-powered device.
+**Upper USB-C powers a hub but nothing enumerates:** the EHCI handed the port to its OHCI companion (`usb_host0_ohci` `fd840000`) while that node was disabled. The archived fork enables it **and** lists the PHY as a fourth clock (`<&usb2phy1>`, **480 MHz**) ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)). Without that clock, suspend hangs in firmware after every driver callback has returned. High-speed sticks never take the OHCI handoff, so they are a bad test for the enumerate fault. The **lower** USB-C is charge/gadget only — it cannot host a bus-powered device. This is a board topology fact, not a ROCKNIX service.
 
 **Historical note (superseded for drain):** Earlier wiki text blamed **`system-power-controller`** / DEV_OFF “racing” PSCI for drain. The **~8 mA** leak is **SYS_CAN_SD**. Prefer **`ON_SOURCE`** over **`OFF_SOURCE`** when reading the old notebook.
 
-## Power/Battery Status
+## Historical ROCKNIX issues
+
+Observed on the archived [Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip` tree (stamp `d249b09bd9`). These are driver or userspace bugs in that implementation. They are not properties of the Miyoo Flip hardware, and they are not a Zlyme status.
+
+**Bluetooth scan empty in EmulationStation:** the agent died after the dbussy bump (`get_running_loop` NameError). Fixed on that tree by [86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5) — pass an explicit event loop.
+
+**Wi-Fi will not reconnect; NetworkManager says “Secrets were required, but not provided”:** two separate bugs on that driver stack used that string. A disconnect that left the interface up kept `wdev->connected` set, so iwd’s randomized scans failed (`-EOPNOTSUPP`) — **004** indicates the disconnect once ([ecccdef](https://github.com/Zetarancio/distribution/commit/ecccdef4b9)). A WPA2/WPA3 AP that finishes SAE and then never associates is **006** ([69d1b17](https://github.com/Zetarancio/distribution/commit/69d1b1714b)); the 7.1-port tree did not carry those SAE fixes.
+
+**After suspend the board is on a different network or lease:** concurrent mode registered **wlan0** and **wlan1**; `wifictl pin` always targeted wlan0. **005** drops `CONFIG_CONCURRENT_MODE` ([6a7ac83](https://github.com/Zetarancio/distribution/commit/6a7ac83e87)).
+
+**Bluetooth or Wi-Fi dead after sleep:** chip power for suspend was **RTL8733BU-POWER** `.suspend_late` / `.resume` ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)). The Miyoo Flip post-sleep rfkill quirk was removed ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)); `bluetooth.service` still had the `060-btusb_power` drop-in. The enable GPIO itself is hardware: [WiFi/BT power-off](drivers-and-dts/wifi-bt-power-off.md).
+
+## Zlyme
+
+No Zlyme-specific failure is recorded in this wiki yet. Do not copy the historical ROCKNIX symptoms above onto Zlyme without a new capture. Status: [Zlyme](implementations/zlyme.md).
+
+## Historical / superseded findings
 
 | Status | Item |
 |--------|------|
@@ -82,7 +92,7 @@ resolve:
 | Fixed | PM: genpd disables unused power domains |
 | Fixed | GPU power domain resolved (mali_kbase binds) |
 | Fixed | GPU devfreq active (200-800 MHz) |
-| Historical | `fan53555-regulator` probe **-ENXIO** at `0x1c`. Only appeared while the DTS enabled both TCS4525 and RK8600 like stock. Current **`flip`** describes **RK8600 @ 0x40** only, so this should no longer be logged — see [I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
+| Historical | `fan53555-regulator` probe **-ENXIO** at `0x1c`. Only appeared while the DTS enabled both TCS4525 and RK8600 like stock. The archived fork’s later DTS describes **RK8600 @ 0x40** only, so this should no longer be logged — see [I2C0 CPU regulator](drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator). |
 | Low priority | VPU/RGA/VEPU sync_state pending until first use (mainline drivers: hantro-vpu, rockchip-rga) |
 
 ## Remaining Boot Log Warnings
@@ -90,7 +100,7 @@ resolve:
 | Message | Impact |
 |---------|--------|
 | `rockchip-pm-domain: sync_state() pending due to video-codec/rga/vepu` | Harmless. Mainline VPU/RGA drivers present; domains power down when idle; sync_state clears when a consumer opens the device |
-| `fan53555-regulator 0-001c: error -ENXIO: Failed to get chip ID!` | **Only in older logs.** It came from the DTS describing both CPU regulators while only RK8600 is populated; the failed probe was ignored and VDD_CPU came up regardless. **`TCS4525 @ 0x1c`** has since been removed ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)), so a current build should not log it. |
+| `fan53555-regulator 0-001c: error -ENXIO: Failed to get chip ID!` | **Only in older logs.** It came from the DTS describing both CPU regulators while only RK8600 is populated; the failed probe was ignored and VDD_CPU came up regardless. **`TCS4525 @ 0x1c`** was removed on the archived fork ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
 | `gpio gpiochip0: Static allocation of GPIO base is deprecated` | None. Upstream will fix |
 | `Waiting for interface eth0... timeout!` | Harmless. No Ethernet on handheld |
 | `seedrng: can't create directory: Read-only file system` | squashfs is read-only; use tmpfs overlay |
@@ -128,4 +138,4 @@ Add these to DTS `chosen` bootargs for debugging:
 
 ## Kernel Version Notes
 
-The DTS targets **mainline Linux 7.0+** on current ROCKNIX `flip` builds (older notes used 6.18+). The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. Legacy build helpers live on branch `buildroot`.
+The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. The archived ROCKNIX fork’s RK3566 images used **Linux 7.0.2**. Older notes and boot logs used 6.18+. Legacy build helpers live on branch `buildroot`. Zlyme’s kernel version is not recorded on this page.

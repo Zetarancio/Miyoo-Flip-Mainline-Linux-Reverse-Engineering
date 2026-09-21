@@ -18,9 +18,17 @@ To actually **power off** the combo (and save maximum battery when both WiFi and
 
 Without a driver that does this (e.g. **RTL8733BU-POWER** or a similar power-control driver), the WiFi/BT combo **cannot be fully powered off**; it can only be “soft” disabled via rfkill while the chip remains powered.
 
-**Zetarancio `flip`:** **RTL8733BU-POWER** owns the enable GPIO and two rfkill devices. It cuts the GPIO in **`.suspend_late`** and restores it in **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), after USB `.suspend` has run, so a PM_SUSPEND_PREPARE cut (HCI close racing a dead device → freeze abort) and a `.suspend` cut (power pulled under a still-suspending USB function) are both avoided. The Miyoo Flip `sleep.d` **pre** hook went with that commit; the **post** rfkill quirk went in [47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc) once `.resume` powered the chip before `bluetooth.service` and `wifictl`. `060-btusb_power` still writes a `bluetooth.service` drop-in (block BT rfkill in `ExecStopPost`, unblock in `ExecStartPre`).
+rfkill policy, NetworkManager, and `sleep.d` hooks are operating-system choices. The enable GPIO (GPIO0_PA0 on this board, via `rtl8733bu_power`) is the hardware fact.
+
+## Historical ROCKNIX implementation
+
+On the archived [Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip` tree, **RTL8733BU-POWER** owned the enable GPIO and two rfkill devices. It cut the GPIO in **`.suspend_late`** and restored it in **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), after USB `.suspend` had run, so a PM_SUSPEND_PREPARE cut (HCI close racing a dead device → freeze abort) and a `.suspend` cut (power pulled under a still-suspending USB function) were both avoided. The Miyoo Flip `sleep.d` **pre** hook went with that commit; the **post** rfkill quirk went in [47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc) once `.resume` powered the chip before `bluetooth.service` and `wifictl`. `060-btusb_power` still wrote a `bluetooth.service` drop-in (block BT rfkill in `ExecStopPost`, unblock in `ExecStartPre`).
 
 Older quirk commits, for history: [f397258](https://github.com/Zetarancio/distribution/commit/f397258), [1af2a32](https://github.com/Zetarancio/distribution/commit/1af2a32), [2a51ce0](https://github.com/Zetarancio/distribution/commit/2a51ce0), [e57d731](https://github.com/Zetarancio/distribution/commit/e57d731).
+
+## Zlyme
+
+[Zlyme](../implementations/zlyme.md) is the active implementation. This wiki does not record whether Zlyme ships RTL8733BU-POWER, an rfkill policy, or a sleep hook. Do not assume the ROCKNIX service layout above.
 
 ---
 

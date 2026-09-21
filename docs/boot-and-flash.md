@@ -80,7 +80,7 @@ The Specific image is shared with those other boards, so its default device tree
 | Preloader | 0x000000–0x200000 | IDBLOCK + DDR init blob + stock SPL |
 | U-Boot FIT | 0x300000+ | FIT image: ATF (BL31) + **OP-TEE (BL32)** + U-Boot + FDT |
 
-**Any U-Boot for this board must include OP-TEE (BL32) in the FIT image.** The boot chain expects ATF + OP-TEE + U-Boot; omitting OP-TEE is not supported by the stock BL31/loader design. Recent versions of BL31 actually include BL32.
+**Proven configuration:** the stock SPI FIT contains TF-A **BL31**, **OP-TEE as BL32**, U-Boot, and an FDT. Known working SD and mainline boots documented here also included TF-A and OP-TEE. In that configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so this is not a universal hardware requirement.
 
 Boot flow: **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL. **SPL** tries boot sources (MMC2 → MMC1 → MTD) and loads U-Boot. **U-Boot** reads the boot partition (Android boot image: kernel + DTB). **Kernel** mounts rootfs from `/dev/mtdblock3`.
 

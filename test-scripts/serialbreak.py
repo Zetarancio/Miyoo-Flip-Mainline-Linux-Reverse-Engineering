@@ -9,15 +9,19 @@ whatever comes next.
 
 Usage:
   serialbreak.py [--baud N] [--seconds N] [--reboot-cmd CMD] [--no-break]
-                 [--cmd "uboot command"]...
+                 [--cmd "uboot command"]... [--after-login "linux command"]
 
 --no-break just captures, for a plain boot log. Without --reboot-cmd nothing is
 sent to start with, so you can power the board on by hand instead.
+
+Bytes are written to stdout as they arrive. --after-login waits for the Linux
+getty, logs in as root (empty password), and sends one shell command once.
 """
 import argparse
 import os
 import re
 import select
+import subprocess
 import sys
 import termios
 import time
@@ -30,18 +34,36 @@ PORT = "/dev/ttyUSB0"
 # Anchored, because the driver's own "==> rtl8733bu_deinit" style logging
 # appears during shutdown and would otherwise look like we had arrived.
 PROMPT = re.compile(rb"(?m)^=>")
+LOGIN = re.compile(rb"login:\s*$", re.I | re.M)
+PASSWD = re.compile(rb"Password:", re.I)
+SHELL = re.compile(rb"(?m)^# $")
 
 
-def open_port(baud):
-    speed = getattr(termios, "B%d" % baud, None)
-    if speed is None:
-        sys.exit("unsupported baud %d" % baud)
-    fd = os.open(PORT, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
-    _, _, cflag, _, _, _, cc = termios.tcgetattr(fd)
+def open_port(baud, port=PORT):
+    """NOTES §1: stty the custom baud, then open. Do not use termios.B1500000."""
+    subprocess.check_call(
+        [
+            "stty",
+            "-F",
+            port,
+            str(baud),
+            "raw",
+            "-echo",
+            "-ixon",
+            "-ixoff",
+            "cs8",
+            "-cstopb",
+            "-parenb",
+            "clocal",
+        ],
+        timeout=5,
+    )
+    fd = os.open(port, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+    _, _, cflag, _, ispeed, ospeed, cc = termios.tcgetattr(fd)
     cflag = termios.CS8 | termios.CREAD | termios.CLOCAL
     cc[termios.VMIN] = 0
     cc[termios.VTIME] = 0
-    termios.tcsetattr(fd, termios.TCSANOW, [0, 0, cflag, 0, speed, speed, cc])
+    termios.tcsetattr(fd, termios.TCSANOW, [0, 0, cflag, 0, ispeed, ospeed, cc])
     termios.tcflush(fd, termios.TCIFLUSH)
     return fd
 
@@ -54,14 +76,30 @@ def main():
     ap.add_argument("--no-break", action="store_true")
     ap.add_argument("--cmd", action="append", default=[])
     ap.add_argument("--cmd-gap", type=float, default=1.5)
+    ap.add_argument(
+        "--after-login",
+        default=None,
+        help="after Linux getty, login as root and run this once",
+    )
+    ap.add_argument(
+        "--log",
+        default=None,
+        help="also append raw bytes to this file",
+    )
     args = ap.parse_args()
 
+    logf = open(args.log, "ab") if args.log else None
     fd = open_port(args.baud)
     chunks = []
     at_prompt = False
     prompt_at = None
     sent = 0
     last_spam = 0.0
+    sent_user = False
+    sent_pass = False
+    sent_sh = False
+    last_login = 0.0
+    tail = b""
 
     try:
         if args.reboot_cmd:
@@ -89,6 +127,12 @@ def main():
             if not data:
                 continue
             chunks.append(data)
+            sys.stdout.buffer.write(data)
+            sys.stdout.buffer.flush()
+            if logf is not None:
+                logf.write(data)
+                logf.flush()
+            tail = (tail + data)[-800:]
 
             if not at_prompt and PROMPT.search(b"".join(chunks[-8:])):
                 at_prompt = True
@@ -96,16 +140,31 @@ def main():
                 # A bare newline settles the prompt after the spam.
                 os.write(fd, b"\r\n")
 
+            if args.after_login and not sent_sh:
+                if (not sent_user) and LOGIN.search(tail) and now - last_login > 2:
+                    os.write(fd, b"root\r\n")
+                    sent_user = True
+                    last_login = now
+                elif sent_user and (not sent_pass) and PASSWD.search(tail):
+                    os.write(fd, b"\r\n")
+                    sent_pass = True
+                elif sent_user and SHELL.search(tail):
+                    os.write(fd, (args.after_login + "\r\n").encode())
+                    sent_sh = True
+
             if at_prompt and sent >= len(args.cmd) and args.cmd:
                 # Give the last command room to finish, then stop early.
                 if time.time() - prompt_at > args.cmd_gap * (sent + 2):
                     break
     finally:
         os.close(fd)
+        if logf is not None:
+            logf.close()
 
-    out = b"".join(chunks).decode("utf-8", "replace")
-    sys.stdout.write(out)
-    sys.stdout.write("\n--- %d bytes, prompt=%s ---\n" % (len(out), at_prompt))
+    sys.stdout.write(
+        "\n--- %d bytes, uboot_prompt=%s linux_cmd=%s ---\n"
+        % (sum(len(c) for c in chunks), at_prompt, sent_sh)
+    )
 
 
 if __name__ == "__main__":

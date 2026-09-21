@@ -152,7 +152,9 @@ def main():
                     os.write(fd, (args.after_login + "\r\n").encode())
                     sent_sh = True
 
-            if at_prompt and sent >= len(args.cmd) and args.cmd:
+            # U-Boot-only early exit. --after-login must keep reading through
+            # Linux getty, so this must not run while that wait is active.
+            if at_prompt and sent >= len(args.cmd) and args.cmd and not args.after_login:
                 # Give the last command room to finish, then stop early.
                 if time.time() - prompt_at > args.cmd_gap * (sent + 2):
                     break

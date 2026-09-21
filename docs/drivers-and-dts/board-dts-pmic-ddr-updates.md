@@ -90,7 +90,7 @@ Regulators with `regulator-off-in-suspend` on vdd_logic, vdd_gpu, etc. are only 
 
 ### Patch 0029 — rk8xx PMIC pinctrl switching (historical)
 
-The BSP-style **0029** mfd patch (PMIC pinctrl / extra `rk808_power_off()` sequencing) was **removed** from the active Miyoo Flip / RK3566 patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)): it worsened off-state behavior in testing and is **not** the correct fix for the **~8 mA** leak (that is **patch 0007** above).
+The BSP-style **0029** mfd patch (PMIC pinctrl / extra `rk808_power_off()` sequencing) was **removed** from the archived ROCKNIX fork’s Miyoo Flip / RK3566 patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)): it worsened off-state behavior in testing and is **not** the correct fix for the **~8 mA** leak (that is **patch 0007** above). That removal is historical fork state, not the active project.
 
 **Portability reference** (if you revive 0029 elsewhere): [Patch portability — 0029](patch-portability.md#patch-0029--mfd-rk8xx-bsp-style-pmic-pinctrl-switching).
 

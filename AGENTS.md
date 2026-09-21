@@ -28,7 +28,7 @@ The maintainer's former ROCKNIX fork:
 Zetarancio/distribution
 ```
 
-is being archived and must be treated as **historical implementation evidence**, not as an active source of current Miyoo Flip implementation state.
+is archived and must be treated as **historical implementation evidence**, not as an active source of current Miyoo Flip implementation state.
 
 The official upstream:
 

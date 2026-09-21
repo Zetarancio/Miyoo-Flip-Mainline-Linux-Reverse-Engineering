@@ -22,7 +22,7 @@ Patches live under `projects/ROCKNIX/devices/RK3566/patches/linux/` in the distr
 
 ## Patch 0029 — `mfd: rk8xx: BSP-style PMIC pinctrl switching`
 
-> **Status on Miyoo Flip / RK3566 (2026-04):** This patch was **removed** from the active patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)). It is documented here for **portability** if you reintroduce it on another tree. Off-state drain is addressed by **patch 0007** above, not by 0029.
+> **Status on the archived ROCKNIX fork (2026-04):** This patch was **removed** from that fork’s Miyoo Flip / RK3566 patch set ([f9a59b0](https://github.com/Zetarancio/distribution/commit/f9a59b020de4e0109569e8f05d2760702b701e46)). It is documented here for **portability** if you reintroduce it on another tree. Off-state drain is addressed by **patch 0007** above, not by 0029. The fork is not the active project.
 
 **What the driver reads from DTS:**
 

@@ -1,12 +1,20 @@
 # Miyoo Flip — Device Wiki & Reference
 
-This repository is the **maintained wiki and reference** for the **Miyoo Flip** handheld (Rockchip RK3566) on mainline Linux. The documentation is kept up to date as the canonical device reference.
+This repository is the hardware, firmware, and reverse-engineering wiki for the **Miyoo Flip** (`my355`, Rockchip **RK3566**). It is not the manual for one Linux distribution. A different operating system should still be able to use the hardware facts.
 
-**ROCKNIX images:** **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. There is no separate “Miyoo Flip” download: both the Generic and Specific SD images sit inside the **`ROCKNIX-image-RK3566-YYYYMMDD`** Actions zip; the Flip uses **`*-Specific.img.gz`**, which must be decompressed — flash the **`.img`**, not the `.gz`. The **`ROCKNIX-update-RK3566-YYYYMMDD`** zip is the OTA tarball, not a card image. [Where to get images](docs/boot-and-flash.md#where-to-get-images). Day-to-day DTS and kernel integration for this wiki tracks branch **`next`** ahead of those freezes.
+How statements are classified: [Documentation model](docs/DOCUMENTATION_MODEL.md).
 
-The distribution repo holds the build system and device sources; **this `main` branch** is documentation, reference material, and small helper assets. Legacy local build scripts live on branch **`buildroot`**.
+## Project status
 
-**Wiki `flip` stamp:** [`d249b09bd9`](https://github.com/Zetarancio/distribution/commit/d249b09bd9) — *Merge commit '1ebff24f36' into flip* (2026-09-02). **RK3566 kernel:** **Linux 7.0.2**. **Recent Miyoo / RK3566 commits on `flip`:** [OHCI companion with PHY clock](https://github.com/Zetarancio/distribution/commit/54d8b02425) · [Merge commit 1ebff24f36](https://github.com/Zetarancio/distribution/commit/d249b09bd9) · [drop post-sleep rfkill quirk](https://github.com/Zetarancio/distribution/commit/47fb7252bc) · [RTL8733BU indicate a disconnect once](https://github.com/Zetarancio/distribution/commit/ecccdef4b9) · [restore WPA3/SAE](https://github.com/Zetarancio/distribution/commit/69d1b1714b) · [POWER cut chip power for suspend](https://github.com/Zetarancio/distribution/commit/e728b28834) · [drop concurrent mode](https://github.com/Zetarancio/distribution/commit/6a7ac83e87) · [Bluetooth agent event loop](https://github.com/Zetarancio/distribution/commit/86de6632e5) · [7.1-port tree](https://github.com/Zetarancio/distribution/commit/3c149fbbf9) · [upper USB-C host](https://github.com/Zetarancio/distribution/commit/06fd5cd044). [board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md) · [commits/flip](https://github.com/Zetarancio/distribution/commits/flip/).
+| Role | Where |
+|------|--------|
+| **Active implementation** | [Zlyme](https://github.com/Zetarancio/zlyme) — [status page](docs/implementations/zlyme.md) |
+| **Historical implementation** | Miyoo Flip ROCKNIX fork — [Zetarancio/distribution](https://github.com/Zetarancio/distribution), **archived** — [status page](docs/implementations/rocknix.md) |
+| **External upstream reference** | [ROCKNIX/distribution](https://github.com/ROCKNIX/distribution) |
+
+Archiving the fork does not retire its measurements. The last wiki stamp of that `flip` branch is [`d249b09bd9`](https://github.com/Zetarancio/distribution/commit/d249b09bd9) (2026-09-02), RK3566 kernel **Linux 7.0.2**. Provenance for the upper-port OHCI clock, RTL8733BU patches, and related fixes stays on [the historical page](docs/implementations/rocknix.md).
+
+**This `main` branch** is the wiki, reference dumps, and small helper tools. Legacy local build scripts live on branch **`buildroot`**.
 
 ---
 
@@ -34,7 +42,7 @@ Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-
 | UART      | ttyS2 @ 1,500,000 baud (3.3V)                         |
 | USB       | Two USB-C: **upper** (top) = host; **lower** (bottom) = charge + gadget. [Board DTS — USB](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#usb) |
 
-**VDD_CPU / I2C0:** Current **`flip`** DTS has **RK8600 @ 0x40** only. **TCS4525 @ 0x1c** was removed ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df) — *Miyoo Flip DTS: cleanup and fixes*) after **Miyoo officially confirmed** to this project that there is **no second CPU-regulator hardware variant** (only RK8600 is populated). **2025 stock DTS** still lists both addresses for BSP comparison only—not evidence of two production SKUs.
+**VDD_CPU / I2C0:** Retail units populate **RK8600 @ 0x40** only. **TCS4525 @ 0x1c** was removed from the board DTS ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df) on the archived ROCKNIX fork) after **Miyoo officially confirmed** there is **no second CPU-regulator hardware variant**. **2025 stock DTS** still lists both addresses for BSP comparison — not evidence of two production SKUs.
 
 ---
 
@@ -44,7 +52,9 @@ Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-
 
 | Topic | Front page | Subpages |
 | ----- | ---------- | -------- |
-| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, images, boot chain | [**SD multiboot (recommended)**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Erase the preloader (MASKROM)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
+| **Implementations** | [implementations/](docs/implementations/README.md) — Zlyme, archived ROCKNIX, stock | [Zlyme](docs/implementations/zlyme.md), [ROCKNIX fork](docs/implementations/rocknix.md), [Stock](docs/implementations/stock.md) |
+| **Input** | [hardware/input.md](docs/hardware/input.md) — UART stick, GPIO, hall, rumble | — |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, boot chain | [**SD multiboot**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Erase the preloader (MASKROM)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
@@ -54,31 +64,32 @@ Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-
 
 Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after resume, power-down reaches `reboot: Power down`); `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock with DDR/sleep debug); `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock, sleep/poweroff).
 
-**Note:** `logs/boot_log_ROCKNIX.txt` may not match the **latest** kernel/DTS iteration at all times; it is kept as **historical proof** of a working mainline capture (e.g. DMC after resume, power-down), not as a live regression log.
+**Note:** `logs/boot_log_ROCKNIX.txt` is a **historical capture** from the archived ROCKNIX fork. It is proof of a working mainline boot (DMC after resume, power-down), not a live log of Zlyme.
 
 ---
 
-## Status
+## Device capability
 
-| Subsystem                | Status                | Notes |
-| ------------------------ | --------------------- | ----- |
-| Boot (U-Boot + kernel)   | Working               | Mainline **7.0+** on current `flip` (was 6.18+); SPI NAND or SD |
-| Display (DSI panel)      | Working               | 640x480, panel driver |
-| Backlight                | Working               | PWM4 |
-| Audio (RK817)            | Working               | PipeWire + rk817 UCM; `099-audio_prime` + **idle.timeout=60s** ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)) |
-| WiFi (RTL8733BU)         | Working               | 7.1-port tree + local patches **001–006** (shutdown hook, suspend bound, two BSS double-release fixes, one wlan interface, SAE/WPA3). Optional GPIO cut-off: [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). |
-| Bluetooth                | Working               | Unified firmware, btusb re-probe. Agent event loop after the dbussy bump ([86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5)). After sleep the chip is powered from **RTL8733BU-POWER** `.resume` before `bluetooth.service`; the post-sleep rfkill quirk is gone ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). |
-| USB (upper USB-C)        | Working               | **Top** connector. USB 2.0 **host** (`usb_host0_ehci` + **`usb_host0_ohci`**, `usb2phy1_otg`, VBUS `vcc5v0_host`). The OHCI companion is required, and it needs the PHY’s **480 MHz** as a fourth clock ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)); without the companion, full-speed hubs power but never enumerate. A high-inrush hub already inserted at power-on can brown out the board on battery. |
-| USB (lower USB-C)        | Working               | **Bottom** connector. Charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). Cannot host a bus-powered device: no VBUS on that PHY. |
-| GPU (Mali-G52)           | Working               | mali_kbase + libmali, 200–800 MHz |
-| Storage                  | Working               | SPI NAND MTD, both SD slots |
-| HDMI                     | Working               | Video and audio (when enabled in DTS) |
-| HDMI audio               | Working               | With HDMI output |
-| DMC (DDR devfreq)        | Working (out-of-tree) | Scaling + resume confirmed; see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
-| VPU / RGA                | Working               | hantro-vpu, rockchip-rga |
-| IEP                      | Not working           | BSP-only (MPP) |
-| Suspend                  | Working               | **Standard** suspend on **`flip`**. **Deep suspend** (1013 + `vdd_logic` off) **deferred** — patches `.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off ([ca7bb4a9](https://github.com/Zetarancio/distribution/commit/ca7bb4a903)); ES upstream blocker — [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
-| Input (buttons + rumble) | Working               | 17 GPIO buttons, joypad, rumble (PWM5) |
+What the hardware does on mainline, and where it was demonstrated. “Demonstrated” means observed on the **archived ROCKNIX fork** unless the note says stock or a hardware fact. It does **not** mean Zlyme ships that configuration. Zlyme status: [implementations/zlyme.md](docs/implementations/zlyme.md).
+
+| Subsystem | On mainline | Notes |
+| --------- | ----------- | ----- |
+| Boot (U-Boot + kernel) | Demonstrated | SPI NAND or SD. Archived fork: mainline **7.0.2** at stamp `d249b09bd9` (older captures used 6.18+). |
+| Display (DSI panel) | Demonstrated | 640×480. Panel controller identity is **presumed** — [Display](docs/drivers-and-dts/display.md#module-name-vs-what-is-proven). |
+| Backlight | Demonstrated | PWM4 |
+| Audio (RK817) | Demonstrated | Codec works. PipeWire idle **60s** and `099-audio_prime` were **archived ROCKNIX** policy ([79453c8](https://github.com/Zetarancio/distribution/commit/79453c8d9b), [32fa5f3](https://github.com/Zetarancio/distribution/commit/32fa5f3308)). |
+| WiFi (RTL8733BU) | Demonstrated | USB combo. Enable GPIO is separate from the radio driver — [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md). Driver patches **001–006** are the archived fork’s tree. |
+| Bluetooth | Demonstrated | Same combo chip. Agent loop and sleep power sequencing below are archived-fork userspace/driver history ([86de663](https://github.com/Zetarancio/distribution/commit/86de6632e5), [47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). |
+| USB (upper / top) | Hardware fact | Host: `usb_host0_ehci` + `usb_host0_ohci`, PHY `usb2phy1_otg`, VBUS `vcc5v0_host`. OHCI needs the PHY **480 MHz** clock or suspend hangs. Proven on the archived fork ([54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425)). |
+| USB (lower / bottom) | Hardware fact | Charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`). No VBUS for a bus-powered device. |
+| GPU (Mali-G52) | Demonstrated | mali_kbase + libmali, 200–800 MHz, on the archived fork |
+| Storage | Demonstrated | SPI NAND MTD, both SD slots. Slots share `vqmmc`. |
+| HDMI | Demonstrated when the DTS node is enabled | Video and audio |
+| DMC (DDR devfreq) | Demonstrated out of tree | V2 SIP mechanism. The archived fork carried it as **patch 1012**. [BSP and DDR](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) |
+| VPU / RGA | Demonstrated | hantro-vpu, rockchip-rga |
+| IEP | Not on mainline | BSP-only (MPP) |
+| Suspend | Standard suspend demonstrated | Deep suspend is a **separate** BL31 mode and was **left off** on the archived fork. Not claimed for Zlyme. [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| Input | Hardware fact | GPIO buttons, UART1 stick, PWM5 rumble, hall on GPIO0_PC6. [Input](docs/hardware/input.md) |
 
 ---
 
@@ -90,27 +101,27 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DSI panel init in command mode:** The stock driver sends init commands via a DT property. On mainline, commands must be sent during `prepare()` (command mode), not `enable()` (video mode), or they collide with the video stream on the shared FIFO.
 
-- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. Fixed by using `<&vccsys>` and careful RK817 pinctrl. Deep sleep still uses **patched rk8xx** / suspend ordering from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) where applicable.
+- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. The working arrangement uses `<&vccsys>` and a simpler RK817 pinctrl. Deep sleep still depends on a BL31 `ARMOFF_LOGOFF` configuration; the archived ROCKNIX fork carried that as an rk8xx/suspend patch set and then left it disabled.
 
-- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements this for mainline **7.0+** (current `flip`; older captures used 6.18+); see [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
+- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements that protocol. The archived ROCKNIX fork carried it as **patch 1012** on Linux **7.0.2** (older captures used 6.18+). See [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Suspend:** **Standard** suspend works on **`flip`**. **Deep sleep** (**1013** + `vdd_logic` off) stays **deferred** (`.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off) until **EmulationStation** upstream fix. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
+- **Suspend:** **Standard** suspend was demonstrated on the archived ROCKNIX fork. **Deep sleep** (rk3568-suspend + `vdd_logic` off) stayed **deferred** there (`.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off) pending an **EmulationStation** fix. Zlyme has not been recorded here as enabling it. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md).
 
 - **Boot chain:** Any U-Boot for this board must include OP-TEE (BL31) in the FIT image; the boot chain expects ATF + OP-TEE + U-Boot. Bootrom/SPL behaviour for SD boot is documented in [Boot and flash](docs/boot-and-flash.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Full power-off / off-state drain:** The **~8 mA** battery drain while “off” was traced to RK817 **SYS_CAN_SD** (charger block stays active). **Kernel patch 0007** clears that bit in `rk817_battery_init()` (BSP parity). The bit is **battery-backed**: a true POR leaves it set (`0xe6 = 0xc5`); neither stock SPL nor ROCKNIX U-Boot clears it, so a warm reboot still shows `0x40` from the previous kernel. See [Power-off investigation](docs/miyoo-flip-power-off-investigation.md), [Troubleshooting](docs/troubleshooting.md), and [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). Earlier guidance to omit `system-power-controller` to “fix drain” is **obsolete** once 0007 is applied; DTS follows the current `flip` tree (e.g. upstream-style `pmic_pins`, [a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)).
+- **Full power-off / off-state drain:** The **~8 mA** battery drain while “off” was traced to RK817 **SYS_CAN_SD** (charger block stays active). The archived ROCKNIX fork cleared that bit in `rk817_battery_init()` as kernel **patch 0007** (BSP parity). The bit is **battery-backed**: a true POR leaves it set (`0xe6 = 0xc5`); neither stock SPL nor that fork’s U-Boot clears it, so a warm reboot still shows `0x40` from the previous kernel. See [Power-off investigation](docs/miyoo-flip-power-off-investigation.md), [Troubleshooting](docs/troubleshooting.md), and [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). Earlier guidance to omit `system-power-controller` to “fix drain” is **obsolete** once 0007 is applied. DTS pinctrl on that fork followed upstream-style `pmic_pins` ([a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)).
 
 - **Fuel-gauge internal resistance:** Mainline `rk817_charger.c` never reads `factory-internal-resistance-micro-ohms`.
 
-- **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init have been refined against newer stock; see [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [distribution `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
+- **2025 stock alignment:** PMIC suspend/resume, battery OCV (descending table), shared SD `vqmmc`, DMC devfreq tuning, and DSI/panel init were refined against newer stock on the archived fork. See [Stock firmware and findings](docs/stock-firmware-and-findings.md) and [Board DTS / PMIC / DDR](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md). Commit history: [archived `flip`](https://github.com/Zetarancio/distribution/commits/flip/).
 
-- **USB ports:** Two USB-C, named **upper** (top) and **lower** (bottom). Upper is **host** (`usb_host0_ehci` + `usb_host0_ohci`, `usb2phy1_otg`, VBUS `vcc5v0_host`). Disabling `usb2phy1_otg` as unused is what first broke host. The OHCI companion is required for full-speed devices, and `rk356x-base.dtsi` omits the PHY clock it needs (**480 MHz** / stock `"utmi"`); enabling the controller without that clock hung suspend in firmware. Current node: [54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425). Lower is charge/gadget on `usb_host0_xhci` and cannot raise VBUS. [Board DTS — USB](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
+- **USB ports:** Two USB-C, named **upper** (top) and **lower** (bottom). Upper is **host** (`usb_host0_ehci` + `usb_host0_ohci`, `usb2phy1_otg`, VBUS `vcc5v0_host`). Disabling `usb2phy1_otg` as unused is what first broke host. The OHCI companion is required for full-speed devices, and `rk356x-base.dtsi` omits the PHY clock it needs (**480 MHz** / stock `"utmi"`); enabling the controller without that clock hung suspend in firmware. The archived fork’s node that includes the clock is [54d8b02](https://github.com/Zetarancio/distribution/commit/54d8b02425). Lower is charge/gadget on `usb_host0_xhci` and cannot raise VBUS. [Board DTS — USB](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#usb).
 
 - **Power-off vs Wi-Fi panic:** A board that “comes back on” after `poweroff` with **`ON_SOURCE = 0x02`** was a **warm reboot** (8733bu cfg80211 BSS double-free), not a charger event. **`ON_SOURCE = 0x80`** is a genuine power-off. Patches **003/004** stop the panic. The restored multiboot preloader does not change off-state drain. [Power-off investigation — 2026-08-27](docs/miyoo-flip-power-off-investigation.md#re-verification-2026-08-27).
 
-- **VDD_CPU / I2C0:** **`flip`** DTS uses **RK8600 only**; **TCS4525** dropped after **Miyoo’s official confirmation** there is no alternate CPU-regulator SKU ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). [Board DTS — I2C0](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator).
+- **VDD_CPU / I2C0:** Retail hardware is **RK8600 only**. **TCS4525** was dropped from the board DTS after **Miyoo’s official confirmation** there is no alternate CPU-regulator SKU ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df) on the archived fork). [Board DTS — I2C0](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md#i2c0-cpu-regulator).
 
 ---
 
@@ -130,15 +141,17 @@ preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the p
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
 
-**Boot logs:** Under `logs/` — same filenames as before (mainline/stock captures; not guaranteed current).
+**Boot logs:** Under `logs/` — historical mainline and stock captures. They are not a Zlyme runtime log.
 
-**Build system:** For current builds and images use [Zetarancio/distribution](https://github.com/Zetarancio/distribution). This `main` branch is documentation-focused; legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/boot-and-flash/flashing.md](docs/boot-and-flash/flashing.md).
+**Active OS:** [Zlyme](https://github.com/Zetarancio/zlyme). The archived ROCKNIX fork remains at [Zetarancio/distribution](https://github.com/Zetarancio/distribution) as evidence. Legacy local build scripts live on branch `buildroot`. Flashing steps are in [docs/boot-and-flash/flashing.md](docs/boot-and-flash/flashing.md).
 
 ---
 
 ## Quick start
 
-For a **current image and build**, use the [Zetarancio/distribution](https://github.com/Zetarancio/distribution) (ROCKNIX, branch `flip`) repo.
+For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). This wiki does not yet document Zlyme image filenames.
+
+Historical ROCKNIX card images from the archived fork are described in [Where to get images](docs/boot-and-flash.md#where-to-get-images). Those Actions artifacts are not a maintained download channel.
 
 For legacy local build scripts, see branch **`buildroot`**.
 
@@ -168,8 +181,9 @@ For flashing and SD boot on this wiki, see [Boot and flash](docs/boot-and-flash.
 
 **Related projects**
 
-- **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** — Current ROCKNIX Miyoo Flip (branch `flip`)
-- [ROCKNIX](https://rocknix.org/)
+- **[Zetarancio/zlyme](https://github.com/Zetarancio/zlyme)** — active Miyoo Flip OS for this project
+- **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** — archived Miyoo Flip ROCKNIX fork (historical evidence)
+- [ROCKNIX](https://rocknix.org/) — official upstream, external reference
 - [GammaOS Core](https://github.com/TheGammaSqueeze/GammaOSCore)
 
 **Other reference**

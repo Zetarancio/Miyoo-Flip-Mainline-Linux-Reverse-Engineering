@@ -50,11 +50,15 @@ init script handles load ordering:
 2. Unbind/rebind btusb -- btrtl re-probes with firmware on chip
 3. `hciconfig hci0 up` -- Bluetooth operational
 
-### Building
+### Reproducing the archived ROCKNIX driver
 
-Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply the six `flip` patches above (001–006). Legacy build scripts are on branch `buildroot`.
+This is how the archived [Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip` tree built the module. It is not a Zlyme instruction, and this wiki does not record what Zlyme builds.
 
-### Testing
+Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply that fork’s six local patches **001–006** listed above. Legacy build scripts on branch `buildroot` are older local helpers, not the active OS.
+
+### Checks used on the archived fork
+
+These commands describe that tree’s module once it is loaded. They are not Zlyme setup steps.
 
 ```bash
 lsmod | grep rtl              # Module loaded
@@ -98,19 +102,19 @@ The RK3566 has a **Mali-G52 2EE** (Bifrost architecture) GPU.
 
 **mali_kbase (r54p2)** -- kernel module from
 [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch
-`bifrost_port`). Loaded at boot via `/etc/init.d/S00mali`. Creates
+`bifrost_port`). The archived fork loaded it at boot via `/etc/init.d/S00mali`. It creates
 `/dev/mali0`.
 
-**libmali (g29p1 on RK3566 `flip`)** -- Rockchip userspace blob.
+**libmali (g29p1 on the archived RK3566 `flip` tree)** -- Rockchip userspace blob.
 Blob: `libmali-bifrost-g52-g29p1-gbm.so` ([9f571902](https://github.com/Zetarancio/distribution/commit/9f57190200)). Older wiki text and captures may still say g24p0.
 
 **DTS Patch** -- `0008-arm64-dts-rockchip-add-support-for-mali-bifrost-driv.patch`
 adds `resets`, `power_policy`, and `power_model` to the GPU DTS node.
 Required for IPA (thermal) and devfreq.
 
-### Building
+### Reproducing the archived ROCKNIX GPU build
 
-Clone [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`) and build against your kernel tree. Userspace on the archived `flip` tree is **g29p1**, not g24p0. That repository is official ROCKNIX’s GPU driver tree, which the fork also used. Legacy build scripts are on branch `buildroot`.
+The archived fork used [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`), which is official upstream ROCKNIX’s GPU driver tree, built against that fork’s kernel. Userspace on the archived `flip` tree is **g29p1**, not g24p0. This wiki does not record Zlyme’s GPU userspace. Legacy build scripts on branch `buildroot` are older local helpers.
 
 ### GPU OPP Table
 

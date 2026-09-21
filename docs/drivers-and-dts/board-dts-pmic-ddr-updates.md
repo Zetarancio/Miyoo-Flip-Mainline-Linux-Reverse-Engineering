@@ -171,7 +171,7 @@ The Miyoo Flip uses a serial-based analog stick and GPIO buttons, not a standard
 | **Driver** | `rocknix-singleadc-joypad` with `rocknix,use-miyoo-serial-joypad` — UART1 Miyoo serial protocol. Driver-source patches **0002** / **0003** (DTS deadzone + sysfs cal). The old kernel **0001** gpiolib revert is **gone** (upstream joypad `1dd1115` does not need it). **Save Miyoo Autocal** tools module persists calibration. |
 | **GPIO buttons** | 17 GPIO switches: dpad (up/down/left/right), A/B/X/Y, select, start, mode, L1/R1, L2/R2, thumb L/R. |
 | **Debounce** | Volume keys: 10 ms (GPIO). Lid: separate `gpio_keys_hall` node ([1f129e8](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
-| **Rumble** | PWM5 @ 10 MHz period. |
+| **Rumble** | PWM5. `pwms = <&pwm5 0 10000000 0>` is a **10,000,000 ns / 10 ms period (100 Hz)** under the 3-cell PWM binding (channel, period in ns, flags), not a 10 MHz clock. See [Input](../hardware/input.md). |
 | **ADC keys** | **Node removed** — SARADC ch0 caused phantom volume-down / recovery ([1f129e8](https://github.com/Zetarancio/distribution/commit/1f129e89df)). Volume on GPIO3_PA7 / GPIO3_PB0. |
 | **Hall sensor** | `gpio_keys_hall` on GPIO0_PC6; **wake on lid open only** (closing lid while suspended does not wake). |
 

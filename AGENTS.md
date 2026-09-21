@@ -112,13 +112,12 @@ These may originate from stock firmware, BSP code, disassembly, experiments or a
 
 How a particular operating system implements a feature.
 
-Examples:
+Examples, all hypothetical until a cited revision says otherwise:
 
-* Zlyme packages a driver as an external module;
-* stock uses a vendor userspace input daemon;
-* the archived ROCKNIX port carried a feature as a kernel patch;
-* Zlyme uses InputPlumber;
-* Zlyme enables or disables deep suspend.
+* an implementation packages a driver as an external module;
+* a distribution uses a userspace input policy layer;
+* an implementation enables or disables deep suspend;
+* the archived ROCKNIX port carried a feature as a kernel patch.
 
 Implementation status must always name the implementation.
 
@@ -130,9 +129,7 @@ when the actual meaning is:
 
 > The archived ROCKNIX Miyoo Flip implementation shipped deep suspend disabled.
 
-or:
-
-> Zlyme currently ships deep suspend disabled.
+Do not write that Zlyme enables, disables, or ships deep suspend, InputPlumber, or a particular driver packaging until a cited Zlyme revision says so. A later sentence may name Zlyme only together with that revision.
 
 ## 4. Evidence
 

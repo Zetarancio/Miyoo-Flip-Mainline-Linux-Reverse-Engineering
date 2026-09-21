@@ -13,7 +13,7 @@ Pin constraints and the unused-pin lists: [Unused pins](../rk3566-reference/unus
 | UART1 pins that must stay free | **GPIO2_B3, GPIO2_B4, GPIO2_B6**. **GPIO2_B6** is UART1_CTSn on this path. Tying it as an unused pin breaks the stick. |
 | Volume keys | GPIO, **GPIO3_PA7** and **GPIO3_PB0**, 10 ms debounce in the historical DTS. SARADC channel 0 as `adc-keys` produced phantom volume-down / recovery and was removed from that DTS ([1f129e89df](https://github.com/Zetarancio/distribution/commit/1f129e89df)). |
 | Hall (lid) | **GPIO0_PC6** on the tested unit’s DTS (`gpio_keys_hall`). Wake on **lid open** only; closing the lid while suspended did not wake. |
-| Rumble | **PWM5**, period 10 MHz in the historical DTS. |
+| Rumble | **PWM5**. The archived fork’s DTS has `pwms = <&pwm5 0 10000000 0>`. The Rockchip 3-cell PWM specifier is channel, period in nanoseconds, flags, so that is channel 0, a **10,000,000 ns / 10 ms period (100 Hz)**, flags 0. |
 | Other pins the joypad uses | Do not tie GPIO2_C0, GPIO2_C1, or the GPIO3 ranges listed as joypad in [Unused pins](../rk3566-reference/unused-pins-power-saving.md). |
 
 ## Implementations

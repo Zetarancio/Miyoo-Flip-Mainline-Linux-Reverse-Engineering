@@ -21,7 +21,7 @@
 | optee | - | ~450 KB | OP-TEE (BL32) |
 | fdt | - | 14 KB | U-Boot device tree |
 
-**Note:** The table above is the observed stock FIT. TF-A runtime firmware is **BL31**; **OP-TEE is BL32**. Known working SD and mainline configurations documented here also included TF-A and OP-TEE. In that configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so the stock layout is the proven configuration, not a universal requirement that every U-Boot FIT include a separate OP-TEE image.
+**Note:** The table above is the observed stock FIT. TF-A runtime firmware is **BL31**; **OP-TEE is BL32**. Known working SD and mainline configurations documented here also included TF-A and OP-TEE, except Zlyme, whose BL31-only card FIT (no OP-TEE) boots and resumes from deep suspend ([Zlyme](../implementations/zlyme.md); observed in Zlyme, no serial capture here). In the OP-TEE configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so the stock layout is the proven configuration, not a universal requirement that every U-Boot FIT include a separate OP-TEE image.
 
 ---
 

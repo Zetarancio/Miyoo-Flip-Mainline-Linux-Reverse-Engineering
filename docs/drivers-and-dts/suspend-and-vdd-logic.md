@@ -7,7 +7,7 @@ Standard suspend and deep suspend are different mechanisms on RK3566/RK3568. DDR
 3. **`vdd_logic` off-in-suspend is only safe in that mode.** Without `ARMOFF_LOGOFF`, resume hangs because BL31 has not saved the logic domain. See [vdd_logic](#vdd_logic-regulator).
 4. **DMC devfreq** uses a different SIP (`SIP_DRAM_CONFIG`, `0x82000008`). It is not required for deep suspend, and deep suspend is not required for DMC. See [§9](#9-relationship-to-ddr-frequency-scaling).
 
-The behavior below was proven on hardware and on the archived Miyoo Flip ROCKNIX fork. **Zlyme has not been recorded here as shipping deep suspend.** The fork’s last shipping choice (deep suspend left off) is [at the end of this page](#historical-implementation--archived-miyoo-flip-rocknix-fork).
+The behavior below was proven on hardware and on the archived Miyoo Flip ROCKNIX fork. **Zlyme zlyme44 (`337ccbce`) ships deep suspend with `vdd_logic` off in mem suspend** — [Zlyme implementation](#zlyme-implementation). The fork’s last shipping choice (deep suspend left off) is [at the end of this page](#historical-implementation--archived-miyoo-flip-rocknix-fork).
 
 ---
 
@@ -223,6 +223,18 @@ The suspend driver and the DDR DMC devfreq driver (rk3568-dmc) are independent b
 | vdd_logic | May use vdd_logic as center-supply | Required for vdd_logic off-in-suspend |
 
 Together they give both runtime power savings (DDR scaling) and much better suspend (logic/center/oscillator off with vdd_logic off).
+
+---
+
+## Zlyme implementation
+
+Observed in Zlyme. Snapshot zlyme44, runtime `337ccbce`; hardware acceptance on Zlyme runtime `b709719a`. Full record: [Zlyme](../implementations/zlyme.md).
+
+- **DTS:** the stock/BSP shape, node `rockchip-suspend` with `compatible = "rockchip,pm-rk3568"`, `sleep-mode-config = 0x5ec` (including `ARMOFF_LOGOFF`), `wakeup-config = 0x10`, `sleep-debug-en = 0`. The stock 20250527 DTB uses the same node, compatible, and masks, with debug 1. `vdd_logic` (RK817 `DCDC_REG1`) is `regulator-off-in-suspend` and keeps `regulator-always-on` and `regulator-boot-on`.
+- **Driver:** built-in `rockchip-pm-config`. It sends mode, wake, and debug at probe. Before each suspend, `.prepare` sends `LINUX_PM_STATE` (`SIP_SUSPEND_MODE` sub-command `0x09`), then mode, then wake. BL31 v1.44 returned 0 for `0x09` (`0x3`), `0x01` (`0x5ec`), and `0x02` (`0x10`).
+- **Boot firmware:** rkbin BL31 `rk3568_bl31_v1.44.elf`. The card FIT carries no OP-TEE, and resume worked without it.
+- **DMC alongside it:** the DMC module, with `center-supply = <&vdd_logic>`, survived physical deep suspend with `vdd_logic` off and came back at 324 MHz (Zlyme runtime `21de8081`). The DFI suspend/resume patch was present in every such test; no test ran without it.
+- **Not measured:** standby current with `vdd_logic` off. The 100–120 h figure below is the archived fork’s informal estimate and is not a Zlyme result.
 
 ---
 

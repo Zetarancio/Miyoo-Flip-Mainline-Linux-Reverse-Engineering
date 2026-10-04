@@ -4,22 +4,63 @@
 
 This wiki does not copy Zlyme’s architecture manual. Implementation detail belongs in that repository. This page is only the hardware-facing status a wiki reader needs.
 
-## Recorded status
+## Snapshot
 
-No Zlyme commit, branch, or device capture is snapshotted here yet. Do not treat archived ROCKNIX behavior as Zlyme’s behavior.
+Last synchronized against Zlyme zlyme44 (tag `zlyme-37164297221`, runtime `337ccbce2587393463a4b49c551f94e33e318e44`, 2026-10-04); documentation `d2e2496b7fe935d5123d082d1ef28b6ac28ed139` on `phase-10-maintenance`.
 
-In particular, this wiki does **not** claim that Zlyme has:
+| | Runtime | Documentation |
+|--|---------|---------------|
+| Repository | [Zetarancio/zlyme](https://github.com/Zetarancio/zlyme) | [Zetarancio/zlyme](https://github.com/Zetarancio/zlyme) |
+| Branch or tag | tag [`zlyme-37164297221`](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221), release *zlyme44 (2026-10-04)*; `main` points at the same commit | branch [`phase-10-maintenance`](https://github.com/Zetarancio/zlyme/tree/phase-10-maintenance) |
+| Commit | [`337ccbce2587393463a4b49c551f94e33e318e44`](https://github.com/Zetarancio/zlyme/commit/337ccbce2587393463a4b49c551f94e33e318e44) | [`d2e2496b7fe935d5123d082d1ef28b6ac28ed139`](https://github.com/Zetarancio/zlyme/commit/d2e2496b7fe935d5123d082d1ef28b6ac28ed139) |
+| Date | 2026-10-04 | 2026-10-04 |
 
-- enabled deep suspend or `vdd_logic` off-in-suspend;
-- shipped a replacement joypad driver;
-- adopted InputPlumber;
-- packaged DMC devfreq in any particular patch layout;
-- shipped a Weston compatibility runtime.
+The runtime commit is what the lines below describe. The maintainer hardware-accepted the zlyme44 image built from it, and GitHub Actions Build run [`37164297221`](https://github.com/Zetarancio/zlyme/actions/runs/37164297221) built it from a clean tree and published the release. The documentation commit only supplied wording for this sync. It is **not** a hardware-tested runtime. zlyme44 is Zlyme’s first stable release; earlier Zlyme GitHub releases are prereleases.
 
-Until a Zlyme revision is cited on this page, those items are **not** current.
+Where a mechanism was hardware-accepted on an earlier Zlyme runtime, that runtime is named. Each of those commits is an ancestor of `337ccbce`.
 
-## Roadmap (not current)
+## Implementation status at zlyme44 (`337ccbce`)
 
-Later edits to this page are the right place for a short status of work that is actually in Zlyme: joypad driver, InputPlumber policy, deep suspend, DMC packaging, Weston. Each line needs a Zlyme commit or an explicit “not shipped” label. Planned work stays in this section until it is observed.
+Observed in Zlyme unless a line says otherwise. Patch numbers are Zlyme’s filenames, not the archived fork’s; the same number can mean a different patch in each tree.
 
-Hardware facts discovered while doing that work belong on the generic pages ([Input](../hardware/input.md), [Suspend](../drivers-and-dts/suspend-and-vdd-logic.md), [USB](../drivers-and-dts/board-dts-pmic-ddr-updates.md#usb)), not only here.
+| Area | Zlyme zlyme44 (`337ccbce`) |
+|------|-----------------------------|
+| **Kernel and boot chain** | Linux **7.0.2**. Mainline U-Boot **2026.01**. rkbin BL31 `rk3568_bl31_v1.44.elf` and TPL `rk3566_ddr_1056MHz_v1.23.bin`. The card FIT carries BL31 and U-Boot, **no OP-TEE** (no BL32). |
+| **Gamepad driver** | `miyoo-flip-gamepad`, Zlyme’s own out-of-tree driver: one input device for the UART1 sticks (through `serdev`), the 17 GPIO buttons, a calibration and deadzone transform, and `FF_RUMBLE` on PWM5. Calibration files are restored by userspace through sysfs after the first frame. Accepted on runtime `4d1c1d44d2a24eb8ca3f91d038cd0311ed60a4ba`. |
+| **Application controllers** | InputPlumber **v0.81.0** presents application-facing controllers as virtual Xbox 360 (`xb360`) pads. That is OS input policy, not a hardware requirement. Volume, power, and the lid stay outside InputPlumber. Accepted on runtime `0b139e9099eec699e31d1cb5313998f57f387e12`. |
+| **Deep suspend** | Enabled. DTS node `rockchip-suspend`, `compatible = "rockchip,pm-rk3568"` (the stock/BSP shape), sleep mode `0x5ec` including `ARMOFF_LOGOFF`, wakeup `0x10`, BL31 v1.44. A built-in `rockchip-pm-config` driver from Zlyme kernel patches `1011a`/`1011b` sends mode and wake at probe, and `LINUX_PM_STATE` (`0x09`), mode, and wake again before each suspend. `vdd_logic` (RK817 `DCDC_REG1`) is `regulator-off-in-suspend`. Linux mem sleep is `s2idle [deep]`. |
+| **Deep-suspend acceptance** | Zlyme Phase 6 hardware acceptance ran on runtime [`b709719aac5c5540394d0369e5e06981b8aa00bc`](https://github.com/Zetarancio/zlyme/commit/b709719aac5c5540394d0369e5e06981b8aa00bc). BL31 returned 0 for the `LINUX_PM_STATE`, mode, and wake calls. Repeated power-button suspend/resume cycles passed (the exact count was not recorded), on the frontend and in game. Display, audio, the built-in pad, the virtual pad, storage, Wi-Fi, DMC devfreq, and `mali_kbase` recovered. No filesystem corruption, Oops, panic, or hung task attributable to deep suspend was seen. An `xHC error in resume, USBSTS 0x401, Reinit` line recovered with the USB radio. |
+| **DDR scaling (DMC)** | External module `rk3568_dmc.ko` (Zlyme package `rk3568-dmc`), not a kernel patch. It speaks the Rockchip V2 SIP shared-memory protocol, uses OPPs 324/528/780/1056 MHz all at 900 mV, and loads from the `rockchip,rk3568-dmc` modalias during the deferred udev coldplug. Load comes from the in-tree DFI driver, with Zlyme patch `1010` adding its suspend/resume. Hardware-accepted on runtime `21de8081d6e6a419d708e8f3c792e4f1357eaafc`, including one physical deep suspend that came back at 324 MHz. |
+| **Weston** | Application-scoped, never a permanent compositor. Native Wayland clients (Wine today) use Zlyme’s own per-launch Weston, built without Xwayland. PortMaster X11 ports use PortMaster’s WestonPack, which brings Xwayland for that launch. |
+| **RTL8733BU Wi-Fi** | `8733bu` is a third-party driver, [Charliechen114514/rtl8733bu-linux-driver](https://github.com/Charliechen114514/rtl8733bu-linux-driver) pinned at [`c46aa25e237cb43f33390cf58eee5c69d9b32883`](https://github.com/Charliechen114514/rtl8733bu-linux-driver/commit/c46aa25e237cb43f33390cf58eee5c69d9b32883) (the same commit the wiki cites under another owner name), with Zlyme’s integration patches. IPS and radio power save are kept off so the Bluetooth half keeps its firmware. |
+| **RTL8733BU power** | `rtl8733bu-power` is Zlyme’s own module, separate from the third-party Wi-Fi driver. It owns the chip enable GPIO (GPIO0_PA0, active low), registers WLAN and Bluetooth rfkill, and cuts power when both are blocked and in its late suspend phase. Nothing loads the combo chip at boot; Zlyme loads it on demand and stops Bluetooth, then Wi-Fi, before mem suspend. |
+| **RTL8733BU Bluetooth** | In-tree `btusb` + `btrtl`, bound after `8733bu`. Zlyme kernel patch `0005-Bluetooth-btrtl-Add-the-support-for-RTL8733BU.patch` adds RTL8733BU to `btrtl`. |
+| **Off-state drain** | Zlyme kernel patch `0007-power-supply-rk817-clear-sys-can-sd-fix-drain.patch` clears RK817 `SYS_CAN_SD` in `rk817_battery_init()`, the mechanism in [Power-off investigation](../miyoo-flip-power-off-investigation.md). During Zlyme Phase 5 (2026-09-28) the bit read clear after at least 6 h powered off and unplugged. That was a register readback, not an ammeter measurement. |
+| **GPU** | Two stacks, chosen per boot: vendor `mali_kbase` + libmali `bifrost-g52 g29p1` (default, GLES and Vulkan) or Mesa Panfrost (GLES only). |
+
+## Not claimed for Zlyme
+
+This wiki does **not** record any of these for Zlyme:
+
+- a measured standby (suspend) current, or an ammeter reading of off-state current;
+- the archived fork’s informal 100–120 h standby estimate;
+- long or scripted suspend cycle counts;
+- a USB-host attach/detach matrix or a full Wi-Fi/Bluetooth on/off matrix across suspend;
+- a separate lid-close deep-suspend test;
+- Switch replacement sticks or specific external controller models;
+- a non-zero BL31 sleep-debug setting;
+- hardware validation of the later DMC source correction [`70acb1d27443447df84903e2043a2af05dbd9ee3`](https://github.com/Zetarancio/zlyme/commit/70acb1d27443447df84903e2043a2af05dbd9ee3) on its own (source review and rebuild only).
+
+## Zlyme documentation
+
+- [README](https://github.com/Zetarancio/zlyme/blob/main/README.md)
+- [Architecture](https://github.com/Zetarancio/zlyme/blob/main/docs/ARCHITECTURE.md)
+- Changelog: `CHANGELOG.md` on branch [`phase-10-maintenance`](https://github.com/Zetarancio/zlyme/tree/phase-10-maintenance), until that branch is merged into `main`
+
+## Community
+
+Zlyme's discussion space is kindly hosted inside the SpruceOS Discord server: https://discord.gg/KjR5uMQQt9
+
+## Where hardware facts go
+
+Hardware facts discovered while doing Zlyme work belong on the generic pages ([Input](../hardware/input.md), [Suspend](../drivers-and-dts/suspend-and-vdd-logic.md), [USB](../drivers-and-dts/board-dts-pmic-ddr-updates.md#usb)), not only here.

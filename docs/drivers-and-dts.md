@@ -48,6 +48,6 @@ WiFi works with the 8733bu driver. An optional separate driver shuts down the RT
 
 ## Suspend and vdd_logic off-in-suspend
 
-**Standard suspend** was demonstrated on the archived ROCKNIX fork. **Deep suspend** (rk3568-suspend + `vdd_logic` off) was **left off** there — patches `.testing-disabled`, Kconfig off, pending an EmulationStation fix. Not claimed for Zlyme.
+**Standard suspend** was demonstrated on the archived ROCKNIX fork. **Deep suspend** (rk3568-suspend + `vdd_logic` off) was **left off** there — patches `.testing-disabled`, Kconfig off, pending an EmulationStation fix. Zlyme zlyme44 (`337ccbce`) enables deep suspend with `vdd_logic` off — [Zlyme](implementations/zlyme.md).
 
 **[Full suspend guide →](drivers-and-dts/suspend-and-vdd-logic.md)**

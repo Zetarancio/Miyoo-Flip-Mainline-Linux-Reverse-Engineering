@@ -82,7 +82,7 @@ Observed on the archived [Zetarancio/distribution](https://github.com/Zetarancio
 
 ## Zlyme
 
-No Zlyme-specific failure is recorded in this wiki yet. Do not copy the historical ROCKNIX symptoms above onto Zlyme without a new capture. Status: [Zlyme](implementations/zlyme.md).
+No Zlyme-specific failure is recorded in this wiki yet. Do not copy the historical ROCKNIX symptoms above onto Zlyme without a new capture. Zlyme zlyme44 (`337ccbce`) clears `SYS_CAN_SD` in the kernel by the same mechanism as the [off-state drain fix](#power-off--battery-drain-8-ma-while-off--fixed-in-kernel) above. Status: [Zlyme](implementations/zlyme.md).
 
 ## Historical / superseded findings
 
@@ -138,4 +138,4 @@ Add these to DTS `chosen` bootargs for debugging:
 
 ## Kernel Version Notes
 
-The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. The archived ROCKNIX fork’s RK3566 images used **Linux 7.0.2**. Older notes and boot logs used 6.18+. Legacy build helpers live on branch `buildroot`. Zlyme’s kernel version is not recorded on this page.
+The fan53555 VSEL bug affects all kernels **6.4+** and was the primary blocker for mainlining. Earlier kernels (6.1, 6.3) do not have this bug but lack other improvements. The archived ROCKNIX fork’s RK3566 images used **Linux 7.0.2**. Older notes and boot logs used 6.18+. Legacy build helpers live on branch `buildroot`. Zlyme zlyme44 (`337ccbce`) uses Linux 7.0.2 — [Zlyme](implementations/zlyme.md).

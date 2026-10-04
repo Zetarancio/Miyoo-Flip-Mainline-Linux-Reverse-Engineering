@@ -27,13 +27,14 @@ kernel. That tree already carries Kbuild, USB/CFG80211, and WPA3/SAE
 
 Do not re-apply the dropped compat/LPS/autosuspend set — those live in the 7.1-port tree. The module handles USB and WiFi; Bluetooth is in-tree `btusb` + `btrtl`; rfkill is software on/off.
 
-Runtime tunables live in `modprobe.d/8733bu.conf` (`rtw_ips_mode=0
-rtw_power_mgnt=1 rtw_lps_level=1 rtw_enusbss=0`). WOWLAN is compiled in
-on this tree — watch it during suspend testing.
+Archived ROCKNIX configuration: on the `flip` tree, runtime tunables lived in
+`modprobe.d/8733bu.conf` (`rtw_ips_mode=0 rtw_power_mgnt=1 rtw_lps_level=1
+rtw_enusbss=0`), and WOWLAN was compiled in on that tree — watch it during
+suspend testing. These are that fork’s choices, not hardware requirements.
 
 ### Optional: GPIO-level power-off
 
-The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. On the archived ROCKNIX fork, **RTL8733BU-POWER** owned that GPIO, tied it to two rfkill devices, and cut power in **`.suspend_late`** / **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), so that tree’s Miyoo Flip `sleep.d` pre/post rfkill quirks were removed ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). See [WiFi/BT power-off](wifi-bt-power-off.md). Zlyme’s equivalent is not recorded here.
+The 8733bu driver does not control the power-enable GPIO. When WiFi and BT are off in settings, the chip stays powered and draws standby current. On the archived ROCKNIX fork, **RTL8733BU-POWER** owned that GPIO, tied it to two rfkill devices, and cut power in **`.suspend_late`** / **`.resume`** ([e728b28](https://github.com/Zetarancio/distribution/commit/e728b28834)), so that tree’s Miyoo Flip `sleep.d` pre/post rfkill quirks were removed ([47fb725](https://github.com/Zetarancio/distribution/commit/47fb7252bc)). See [WiFi/BT power-off](wifi-bt-power-off.md). Zlyme zlyme44 (`337ccbce`) ships its own power module for the same GPIO: [WiFi/BT power-off — Zlyme](wifi-bt-power-off.md#zlyme).
 
 ### Architecture
 
@@ -43,8 +44,10 @@ BT:    btusb + btrtl (in-tree) ──> hci0
 Firmware: unified file shared by WiFi and BT subsystems
 ```
 
-The WiFi driver uploads unified firmware (WiFi + BT coexistence). An
-init script handles load ordering:
+The WiFi driver uploads unified firmware (WiFi + BT coexistence). Both the
+archived ROCKNIX fork and Zlyme bring Bluetooth up only after the WiFi
+driver has loaded it. On the archived fork an init script handled that
+load ordering:
 
 1. `insmod rtl8733bu.ko` -- chip receives firmware
 2. Unbind/rebind btusb -- btrtl re-probes with firmware on chip
@@ -52,7 +55,7 @@ init script handles load ordering:
 
 ### Reproducing the archived ROCKNIX driver
 
-This is how the archived [Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip` tree built the module. It is not a Zlyme instruction, and this wiki does not record what Zlyme builds.
+This is how the archived [Zetarancio/distribution](https://github.com/Zetarancio/distribution) `flip` tree built the module. It is not a Zlyme instruction. Zlyme zlyme44 (`337ccbce`) builds the same upstream commit `c46aa25e` with six local patches whose subjects match **001–006**; the patch files are not claimed to be byte-identical. Zlyme status: [Zlyme](../implementations/zlyme.md).
 
 Clone [Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver](https://github.com/Awesome-Embedded-Learning-Studio/rtl8733bu-linux-driver) at the pin above and build as an in-tree module (`CONFIG_RTL8733BU=m`). Apply that fork’s six local patches **001–006** listed above. Legacy build scripts on branch `buildroot` are older local helpers, not the active OS.
 
@@ -114,7 +117,7 @@ Required for IPA (thermal) and devfreq.
 
 ### Reproducing the archived ROCKNIX GPU build
 
-The archived fork used [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`), which is official upstream ROCKNIX’s GPU driver tree, built against that fork’s kernel. Userspace on the archived `flip` tree is **g29p1**, not g24p0. This wiki does not record Zlyme’s GPU userspace. Legacy build scripts on branch `buildroot` are older local helpers.
+The archived fork used [ROCKNIX/mali_kbase](https://github.com/ROCKNIX/mali_kbase) (branch `bifrost_port`), which is official upstream ROCKNIX’s GPU driver tree, built against that fork’s kernel. Userspace on the archived `flip` tree is **g29p1**, not g24p0. Zlyme’s GPU stacks: [Zlyme](../implementations/zlyme.md). Legacy build scripts on branch `buildroot` are older local helpers.
 
 ### GPU OPP Table
 

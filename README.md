@@ -70,7 +70,7 @@ Reference boot logs in `logs/`: `logs/boot_log_ROCKNIX.txt` (mainline; DMC after
 
 ## Device capability
 
-What the hardware does on mainline, and where it was demonstrated. “Demonstrated” means observed on the **archived ROCKNIX fork** unless the note says stock or a hardware fact. It does **not** mean Zlyme ships that configuration. Zlyme status: [implementations/zlyme.md](docs/implementations/zlyme.md).
+What the hardware does on mainline, and where it was demonstrated. “Demonstrated” means observed on the **archived ROCKNIX fork** unless the note says stock, Zlyme (with a revision), or a hardware fact. A fork observation does **not** mean Zlyme ships that configuration. Zlyme status: [implementations/zlyme.md](docs/implementations/zlyme.md).
 
 | Subsystem | On mainline | Notes |
 | --------- | ----------- | ----- |
@@ -85,10 +85,10 @@ What the hardware does on mainline, and where it was demonstrated. “Demonstrat
 | GPU (Mali-G52) | Demonstrated | mali_kbase + libmali, 200–800 MHz, on the archived fork |
 | Storage | Demonstrated | SPI NAND MTD, both SD slots. Slots share `vqmmc`. |
 | HDMI | Demonstrated when the DTS node is enabled | Video and audio |
-| DMC (DDR devfreq) | Demonstrated out of tree | V2 SIP mechanism. The archived fork carried it as **patch 1012**. [BSP and DDR](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) |
+| DMC (DDR devfreq) | Demonstrated out of tree | V2 SIP mechanism. The archived fork carried it as **patch 1012**. Zlyme zlyme44 (`337ccbce`) ships it as the external module `rk3568_dmc.ko` — [Zlyme](docs/implementations/zlyme.md). [BSP and DDR](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) |
 | VPU / RGA | Demonstrated | hantro-vpu, rockchip-rga |
 | IEP | Not on mainline | BSP-only (MPP) |
-| Suspend | Standard suspend demonstrated | Deep suspend is a **separate** BL31 mode and was **left off** on the archived fork. Not claimed for Zlyme. [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
+| Suspend | Standard and deep suspend demonstrated | Deep suspend is a **separate** BL31 mode and was **left off** on the archived fork. Zlyme zlyme44 (`337ccbce`) enables it with `vdd_logic` off in mem suspend; hardware acceptance ran on Zlyme `b709719a` — [Zlyme](docs/implementations/zlyme.md). [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |
 | Input | Hardware fact | GPIO buttons, UART1 stick, PWM5 rumble, hall on GPIO0_PC6. [Input](docs/hardware/input.md) |
 
 ---
@@ -101,15 +101,15 @@ Findings that made mainline work on this device (details in the wiki).
 
 - **DSI panel init in command mode:** The stock driver sends init commands via a DT property. On mainline, commands must be sent during `prepare()` (command mode), not `enable()` (video mode), or they collide with the video stream on the shared FIFO.
 
-- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. The working arrangement uses `<&vccsys>` and a simpler RK817 pinctrl. Deep sleep still depends on a BL31 `ARMOFF_LOGOFF` configuration; the archived ROCKNIX fork carried that as an rk8xx/suspend patch set and then left it disabled.
+- **PMIC dependency cycles:** `vcc9-supply = <&dcdc_boost>` and some sleep pinctrl arrangements create circular dependencies that `fw_devlink` cannot resolve. The working arrangement uses `<&vccsys>` and a simpler RK817 pinctrl. Deep sleep still depends on a BL31 `ARMOFF_LOGOFF` configuration; the archived ROCKNIX fork carried that as an rk8xx/suspend patch set and then left it disabled. Zlyme zlyme44 (`337ccbce`) enables that configuration.
 
-- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements that protocol. The archived ROCKNIX fork carried it as **patch 1012** on Linux **7.0.2** (older captures used 6.18+). See [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
+- **DDR on mainline:** The BSP DMC uses Rockchip V2 SIP (shared memory + MCU/IRQ). An out-of-tree DMC devfreq driver implements that protocol. The archived ROCKNIX fork carried it as **patch 1012** on Linux **7.0.2** (older captures used 6.18+). Zlyme zlyme44 (`337ccbce`) ships the same mechanism as an external module on Linux 7.0.2. See [BSP and DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
-- **Suspend:** **Standard** suspend was demonstrated on the archived ROCKNIX fork. **Deep sleep** (rk3568-suspend + `vdd_logic` off) stayed **deferred** there (`.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off) pending an **EmulationStation** fix. Zlyme has not been recorded here as enabling it. See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
+- **Suspend:** **Standard** suspend was demonstrated on the archived ROCKNIX fork. **Deep sleep** (rk3568-suspend + `vdd_logic` off) stayed **deferred** there (`.testing-disabled`, `CONFIG_RK3568_SUSPEND_MODE` off) pending an **EmulationStation** fix. Zlyme zlyme44 (`337ccbce`) enables deep sleep with `vdd_logic` off in mem suspend; its hardware acceptance ran on Zlyme `b709719a` — [Zlyme](docs/implementations/zlyme.md). See [Suspend and vdd_logic](docs/drivers-and-dts/suspend-and-vdd-logic.md).
 
 - **WiFi/BT full poweroff:** The 8733bu driver only does software rfkill; it does not control the power-enable GPIO. Full hardware poweroff of the combo requires a **separate driver** that controls the enable GPIO and integrates with rfkill. See [WiFi/BT power-off](docs/drivers-and-dts/wifi-bt-power-off.md).
 
-- **Boot chain:** TF-A runtime firmware is **BL31**. **OP-TEE is BL32**, not BL31. The stock SPI FIT at `0x300000` contains BL31 (`atf-1` through `atf-6`), an OP-TEE segment labeled BL32, U-Boot, and an FDT. This repository does not record a boot that failed because OP-TEE was omitted, so that layout is the proven configuration rather than a demonstrated requirement that every U-Boot FIT include a separate OP-TEE image. Working SD boots described here also carried ATF and OP-TEE. See [Boot and flash](docs/boot-and-flash.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
+- **Boot chain:** TF-A runtime firmware is **BL31**. **OP-TEE is BL32**, not BL31. The stock SPI FIT at `0x300000` contains BL31 (`atf-1` through `atf-6`), an OP-TEE segment labeled BL32, U-Boot, and an FDT. This repository does not record a boot that failed because OP-TEE was omitted, so that layout is the proven configuration rather than a demonstrated requirement that every U-Boot FIT include a separate OP-TEE image. Working SD boots described here also carried ATF and OP-TEE, except Zlyme: its card FIT carries BL31 v1.44 and U-Boot with no OP-TEE. Zlyme zlyme44 (`337ccbce`) boots that way, and the same BL31-only layout resumed from deep suspend in Zlyme’s hardware acceptance on `b709719a` (observed in Zlyme; no serial capture is kept in this wiki). See [Boot and flash](docs/boot-and-flash.md) and [SPI and boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md).
 
 - **Full power-off / off-state drain:** The **~8 mA** battery drain while “off” was traced to RK817 **SYS_CAN_SD** (charger block stays active). The archived ROCKNIX fork cleared that bit in `rk817_battery_init()` as kernel **patch 0007** (BSP parity). The bit is **battery-backed**: a true POR leaves it set (`0xe6 = 0xc5`); neither stock SPL nor that fork’s U-Boot clears it, so a warm reboot still shows `0x40` from the previous kernel. See [Power-off investigation](docs/miyoo-flip-power-off-investigation.md), [Troubleshooting](docs/troubleshooting.md), and [560a99c](https://github.com/Zetarancio/distribution/commit/560a99cbe1d6b2a3760639ca0e8e730f101e9abb). Earlier guidance to omit `system-power-controller` to “fix drain” is **obsolete** once 0007 is applied. DTS pinctrl on that fork followed upstream-style `pmic_pins` ([a482d5c](https://github.com/Zetarancio/distribution/commit/a482d5cfc4)).
 

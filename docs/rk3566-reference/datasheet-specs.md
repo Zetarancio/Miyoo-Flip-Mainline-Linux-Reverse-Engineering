@@ -100,16 +100,21 @@ VDD_LOGIC powers: DDR controller, VOP2, interconnect, and other logic blocks.
   DDR_SCRAMBLE, AXI_SPLIT, DDR_GRF, MSCH
 - **DDRPHY** is in the **ALIVE** domain (always-on, not power-gated)
 
-### VDD_LOGIC in Suspend — understood, but not enabled
+### VDD_LOGIC in Suspend — needs ARMOFF_LOGOFF
 
 Turning vdd_logic off in suspend is only safe once the **rk3568-suspend** driver
 has configured BL31 with `RKPM_SLP_ARMOFF_LOGOFF`, so TF-A saves and restores the
 logic domain. That combination was demonstrated to work on this device.
 
-It is **not** what the archived ROCKNIX `flip` tree shipped: `vdd_logic` stays `regulator-on-in-suspend`,
-the `rk3568-suspend` node is commented out and `CONFIG_RK3568_SUSPEND_MODE` is unset,
-because deep suspend was left off there pending an upstream EmulationStation issue.
-Zlyme’s choice is not recorded here.
+What each implementation does:
+
+- **Stock 20250527:** the stock DTB turns `DCDC_REG1` (`vdd_logic`) off in mem
+  suspend, with `rockchip-suspend` sleep mode `0x5ec`.
+- **Archived ROCKNIX `flip` tree:** kept `vdd_logic` `regulator-on-in-suspend`;
+  the `rk3568-suspend` node was commented out and `CONFIG_RK3568_SUSPEND_MODE` unset,
+  because deep suspend was left off there pending an upstream EmulationStation issue.
+- **Zlyme zlyme44 (`337ccbce`):** turns `vdd_logic` off in mem suspend, with
+  `ARMOFF_LOGOFF` in the BL31 sleep mode — [Zlyme](../implementations/zlyme.md).
 
 Mechanism and the archived fork’s choice: [Suspend and vdd_logic](../drivers-and-dts/suspend-and-vdd-logic.md).
 

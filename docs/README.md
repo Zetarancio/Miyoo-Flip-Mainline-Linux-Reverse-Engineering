@@ -39,7 +39,7 @@ Reference boot logs are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **h
 | [→ Drivers (WiFi/BT, GPU)](drivers-and-dts/drivers.md) | RTL8733BU and Mali-G52 |
 | [→ DTS porting](drivers-and-dts/dts-porting.md) | BSP-to-mainline device tree translation |
 | [→ WiFi/BT power-off](drivers-and-dts/wifi-bt-power-off.md) | Enable-GPIO behavior vs OS policy |
-| [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | Mechanism first; archived-fork shipping state at the end |
+| [→ Suspend and vdd_logic](drivers-and-dts/suspend-and-vdd-logic.md) | Mechanism first; Zlyme and archived-fork shipping state at the end |
 | [→ USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb) | Upper host (EHCI+OHCI) and lower charge/gadget |
 
 ## Stock and BSP evidence
@@ -61,7 +61,7 @@ Reference boot logs are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **h
 | Page | Content |
 |------|---------|
 | [Overview](implementations/README.md) | Hardware truth vs implementation status |
-| [Zlyme](implementations/zlyme.md) | **Active** OS. No feature snapshot recorded here yet |
+| [Zlyme](implementations/zlyme.md) | **Active** OS. Status snapshot: zlyme44 (`337ccbce`) |
 | [ROCKNIX fork](implementations/rocknix.md) | **Archived** historical implementation |
 | [Stock](implementations/stock.md) | Vendor firmware versions |
 

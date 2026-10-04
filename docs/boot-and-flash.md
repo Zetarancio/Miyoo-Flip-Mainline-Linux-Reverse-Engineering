@@ -80,7 +80,7 @@ The Specific image is shared with those other boards, so its default device tree
 | Preloader | 0x000000–0x200000 | IDBLOCK + DDR init blob + stock SPL |
 | U-Boot FIT | 0x300000+ | FIT image: ATF (BL31) + **OP-TEE (BL32)** + U-Boot + FDT |
 
-**Proven configuration:** the stock SPI FIT contains TF-A **BL31**, **OP-TEE as BL32**, U-Boot, and an FDT. Known working SD and mainline boots documented here also included TF-A and OP-TEE. In that configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so this is not a universal hardware requirement.
+**Proven configuration:** the stock SPI FIT contains TF-A **BL31**, **OP-TEE as BL32**, U-Boot, and an FDT. Known working SD and mainline boots documented here also included TF-A and OP-TEE, except Zlyme: its card FIT carries BL31 v1.44 and U-Boot with **no OP-TEE**, and it boots and resumes from deep suspend that way (observed in Zlyme, zlyme44 `337ccbce` and the deep-suspend acceptance on `b709719a`; no serial capture is kept in this wiki — [Zlyme](implementations/zlyme.md)). In the OP-TEE configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so this is not a universal hardware requirement.
 
 Boot flow: **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL. **SPL** tries boot sources (MMC2 → MMC1 → MTD) and loads U-Boot. **U-Boot** reads the boot partition (Android boot image: kernel + DTB). **Kernel** mounts rootfs from `/dev/mtdblock3`.
 

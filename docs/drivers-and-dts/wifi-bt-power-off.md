@@ -28,7 +28,7 @@ Older quirk commits, for history: [f397258](https://github.com/Zetarancio/distri
 
 ## Zlyme
 
-[Zlyme](../implementations/zlyme.md) is the active implementation. This wiki does not record whether Zlyme ships RTL8733BU-POWER, an rfkill policy, or a sleep hook. Do not assume the ROCKNIX service layout above.
+[Zlyme](../implementations/zlyme.md) is the active implementation. Zlyme zlyme44 (`337ccbce`) ships its own enable-GPIO power module, `rtl8733bu-power`, separate from the third-party `8733bu` Wi-Fi driver. It owns GPIO0_PA0 (active low), registers WLAN and Bluetooth rfkill, and cuts power when both are blocked and in its `.suspend_late` phase. Zlyme loads the combo chip on demand rather than at boot, and stops Bluetooth and then Wi-Fi before mem suspend. Wi-Fi recovered after deep suspend in Zlyme’s hardware tests. Do not assume the ROCKNIX service layout above.
 
 ---
 

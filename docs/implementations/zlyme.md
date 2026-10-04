@@ -53,7 +53,7 @@ This wiki does **not** record any of these for Zlyme:
 
 ## Install
 
-Zlyme stable releases publish `zlyme.img`; zlyme44 is the first. The recommended way to write it is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (forked from the SpruceOS Installer), with Balena Etcher or another raw-image writer as the manual alternative. The Flip must first be set up to boot from SD. Later updates happen inside Zlyme (Settings → Update). Steps: [Where to get images — Zlyme](../boot-and-flash.md#zlyme) and [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
+Zlyme stable releases publish `zlyme.img`; zlyme44 is the first. The recommended way to write it is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (forked from the SpruceOS Installer; first normal release [V1.8.0](https://github.com/Zetarancio/zlymeOS-Installer/releases/tag/V1.8.0), 2026-10-04), with Balena Etcher or another raw-image writer as the manual alternative. The Flip must first be set up to boot from SD. Later updates happen inside Zlyme (Settings → Update). Steps: [Where to get images — Zlyme](../boot-and-flash.md#zlyme) and [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
 
 ## Zlyme documentation
 

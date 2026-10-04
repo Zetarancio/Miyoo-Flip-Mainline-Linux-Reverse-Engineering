@@ -14,7 +14,7 @@ How the Miyoo Flip boots, where distribution images come from, how to flash the 
 | **MASKROM access** | SD-card app **erases** the SPI **preloader** → with no card the device powers on in **MASKROM**. Removes internal stock boot. |
 | **Back to stock only** | **`restore-preloader.sh`** on ROCKNIX writes a stock preloader back → reboot → **stock** from NAND. |
 
-**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zlyme](#zlyme) (maintained); historical ROCKNIX images from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** — [archived fork](#archived-rocknix-fork). Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
 
 Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for this board. **Stock** stays bootable from NAND with no card. ROCKNIX, **SpruceOS**, and apommel's MinUI base do; cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
 
@@ -47,7 +47,18 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 ## Where to get images
 
-The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). This wiki does not yet document Zlyme image names.
+### Zlyme
+
+The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw image for the OS card. [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) (2026-10-04) is the first stable release; earlier Zlyme GitHub releases are prereleases.
+
+1. **Let the Flip boot from SD first.** A card image alone is not enough: use [SD multiboot](boot-and-flash/sd-multiboot-apommel.md) (recommended, keeps stock) or [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). See [Booting from SD](#booting-from-sd).
+2. **Write the card.** The recommended, convenient way is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer); download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases). It fetches the latest Zlyme release, selects `zlyme.img`, and writes it as a raw image, erasing the whole card. It is forked from the [SpruceOS Installer](https://github.com/spruceUI/spruceOS-Installer); [SundownerSport](https://github.com/Sundownersport) kindly made the original Zlyme adaptation.
+3. **Or write it by hand.** Download `zlyme.img` from the [release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) and write it with [Balena Etcher](https://etcher.balena.io/) or another raw-image writer. This also erases the whole card.
+4. **Boot** with the card in the right-hand slot, next to power.
+
+Later OS updates happen inside Zlyme (**Settings → Update**); the card does not need to be rewritten. Full steps: [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
+
+### Archived ROCKNIX fork
 
 The names below are the **archived** Miyoo Flip ROCKNIX fork, [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`**. Those GitHub Actions artifacts are historical. They are not a maintained download channel. A GitHub login is required to download whatever still remains: [Actions filtered to `flip`](https://github.com/Zetarancio/distribution/actions?query=branch%3Aflip).
 

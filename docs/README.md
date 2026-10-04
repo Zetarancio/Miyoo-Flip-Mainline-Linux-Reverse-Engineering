@@ -23,7 +23,7 @@ Reference boot logs are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **h
 
 | Page | Content |
 |------|---------|
-| [Boot and flash](boot-and-flash.md) | Hardware overview, boot chain, historical ROCKNIX image names, SD boot overview |
+| [Boot and flash](boot-and-flash.md) | Hardware overview, boot chain, Zlyme install path, historical ROCKNIX image names, SD boot overview |
 | [→ Flashing](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, boot.img, mtdparts |
 | [→ SD multiboot](boot-and-flash/sd-multiboot-apommel.md) | apommel preloader repair: stock and an SD OS together |
 | [→ Erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md) | PreloaderEraser as MASKROM access |

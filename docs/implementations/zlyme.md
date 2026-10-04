@@ -51,6 +51,10 @@ This wiki does **not** record any of these for Zlyme:
 - a non-zero BL31 sleep-debug setting;
 - hardware validation of the later DMC source correction [`70acb1d27443447df84903e2043a2af05dbd9ee3`](https://github.com/Zetarancio/zlyme/commit/70acb1d27443447df84903e2043a2af05dbd9ee3) on its own (source review and rebuild only).
 
+## Install
+
+Zlyme stable releases publish `zlyme.img`; zlyme44 is the first. The recommended way to write it is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (forked from the SpruceOS Installer), with Balena Etcher or another raw-image writer as the manual alternative. The Flip must first be set up to boot from SD. Later updates happen inside Zlyme (Settings → Update). Steps: [Where to get images — Zlyme](../boot-and-flash.md#zlyme) and [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
+
 ## Zlyme documentation
 
 - [README](https://github.com/Zetarancio/zlyme/blob/main/README.md)

@@ -149,7 +149,13 @@ preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the p
 
 ## Quick start
 
-For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). This wiki does not yet document Zlyme image filenames.
+For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw SD-card image; [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) is the first stable release.
+
+1. Let the Flip boot from SD: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md) (recommended, keeps stock) or [erase the preloader](docs/boot-and-flash/stock-rocknix-without-disassembly.md).
+2. Write the card with the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases)), or write `zlyme.img` by hand with Balena Etcher or another raw-image writer. Either way the whole card is erased.
+3. Later OS updates happen inside Zlyme (**Settings → Update**).
+
+Details: [Where to get images](docs/boot-and-flash.md#where-to-get-images) and [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
 
 Historical ROCKNIX card images from the archived fork are described in [Where to get images](docs/boot-and-flash.md#where-to-get-images). Those Actions artifacts are not a maintained download channel.
 

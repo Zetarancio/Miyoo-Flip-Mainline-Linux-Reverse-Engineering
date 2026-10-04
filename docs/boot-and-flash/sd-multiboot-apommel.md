@@ -87,6 +87,7 @@ Once patched, **the card owns U-Boot proper.** Each distro must therefore ship a
 | **ROCKNIX** | yes, tested | ships a Miyoo Flip `u-boot.itb` at sector 16384 |
 | **SpruceOS** | yes, tested | card U-Boot the stock SPL can load |
 | **apommel's MinUI base** ([baseos-my355](https://github.com/apommel/baseos-my355)) | yes | the method's own target; card built for the repaired SPL |
+| **Zlyme** ([zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221)) | expected, not recorded | ships a mainline U-Boot FIT built for the Flip in the GPT `uboot` partition at sector 16384. Zlyme's development unit has booted Zlyme cards through a NAND preloader since 2026-09-10 (Zlyme `docs/LOGBOOK.md`), but no capture shows that unit runs this repaired preloader, so the row is not marked tested |
 | **Knulli** | no | ships an **rk3568-evb** U-Boot intended for its own SPL |
 | **GammaOS** | expected no | same model — expects **GammaLoader** in NAND |
 

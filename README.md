@@ -20,7 +20,7 @@ Archiving the fork does not retire its measurements. The last wiki stamp of that
 
 ## Stock + SD distro at once, without opening the device
 
-**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS. Tested bootable: **stock**, ROCKNIX, SpruceOS, apommel's MinUI base. Official firmware updates survive the patch. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
+**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS. Recorded as tested: **stock**, ROCKNIX, SpruceOS, apommel's MinUI base. Zlyme's card fits the same layout, but a multiboot boot of Zlyme is not recorded yet ([distro table](docs/boot-and-flash/sd-multiboot-apommel.md#distro-compatibility)). Official firmware updates survive the patch. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
 
 Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md). Recovery: [Flashing](docs/boot-and-flash/flashing.md).
 

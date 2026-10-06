@@ -33,6 +33,16 @@ Both yield five partitions with rootfs at `mtdblock3`. If you see six partitions
 
 [xrock](https://github.com/xboot/xrock) reads and writes SPI NAND over USB in MASKROM mode. Build from source or follow [steward-fu’s xrock build guide](https://steward-fu.github.io/website/handheld/miyoo_flip_build_xrock.htm).
 
+Host recovery with xrock is separate from stock running `miyoo355_fw.img`, from restoring a `mtd5-original-*.img` backup, and from erasing the preloader so the next power-on enters MASKROM.
+
+Upstream `xboot/xrock` at `50effcef229a7e8ff85fde916e635cdd58fe8c09` still sends 128 KiB USB bulk chunks with a 2 second timeout and receives a large buffer in one transfer. On a Linux host that fails against a Flip in MASKROM. [xrock-linux-bulk.patch](xrock-linux-bulk.patch) is a Flip-tested workaround for that revision: 32 KiB chunks and a 10 second timeout, on both send and receive. Apply it from a checkout of that commit:
+
+```bash
+patch -p1 < /path/to/xrock-linux-bulk.patch
+```
+
+It is not an upstream xrock requirement. Zlyme does not build or ship xrock.
+
 ---
 
 ## Entering MASKROM mode

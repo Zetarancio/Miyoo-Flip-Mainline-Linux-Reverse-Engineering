@@ -1,0 +1,45 @@
+From 50effcef229a7e8ff85fde916e635cdd58fe8c09
+Subject: Flip-tested Linux-host bulk-transfer workaround
+
+Base: xboot/xrock 50effcef229a7e8ff85fde916e635cdd58fe8c09.
+Apply from a checkout of that revision: patch -p1 < docs/boot-and-flash/xrock-linux-bulk.patch
+Send and receive use 32 KiB chunks and a 10 s timeout. Upstream still
+uses 128 KiB sends and a 2 s timeout, and receives the whole buffer
+at once.
+
+diff --git a/rock.c b/rock.c
+--- a/rock.c
++++ b/rock.c
+@@ -691,14 +691,14 @@
+ 
+ static inline void usb_bulk_send(libusb_device_handle * hdl, int ep, void * buf, size_t len)
+ {
+-	size_t max_chunk = 128 * 1024;
++	size_t max_chunk = 32 * 1024;
+ 	size_t chunk;
+ 	int r, bytes;
+ 
+ 	while(len > 0)
+ 	{
+ 		chunk = len < max_chunk ? len : max_chunk;
+-		r = libusb_bulk_transfer(hdl, ep, (void *)buf, chunk, &bytes, 2000);
++		r = libusb_bulk_transfer(hdl, ep, (void *)buf, chunk, &bytes, 10000);
+ 		if(r != 0)
+ 		{
+ 			printf("usb bulk send error\r\n");
+@@ -711,11 +711,14 @@
+ 
+ static inline void usb_bulk_recv(libusb_device_handle * hdl, int ep, void * buf, size_t len)
+ {
++	size_t max_chunk = 32 * 1024;
++	size_t chunk;
+ 	int r, bytes;
+ 
+ 	while(len > 0)
+ 	{
+-		r = libusb_bulk_transfer(hdl, ep, (void *)buf, len, &bytes, 2000);
++		chunk = len < max_chunk ? len : max_chunk;
++		r = libusb_bulk_transfer(hdl, ep, (void *)buf, chunk, &bytes, 10000);
+ 		if(r != 0)
+ 		{
+ 			printf("usb bulk recv error\r\n");

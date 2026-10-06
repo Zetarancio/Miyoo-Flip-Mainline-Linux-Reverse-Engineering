@@ -10,7 +10,7 @@ How the Miyoo Flip boots, where distribution images come from, how to flash the 
 
 | | |
 |--|--|
-| **Both at once (recommended)** | **Repair** the SPI preloader so the SPL can read a card: no card → **stock**, bootable card → **SD**. Method by [apommel](https://github.com/apommel/baseos-my355) — [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). |
+| **Both at once (recommended for a Zlyme card that contains `miyoo355_fw.img`)** | Write the card, boot **stock**, and let stock run apommel's installer from that file. No card → **stock**. A bootable card → **SD**. The older manual steps stay in [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). |
 | **MASKROM access** | SD-card app **erases** the SPI **preloader** → with no card the device powers on in **MASKROM**. Removes internal stock boot. |
 | **Back to stock only** | **`restore-preloader.sh`** on ROCKNIX writes a stock preloader back → reboot → **stock** from NAND. |
 
@@ -51,7 +51,7 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw image for the OS card. [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) (2026-10-04) is the first stable release; earlier Zlyme GitHub releases are prereleases.
 
-1. **Let the Flip boot from SD first.** A card image alone is not enough: use [SD multiboot](boot-and-flash/sd-multiboot-apommel.md) (recommended, keeps stock) or [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). See [Booting from SD](#booting-from-sd).
+1. **Let the Flip boot from SD first.** A current Zlyme card image carries `miyoo355_fw.img` at the root of its boot FAT. That file is [apommel](https://github.com/apommel/baseos-my355)'s installer, not a replacement preloader. Boot **stock** with the card inserted. Stock runs the installer, which reads this unit's own preloader, saves `mtd5-original-<sha256>.img`, patches the SPL `/pinctrl` node, and checks the write. Writing the card image does not itself modify NAND. The published zlyme44 image does not contain that file; for that image, or for a manual repair, use [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). Erasing the preloader is the separate MASKROM path: [stock ↔ SD-boot without opening the device](boot-and-flash/stock-rocknix-without-disassembly.md).
 2. **Write the card.** The recommended, convenient way is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer); download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases). Its first normal release is [V1.8.0](https://github.com/Zetarancio/zlymeOS-Installer/releases/tag/V1.8.0) (2026-10-04), with Windows, macOS and Linux builds. It fetches the latest Zlyme release, selects `zlyme.img`, and writes it as a raw image, erasing the whole card. It is forked from the [SpruceOS Installer](https://github.com/spruceUI/spruceOS-Installer); [SundownerSport](https://github.com/Sundownersport) kindly made the original Zlyme adaptation.
 3. **Or write it by hand.** Download `zlyme.img` from the [release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) and write it with [Balena Etcher](https://etcher.balena.io/) or another raw-image writer. This also erases the whole card.
 4. **Boot** with the card in the right-hand slot, next to power.

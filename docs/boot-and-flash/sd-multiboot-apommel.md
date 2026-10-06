@@ -1,5 +1,7 @@
 # SD multiboot via a repaired preloader
 
+> Current recommendation for a Zlyme card that already contains `miyoo355_fw.img`: boot stock and let stock run that installer. This page stays the manual and historical procedure, including the on-device `apommel-multiboot` app. The method is still apommel's.
+
 Run an SD distro **and** keep stock on internal SPI NAND, with no card swap ritual and nothing erased. The device decides at power-on:
 
 | Card in the right-hand slot | Result |

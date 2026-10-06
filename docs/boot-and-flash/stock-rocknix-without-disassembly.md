@@ -4,7 +4,7 @@
 >
 > **You can always recover the usual way:** open the shell, use the **MASKROM** button (or test point), connect **USB**, and flash with **`xrock`** / **`rkdeveloptool`** like any other Miyoo Flip restore — same as [Flashing](flashing.md).
 
-**If what you want is stock and an SD distro at the same time, you are on the wrong page.** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) does that without erasing anything, and official firmware updates survive it.
+**If what you want is stock and an SD distro at the same time, you are on the wrong page.** A current Zlyme card that already contains `miyoo355_fw.img` is prepared by booting stock so stock can run that installer. [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) is the manual form of the same repair. Restoring `mtd5-original-*.img` puts the saved original preloader back. This page is the erase path: the next power-on is expected to enter MASKROM. Host recovery from a PC is [Flashing](flashing.md).
 
 Erasing still has two jobs, and this page covers both:
 

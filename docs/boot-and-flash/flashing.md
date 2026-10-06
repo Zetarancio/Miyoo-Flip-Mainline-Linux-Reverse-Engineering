@@ -185,9 +185,16 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
-**Two easier options first.** [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) boots from SD **while keeping stock on internal NAND**, and erases nothing — that is the recommended route. If you only want SD, the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) app does the same erase from software, with no PC and no MASKROM. Both are described in [MASKROM and SD boot by erasing the preloader](stock-rocknix-without-disassembly.md), together with `extlinux.conf` / `FDT` for `rk3566-miyoo-flip.dtb`.
+These are different operations. Do not treat them as one procedure.
 
-The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, it destroys internal boot.
+| Path | What it does |
+|------|----------------|
+| Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. Writing the card does not modify NAND by itself. |
+| Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, done by hand or by the older on-device app. Historical and recovery reference. |
+| Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), or a Zlyme **Preloader Recovery** erase. The next power-on is expected to enter MASKROM instead of booting stock. |
+| Host `xrock` | This page. USB MASKROM recovery from a PC, including writing a saved preloader back. |
+
+The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, zeroing the preloader destroys internal boot.
 
 To boot from an SD card (e.g. ROCKNIX) instead of internal SPI NAND: zero the preloader so the bootrom falls through to SD. Optionally erase boot and uboot so internal storage is unused.
 

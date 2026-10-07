@@ -191,7 +191,7 @@ These are different operations. Do not treat them as one procedure.
 |------|----------------|
 | Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. Writing the card does not modify NAND by itself. |
 | Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, done by hand or by the older on-device app. Historical and recovery reference. |
-| Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), or a Zlyme **Preloader Recovery** erase. The next power-on is expected to enter MASKROM instead of booting stock. |
+| Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), or a Zlyme **Preloader Recovery** erase. The next power-on is expected to enter MASKROM instead of booting stock. A Zlyme erase that does not complete tries to write the previous preloader back and is not MASKROM success. A failed Zlyme restore does the same. |
 | Host `xrock` | This page. USB MASKROM recovery from a PC, including writing a saved preloader back. |
 
 The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, zeroing the preloader destroys internal boot.

@@ -10,7 +10,7 @@ Run an SD distro **and** keep stock on internal SPI NAND, with no card swap ritu
 | card with a U-Boot the stock SPL can load | **that OS** from SD |
 | card the SPL cannot load a U-Boot from | falls through to **stock** |
 
-This supersedes the erase-based method for dual boot. The [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) is now only for reaching **MASKROM**.
+This supersedes the erase-based method for dual boot. The [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) removes the SPI preloader. That is not the same as a software reboot into USB download. If a bootable SD loader is present, the boot ROM can start it.
 
 ## Credits
 
@@ -26,6 +26,12 @@ apommel found that Miyoo's **`fdtgrep`** run left **`/pinctrl`** in the SPL devi
 What makes it worth adopting is what it leaves alone. The **DDR blob, the SPL code and the boot order all stay exactly as Miyoo shipped them.** It repairs the vendor's own preloader rather than replacing it, which is why internal stock boot survives — and why the official OTA survives it too.
 
 Thanks to apommel for doing the hard part, and for writing it up clearly enough that it could be reproduced and verified independently.
+
+### Standalone installer
+
+`miyoo355_fw.img` is that same installer, packaged so stock can run it. The implementation and the source of the method stay **[apommel/baseos-my355](https://github.com/apommel/baseos-my355)**. Zlyme's image build produces the downloadable copy from the pinned commit `e09d37bb0f03c34e564d61bd02164f332d8515a8`. The file is usable without Zlyme. Its only job is to repair this unit's own preloader so the stock SPL can read an SD card. It does not install Zlyme, and it does not replace the preloader with a foreign image.
+
+A copy of only that file is planned as a release asset once zlyme44.2 is accepted and published. Until that file exists on a release, start from the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases). There is no direct download link yet. This wiki does not store the generated image.
 
 ---
 
@@ -56,7 +62,7 @@ Run **`check-preloader.sh`** first. It is the same code path as install, stopped
 
 Each script writes its own log beside itself (`install-log.txt`, `restore-log.txt`, `backup-log.txt`), which matters because a file manager usually shows no console. From a shell the same thing is `sh launch.sh [install|restore|backup]`. For the ROCKNIX **Ports** menu, copy the three scripts in `rocknix-ports/` to `/storage/roms/ports/`.
 
-**From a stock-only device** it takes two steps and two reboots: run the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) on stock, boot ROCKNIX from a card ([Where to get images](../boot-and-flash.md#where-to-get-images) — decompress **Specific** `.img.gz` from `ROCKNIX-image-RK3566-*` and flash the **`.img`**, not the update tar), then run the app there. In between, the device is exactly where the eraser has always left it — SD-only boot, MASKROM reachable without disassembly — so stopping halfway breaks nothing new.
+**From a stock-only device** it takes two steps and two reboots: run the [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) on stock, boot ROCKNIX from a card ([Where to get images](../boot-and-flash.md#where-to-get-images) — decompress **Specific** `.img.gz` from `ROCKNIX-image-RK3566-*` and flash the **`.img`**, not the update tar), then run the app there. In between, the SPI preloader is gone. A ROCKNIX card boots from its own idbloader. With no bootable card, USB MASKROM is the usual result and still depends on the cable and port. Stopping halfway does not add a failure beyond that.
 
 ### Restore
 
@@ -217,7 +223,7 @@ Under the erase method the bootrom loaded **Knulli's** idbloader at sector 64, s
 
 | Topic | Link |
 |-------|------|
-| Eraser (MASKROM), restoring stock, recovery | [MASKROM and SD boot by erasing the preloader](stock-rocknix-without-disassembly.md) |
+| Eraser, restoring stock, recovery | [Erase the preloader](stock-rocknix-without-disassembly.md) |
 | Partition layout, xrock, MASKROM | [Flashing guide](flashing.md) |
 | Preloader region, IDB, FIT offsets | [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md) |
 | Stock OTA internals | [OTA update mechanism](../stock-firmware-and-findings/ota-update-mechanism.md) |

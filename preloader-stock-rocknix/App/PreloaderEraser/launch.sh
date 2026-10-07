@@ -1,20 +1,20 @@
 #!/bin/sh
 #
-# Miyoo Flip Preloader Eraser — MASKROM access without disassembly
+# Miyoo Flip Preloader Eraser
 #
-# PRIMARY USE: reach MASKROM mode without opening the device.
+# This erases the SPI NAND preloader. It does not reboot into USB
+# download. On the next power-on the boot ROM looks for another loader:
 #
-# Erasing the SPI NAND preloader (IDBLOCK + DDR init + SPL) leaves the
-# RK3566 bootrom with nothing to load internally. On the next power-on:
+#   no other valid loader      -> USB MASKROM is the usual result.
+#                                 Cable and port still matter. Measured
+#                                 2026-10-07: a completed erase did not
+#                                 enumerate USB MASKROM while a bootable
+#                                 Zlyme card was installed.
+#   bootable SD card inserted  -> the boot ROM can load that card's
+#                                 idbloader and boot that OS
 #
-#   no SD card inserted        -> the device comes up in MASKROM,
-#                                 ready for xrock / rkdeveloptool
-#   bootable SD card inserted  -> the bootrom loads the card's own
-#                                 idbloader and boots that OS
-#
-# That first behaviour is the point: MASKROM on demand, no screws, no
-# button, no test point. Everything an opened-case MASKROM session can
-# do — full backup, restore, reflash — becomes available from software.
+# Software entry into USB download is a different operation. Stock
+# U-Boot `rbrom` is the one that has enumerated 2207:350a.
 #
 # NOT THE WAY TO SET UP DUAL BOOT ANY MORE.
 #
@@ -98,13 +98,13 @@ fi
 
 banner
 echo "  Miyoo Flip Preloader Eraser"
-echo "  MASKROM access without disassembly"
+echo "  removes the SPI preloader; this is not USB download"
 echo ""
 echo "Erasing SPI NAND preloader (blocks 0-15)."
 echo ""
 echo "After the reboot:"
-echo "  no SD card       -> device comes up in MASKROM"
-echo "  bootable SD card -> boots that OS from the card"
+echo "  no other loader  -> usually MASKROM; cable and port matter"
+echo "  bootable SD card -> that OS can boot from the card"
 echo ""
 echo "This REMOVES internal stock boot. To restore it you need"
 echo "ROCKNIX (../apommel-multiboot/restore-preloader.sh) or"
@@ -311,9 +311,9 @@ else
     echo ""
     echo "From the next power-on:"
     echo ""
-    echo "  no SD card       -> MASKROM. Connect USB and use xrock,"
-    echo "                      no screws and no button needed."
-    echo "  bootable SD card -> that OS boots from the card."
+echo "  no other loader  -> usually MASKROM. Connect USB and use"
+echo "                      xrock. A bootable card can boot instead."
+echo "  bootable SD card -> that OS can boot from the card."
     echo ""
     echo "Internal stock boot is GONE until a preloader is written"
     echo "back."

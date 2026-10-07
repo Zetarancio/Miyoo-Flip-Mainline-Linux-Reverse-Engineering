@@ -4,11 +4,11 @@
 >
 > **You can always recover the usual way:** open the shell, use the **MASKROM** button (or test point), connect **USB**, and flash with **`xrock`** / **`rkdeveloptool`** like any other Miyoo Flip restore — same as [Flashing](flashing.md).
 
-**If what you want is stock and an SD distro at the same time, you are on the wrong page.** A current Zlyme card that already contains `miyoo355_fw.img` is prepared by booting stock so stock can run that installer. [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) is the manual form of the same repair. Restoring `mtd5-original-*.img` puts the saved original preloader back. This page is the erase path: the next power-on is expected to enter MASKROM. Host recovery from a PC is [Flashing](flashing.md).
+**If what you want is stock and an SD distro at the same time, you are on the wrong page.** A current Zlyme card that already contains `miyoo355_fw.img` is prepared by booting stock so stock can run that installer. [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) is the manual form of the same repair. Restoring `mtd5-original-*.img` puts the saved original preloader back. This page is the erase path. Erase removes the SPI preloader. It is not a reboot into USB download. Host recovery from a PC is [Flashing](flashing.md).
 
 Erasing still has two jobs, and this page covers both:
 
-- **reaching MASKROM without opening the device**
+- **removing the SPI preloader.** With no other valid loader, the next power-on is usually USB MASKROM. A bootable SD idbloader can boot instead. This is not a software reboot into USB download.
 - getting a **stock-only** unit far enough to install the multiboot patch, which the app can only write from a Linux that exposes the preloader as MTD (the archived ROCKNIX fork did; stock does not)
 
 Miyoo Flip images from the **archived** ROCKNIX fork are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Those builds are not maintained. If you still use one: download the **`ROCKNIX-image-RK3566-YYYYMMDD`** zip (not the update tar), take **`*-Specific.img.gz`** from inside it, decompress it, and flash the **`.img`** — not the `.gz`. There is no separate Flip artifact. Layout and an example from build 245: [Where to get images](../boot-and-flash.md#where-to-get-images). Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo. The directory name is historical.
@@ -37,20 +37,20 @@ If it still references another board's `rk3566-*.dtb`, change it, so the kernel,
 
 ### Preloader Eraser — MASKROM access
 
-Erasing the preloader leaves the bootrom with nothing to load internally, which is what gives you **MASKROM on demand**:
+Erasing the preloader removes the SPI loader. USB MASKROM is what you get when the boot ROM then finds nothing else to load:
 
 | At power-on | Result |
 |-------------|--------|
 | **no SD card** | device comes up in **MASKROM** — connect USB and use `xrock` |
 | **bootable SD card** | bootrom loads the **card's own** idbloader and boots that OS |
 
-Everything an opened-case MASKROM session can do — full backup, restore, reflash — becomes reachable from software. The trade-off is that **internal stock boot is gone** until you write a preloader back, which needs ROCKNIX or a PC.
+With **no** other valid loader, the next power-on is usually USB MASKROM, and then a host can back up, restore, or reflash. That still depends on the cable and the port. A card with its own idbloader can boot that card instead, which is what happened on 2026-10-07 with a Zlyme card after a completed erase. The trade-off is that **internal stock boot is gone** until you write a preloader back, which needs ROCKNIX or a PC.
 
 1. Copy **`PreloaderEraser`** from [`preloader-stock-rocknix/App/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix/App) to **`SDCARD/App/PreloaderEraser/`**.
    Optional: add **`icon.png`** next to `launch.sh` for a launcher icon (`config.json` references it).
 2. Boot **stock** with that SD.
 3. Launch **"Miyoo Flip MASKROM Access (Preloader Eraser)"**. It erases SPI NAND blocks **0–15** (first **2 MiB**) and **reboots**.
-4. Power on with **no card** for MASKROM, or with a **ROCKNIX** card to boot ROCKNIX from SD.
+4. Power on with **no card** when you want USB MASKROM, or with a **ROCKNIX** card to boot ROCKNIX from SD. A card that still has an idbloader, including a Zlyme card, can boot that loader instead of USB.
 
 Distros whose cards are built for **GammaLoader** (Knulli, GammaOS) still need this method rather than multiboot: see [distro compatibility](sd-multiboot-apommel.md#distro-compatibility).
 
@@ -84,7 +84,7 @@ If **`/proc/mtd`** does not list **`preloader`**, install a newer Miyoo Flip ima
 
 **Why the eraser needs the SFC on stock.** Stock's partitions come from `mtdparts=` on the kernel command line and start at `vnvm` (`0x200000`), so no `/dev/mtd*` covers the preloader region. The app drives the **SFC** directly through `devmem` / `/dev/mem` instead. Erase needs no ECC, which is why this works blind — a *write* would not, and that asymmetry is what forces the two-step bootstrap: [why stock cannot write the preloader](sd-multiboot-apommel.md#why-stock-cannot-write-the-preloader). On **ROCKNIX** the region is `mtd0`, so the script uses `flash_erase` there instead.
 
-**How it fits the boot chain.** bootrom → preloader on SPI → U-Boot → kernel. Clearing the preloader makes the bootrom **fall through** to SD, or to MASKROM when there is no card. Diagram and offsets: [Boot and flash — boot chain](../boot-and-flash.md#boot-chain) · [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md).
+**How it fits the boot chain.** bootrom → preloader on SPI → U-Boot → kernel. Clearing the preloader makes the bootrom look for another loader: a bootable SD idbloader, or USB MASKROM when it finds none. Erase is not the stock U-Boot `rbrom` path, which stores a download flag and resets into USB download without wiping the preloader. Diagram and offsets: [Boot and flash — boot chain](../boot-and-flash.md#boot-chain) · [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md).
 
 **Sourcing a preloader image.** It is exactly the **first 2 MiB** of SPI (the IDBLOCK region), so any full NAND dump yields one: `dd if=spi_full_dump.img of=preloader-mine.img bs=512 count=4096`. Card OTA packages like `miyoo355_fw.img` will not do — they ship slices for uboot/boot/rootfs and contain **no preloader at all** ([why](../stock-firmware-and-findings/ota-update-mechanism.md)). The image bundled with the multiboot app is md5 `1d525e6e6c89bd788b5245c90c97833b`; its provenance is documented in [SD multiboot](sd-multiboot-apommel.md#provenance-of-the-bundled-stock-image).
 

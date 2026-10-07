@@ -3,11 +3,11 @@
 | Folder | Role |
 |--------|------|
 | **`App/apommel-multiboot/`** | **Repairs** the SPI preloader so the SPL can read a card: no card → **stock**, bootable card → **SD**. Install/restore/backup modes. Runs on stock and ROCKNIX, but can only **write** from ROCKNIX. Method by **[apommel](https://github.com/apommel/baseos-my355)**. |
-| **`App/PreloaderEraser/`** | **Erases** the SPI preloader so the device powers on into **MASKROM** when no card is inserted (a bootable card still boots from SD). Removes internal stock boot. |
+| **`App/PreloaderEraser/`** | **Erases** the SPI preloader. With no other valid loader the next power-on is usually USB MASKROM. A bootable card can boot from its own idbloader. Removes internal stock boot. |
 
 Restoring a stock preloader is part of the multiboot app — **`restore-preloader.sh`**, or `sh launch.sh restore [FILE]` — so there is no separate restore tool. The app bundles a verified stock image, and it validates, backs up, verifies the readback and rolls back on failure.
 
-**For dual boot use `apommel-multiboot`, not the eraser.** The eraser is for reaching MASKROM from software, and for getting a stock-only unit onto a Linux that exposes the preloader as `mtd0` so the multiboot app can write it. On the archived ROCKNIX fork that node was `mtd0`.
+**For dual boot use `apommel-multiboot`, not the eraser.** The eraser removes the SPI preloader. It is not a reboot into USB download. It is also how a stock-only unit reaches a Linux that exposes the preloader as `mtd0` so the multiboot app can write it. On the archived ROCKNIX fork that node was `mtd0`.
 
 The directory name `preloader-stock-rocknix` is historical. The tools were not renamed when active OS work moved to Zlyme. Image downloads from the archived fork: [Where to get images](../docs/boot-and-flash.md#where-to-get-images).
 

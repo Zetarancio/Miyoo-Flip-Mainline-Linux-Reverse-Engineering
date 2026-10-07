@@ -8,7 +8,7 @@ Repairs the SPI NAND preloader so the SPL can read an SD card, giving automatic 
 | card with a U-Boot the stock SPL can load | that OS from SD |
 | card without one | falls through to stock |
 
-Unlike **[PreloaderEraser](../PreloaderEraser/)**, which destroys the preloader so the bootrom drops into MASKROM, this **repairs** it so internal stock boot keeps working.
+Unlike **[PreloaderEraser](../PreloaderEraser/)**, which removes the preloader so the boot ROM has to find another loader, this **repairs** it so internal stock boot keeps working. Erase is not a reboot into USB download.
 
 ## Credits
 
@@ -78,7 +78,7 @@ If only stock boots, the preloader cannot be written from there, so getting to m
 | 1 | **stock** | **[`PreloaderEraser`](../PreloaderEraser/)** | preloader erased → bootrom falls through to SD (and to MASKROM with no card) |
 | 2 | **ROCKNIX**, booted from the card | **`install-multiboot.sh`** in this folder | patched preloader written via `mtd0` → multiboot |
 
-Between the two steps the device is in exactly the state `PreloaderEraser` has always left it in: SD-only boot, MASKROM reachable without disassembly. If you stop after step 1, nothing new is broken — so a failed step 2 is not a dead end.
+Between the two steps the SPI preloader is gone. A bootable ROCKNIX card starts from its own idbloader. With no bootable card, USB MASKROM is the usual result and still depends on the cable and port. If you stop after step 1, that is the state you are in — a failed step 2 is not a dead end.
 
 Step 2 is deliberately **manual**, not an autostart hook: nothing should rewrite the preloader without being asked.
 

@@ -33,7 +33,7 @@ Both yield five partitions with rootfs at `mtdblock3`. If you see six partitions
 
 [xrock](https://github.com/xboot/xrock) reads and writes SPI NAND over USB in MASKROM mode. Build from source or follow [steward-fu’s xrock build guide](https://steward-fu.github.io/website/handheld/miyoo_flip_build_xrock.htm).
 
-Host recovery with xrock is separate from stock running `miyoo355_fw.img`, from restoring a `mtd5-original-*.img` backup, and from erasing the preloader so the next power-on enters MASKROM.
+Host recovery with xrock is separate from stock running `miyoo355_fw.img`, from restoring a `mtd5-original-*.img` backup, and from erasing the preloader. Erasing the preloader is not the same thing as rebooting into USB download.
 
 Upstream `xboot/xrock` at `50effcef229a7e8ff85fde916e635cdd58fe8c09` still sends 128 KiB USB bulk chunks with a 2 second timeout and receives a large buffer in one transfer. On a Linux host that fails against a Flip in MASKROM. [xrock-linux-bulk.patch](xrock-linux-bulk.patch) is a Flip-tested workaround for that revision: 32 KiB chunks and a 10 second timeout, on both send and receive. Apply it from a checkout of that commit:
 
@@ -52,7 +52,11 @@ It is not an upstream xrock requirement. Zlyme does not build or ship xrock.
 3. While holding, connect USB to the host.
 4. Confirm with `lsusb` (Rockchip USB device).
 
-**Without the button (many cases):** If the SPI **preloader** is blank or invalid and **no bootable SD** is inserted, the device powers on into **MASKROM** — this is the intended use of the [preloader eraser app](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), which reaches MASKROM from software with no disassembly. Behaviour can vary with cable/port. To keep internal stock boot *and* boot from SD, patch the preloader instead: [SD multiboot](sd-multiboot-apommel.md).
+**Without the button:** USB MASKROM on power-on is what the boot ROM does when it finds **no** valid loader. A blank SPI preloader is one missing loader. A card with its own idbloader, including a Zlyme card, is another loader, and the ROM can boot that card instead of USB. Measured on 2026-10-07: `flash_erase` of the preloader completed and the next boot did not enumerate USB MASKROM while a bootable Zlyme card was installed. The [preloader eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access) still removes the SPI preloader. It does not promise USB MASKROM by itself. Behaviour also varies with cable and port.
+
+**From a running stock U-Boot, with the bottom USB-C already on the host:** the command `rbrom` stores `0xef08a53c` at `0xfdc20200` (PMUGRF OS register 0) and resets. The early SPL sees that word and returns to the boot ROM. That enumerated as USB `2207:350a` on 2026-10-06 and again on 2026-10-07, with a card inserted and with the battery connected. That is the proven software entry. It does not erase the preloader. A later Zlyme restart command aims at the same registers and is not proven until a host sees `2207:350a` from it.
+
+To keep internal stock boot *and* boot from SD, patch the preloader instead: [SD multiboot](sd-multiboot-apommel.md).
 
 ---
 
@@ -191,7 +195,7 @@ These are different operations. Do not treat them as one procedure.
 |------|----------------|
 | Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. Writing the card does not modify NAND by itself. |
 | Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, done by hand or by the older on-device app. Historical and recovery reference. |
-| Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access), or a Zlyme **Preloader Recovery** erase. The next power-on is expected to enter MASKROM instead of booting stock. A Zlyme erase that does not complete tries to write the previous preloader back and is not MASKROM success. A failed Zlyme restore does the same. |
+| Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access). Removes the SPI preloader. The next power-on enters USB MASKROM only when the boot ROM has no other valid loader. A bootable SD idbloader can boot instead. A Zlyme erase that does not complete tries to write the previous preloader back. A failed Zlyme restore does the same. Neither result is USB MASKROM. |
 | Host `xrock` | This page. USB MASKROM recovery from a PC, including writing a saved preloader back. |
 
 The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, zeroing the preloader destroys internal boot.

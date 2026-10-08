@@ -1,0 +1,29 @@
+20:13:55 --- Zlyme restore-original helper ---
+20:13:56 battery 95%, on charger 0
+20:13:56 preloader reads as ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d
+device tree 6058 -> 6238 (+180), slack 662, both IDB copies resealed
+ok: /tmp/zlyme-from-orig.img
+20:14:00 installed preloader is the repaired form of the saved original
+20:14:00 restore target is dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922
+20:14:00 saved preloader-current-ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d.img
+20:14:00 flash attempt 1
+Erasing 2048 Kibyte @ 0 --  0 % complete Erasing 2048 Kibyte @ 0 -- 100 % complete 
+Writing data to block 0 at offset 0x0
+Writing data to block 1 at offset 0x20000
+Writing data to block 2 at offset 0x40000
+Writing data to block 3 at offset 0x60000
+Writing data to block 4 at offset 0x80000
+Writing data to block 5 at offset 0xa0000
+Writing data to block 6 at offset 0xc0000
+Writing data to block 7 at offset 0xe0000
+Writing data to block 8 at offset 0x100000
+Writing data to block 9 at offset 0x120000
+Writing data to block 10 at offset 0x140000
+Writing data to block 11 at offset 0x160000
+Writing data to block 12 at offset 0x180000
+Writing data to block 13 at offset 0x1a0000
+Writing data to block 14 at offset 0x1c0000
+Writing data to block 15 at offset 0x1e0000
+20:14:01 readback verified; this unit's saved original preloader is installed
+20:14:01 removed miyoo355_fw.img from the card
+20:14:01 original preloader restored; power the device off before changing cards

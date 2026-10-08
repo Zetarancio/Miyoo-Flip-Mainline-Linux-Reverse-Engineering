@@ -52,7 +52,9 @@ The helper saves this unit's original preloader on the card before it writes, wh
 
 After a verified write it removes `miyoo355_fw.img` and leaves stock's updater running. It does not reboot, and it does not decide which physical slot its own card is in. Power the Flip off before changing cards. A bootable card in the right-hand slot is the normal next boot.
 
-On 2026-10-08 this image's already-repaired path was hardware-accepted on one Flip. The live preloader was `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`. One write read back as `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, bad blocks stayed 0, and Zlyme then booted from the right-hand slot with recovery armed. Those are the same bytes as the [recovery preloader](recovery-preloader.md) measurement. No new no-card serial capture was taken. The helper card was physically in the left slot, and stock still exposed it as a node matching `/dev/mmcblk1p*`. That match is not a proven `mmcblk1` = right or `mmcblk2` = left map. The path that starts from an untouched stock preloader was not part of this run.
+On 2026-10-08 both paths of this image were hardware-accepted on one Flip. The already-repaired path started at `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`. One write read back as `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, bad blocks stayed 0, and Zlyme then booted from the right-hand slot with recovery armed. The raw card log is [the repaired-path helper log](../../logs/zlyme-fw-maskrom-repaired-20261008.txt). That run still logged a reboot because its card node matched `/dev/mmcblk1p*`. The helper built after that no longer reboots. The direct-from-stock path started from the independently read original `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922`. Apommel's `/pinctrl` repair grew the tree `6058 -> 6238 (+180)`. The helper did not take the `already has properties` branch. One write read back as the same `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` image, bad blocks stayed 0, the helper removed itself, and it did not reboot. The raw card log is [the direct-stock helper log](../../logs/zlyme-fw-maskrom-direct-stock-20261008.txt). Zlyme then booted from the physical right-hand slot and read that same recovery image, with `mode=recovery` and `recovery=armed`. Those recovery bytes are the [recovery preloader](recovery-preloader.md) measurement. No new no-card serial capture was taken.
+
+Stock's block-device index is not a physical slot. On stock `20250527210639`, one ordinary boot with only the physical left card inserted mounted that card as `/dev/mmcblk2p1` at `/media/sdcard1`. The raw record is [the launch probe](../../logs/zlyme-fw-launch-probe-20261008.txt). The earlier repaired-path helper, also with the card in the physical left slot, classified its node as `/dev/mmcblk1p*`. A later Zlyme boot of the right-hand OS card showed only `/dev/mmcblk0`, with `/boot` on `/dev/mmcblk0p2` and `/storage` on `/dev/mmcblk0p3`. That is Zlyme's numbering. None of these indexes is a universal map. The helpers do not use the block-device index as a physical slot.
 
 Once this preloader is installed, stock itself does not start. Boot a supported OS card in the right-hand slot and use Settings → System → Advanced → Recovery → Disarm MASKROM recovery. The restore image in the next section is not that exit. This arming helper runs only when stock is what boots.
 
@@ -72,7 +74,25 @@ It saves the preloader that is installed now, then writes. If that write does no
 
 After a verified write it removes `miyoo355_fw.img` and leaves stock's updater running. It does not reboot. Power the Flip off before changing cards.
 
-Host-tested. Not hardware-accepted as this standalone file.
+On 2026-10-08 this image was hardware-accepted on the same Flip. The live preloader was the repaired image `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`. The card held that unit's saved original `mtd5-original-dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922.img`. One write read back as `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922`, bad blocks stayed 0, and there was no rollback and no critical failure. The helper removed itself and did not reboot. The raw card log is [the restore helper log](../../logs/zlyme-fw-restore-20261008.txt). A later stock-side read of `/dev/mtd5ro` returned that same hash, size 2097152, erase size 131072, and `bad_blocks=0`. The raw record is [the read-only verifier](../../logs/zlyme-preloader-readback-20261008.txt). That verifier was a one-off engineering check. It is not an install step. This acceptance is this unit's saved original. It is not a restore of another Flip's backup, and it is not the ordinary way out of an armed recovery preloader.
+
+## Hardware accepted on this unit
+
+These paths were measured on one Miyoo Flip on 2026-10-08. The hashes are that unit's images. The helpers still refuse a preloader that fails their structure, fingerprint, DDR, and source-pair checks.
+
+| Path | Result |
+|------|--------|
+| Restore of this unit's saved original | `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d` to `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922` |
+| MASKROM helper from the repaired preloader | `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d` to `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` |
+| MASKROM helper from the original stock preloader | `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922`, then the `/pinctrl` repair, then `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` |
+| Right-slot Zlyme boot from that recovery image | Zlyme read `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, `mode=recovery`, `recovery=armed` |
+| Zlyme disarm | `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` back to `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`, `mode=normal`, `recovery=ready` |
+
+### Not claimed
+
+This record does not accept every Miyoo Flip vendor SPL revision, an arbitrary unknown preloader, another unit's original backup, Restore-from-recovery as the ordinary exit, erase-preloader as deterministic MASKROM, or a generic `mmcblkN` number for a physical slot.
+
+The temporary packed probe and the read-only verifier were engineering checks. They are not part of installing Zlyme or of the three helpers above.
 
 ## What these are not
 

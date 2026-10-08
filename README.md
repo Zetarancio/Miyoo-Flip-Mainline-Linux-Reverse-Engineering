@@ -20,7 +20,7 @@ Archiving the fork does not retire its measurements. The last wiki stamp of that
 
 ## Stock + SD at once, without opening the device
 
-Write a Zlyme card and boot stock once so the included installer can repair this unit's preloader. No card then boots stock. A bootable card in the right-hand slot boots that OS. The standalone helpers are [preloader tools](docs/boot-and-flash/preloader-tools.md). The `/pinctrl` repair, provenance, and the older manual app are [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md).
+Write a Zlyme card and boot stock once so the included installer can repair this unit's preloader. No card then boots stock. A bootable card in the right-hand slot boots that OS. The standalone helpers are [preloader tools](docs/boot-and-flash/preloader-tools.md). The 2026-10-08 measurements of those helpers are on that page. They are not extra install steps. The `/pinctrl` repair, provenance, and the older manual app are [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md).
 
 Observed on that repaired preloader: **stock**, the archived ROCKNIX fork, SpruceOS, and apommel's MinUI base. Zlyme was observed the same way on 2026-10-07 from a development card. Official firmware updates do not rewrite the preloader. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
 

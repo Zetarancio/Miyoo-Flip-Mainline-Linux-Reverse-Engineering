@@ -1,0 +1,123 @@
+PROBE_EXECUTED=yes
+date: Mon Sep 28 19:58:07 UTC 2026
+pwd: /media/sdcard1
+fw_path: /media/sdcard1
+=== /usr/miyoo/version ===
+20250527210639
+=== /proc/cmdline ===
+storagemedia=mtd androidboot.storagemedia=mtd androidboot.mode=normal  androidboot.verifiedbootstate=orange androidboot.serialno=da4513159f65899d  rootwait earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 root=/dev/mtdblock3 rootfstype=squashfs mtdparts=spi-nand0:0x100000@0x200000(vnvm),0x400000@0x300000(uboot),0x2600000@0x700000(boot),0x4000000@0x2d00000(rootfs),0x1260000@0x6d00000(userdata)
+=== /proc/mounts ===
+/dev/root / squashfs ro,relatime 0 0
+devtmpfs /dev devtmpfs rw,relatime,size=477536k,nr_inodes=119384,mode=755 0 0
+proc /proc proc rw,relatime 0 0
+tmpfs /tmp tmpfs rw,relatime,size=489088k,nr_inodes=122272 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,relatime,size=489088k,nr_inodes=122272,mode=755 0 0
+devpts /dev/pts devpts rw,relatime,gid=5,mode=620,ptmxmode=666 0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev,noexec,relatime,size=489088k,nr_inodes=122272 0 0
+sysfs /sys sysfs rw,relatime 0 0
+configfs /sys/kernel/config configfs rw,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+pstore /sys/fs/pstore pstore rw,relatime 0 0
+/dev/mmcblk2p1 /media/sdcard1 vfat rw,nodev,noatime,nodiratime,fmask=0022,dmask=0022,codepage=936,iocharset=utf8,shortname=mixed,errors=remount-ro 0 0
+adb /dev/usb-ffs/adb functionfs rw,relatime 0 0
+=== /media/sdcard0 ===
+lrwxrwxrwx    1 root     root            11 May 23  2025 /media/sdcard0 -> /mnt/sdcard
+=== /media/sdcard1 ===
+total 2068
+drwxr-xr-x    2 root     root          4096 Jan  1  1970 .
+drwxr-xr-x   11 root     root           195 May 23  2025 ..
+-rwxr-xr-x    1 root     root            81 Oct  8  2026 README-TEST-FIXTURE.txt
+-rwxr-xr-x    1 root     root          4608 Oct  8  2026 miyoo355_fw.img
+-rwxr-xr-x    1 root     root       2097152 Oct  8  2026 mtd5-original-dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922.img
+-rwxr-xr-x    1 root     root          1544 Sep 28 19:58 zlyme-fw-launch-probe.txt
+=== /mnt/sdcard ===
+total 0
+drwxr-xr-x    2 root     root             3 May 27  2025 .
+drwxr-xr-x    4 root     root            94 May 27  2025 ..
+=== /dev/mmcblk* ===
+brw-rw----    1 root     disk      179,   0 Sep 28 19:58 /dev/mmcblk2
+brw-rw----    1 root     disk      179,   1 Sep 28 19:58 /dev/mmcblk2p1
+=== environment ===
+SHELL=/bin/sh
+UMS_RO=0
+CUSTOMER_DIR=/media/sdcard0/miyoo355/
+UMS_MOUNTPOINT=/mnt/ums
+UMS_MOUNT=0
+EDITOR=/bin/vi
+PWD=/media/sdcard1
+UMS_SIZE=256M
+HOME=/
+LANG=en_US.UTF-8
+ADB_TCP_PORT=5555
+SDL_NOMOUSE=true
+TERM=vt102
+USER=root
+UMS_FILE=/userdata/ums_shared.img
+ADBD_SHELL=/bin/bash
+UMS_FSTYPE=vfat
+SHLVL=3
+USB_FUNCS=adb
+LD_LIBRARY_PATH=/media/sdcard0/miyoo355//lib
+XDG_RUNTIME_DIR=/var/run
+PATH=/usr/bin:/usr/sbin
+storagemedia=mtd
+EE_DIR=/media/sdcard0/emulationstation
+OLDPWD=/
+_=/usr/bin/env
+=== set ===
+ADBD_SHELL=/bin/bash
+ADB_TCP_PORT=5555
+BASH=/bin/sh
+BASHOPTS=checkwinsize:cmdhist:complete_fullquote:extquote:force_fignore:globasciiranges:hostcomplete:interactive_comments:progcomp:promptvars:sourcepath
+BASH_ALIASES=()
+BASH_ARGC=()
+BASH_ARGV=()
+BASH_CMDS=()
+BASH_LINENO=([0]="0")
+BASH_SOURCE=([0]="/tmp/miyoo_update.sh")
+BASH_VERSINFO=([0]="5" [1]="1" [2]="16" [3]="1" [4]="release" [5]="aarch64-buildroot-linux-gnu")
+BASH_VERSION='5.1.16(1)-release'
+CUSTOMER_DIR=/media/sdcard0/miyoo355/
+DIR=/media/sdcard1
+DIRSTACK=()
+EDITOR=/bin/vi
+EE_DIR=/media/sdcard0/emulationstation
+EUID=0
+GROUPS=()
+HOME=/
+HOSTNAME=rk3566-buildroot
+HOSTTYPE=aarch64
+IFS=' 	
+'
+L=/media/sdcard1/zlyme-fw-launch-probe.txt
+LANG=en_US.UTF-8
+LD_LIBRARY_PATH=/media/sdcard0/miyoo355//lib
+MACHTYPE=aarch64-buildroot-linux-gnu
+OLDPWD=/
+OPTERR=1
+OPTIND=1
+OSTYPE=linux-gnu
+PATH=/usr/bin:/usr/sbin
+PIPESTATUS=([0]="0")
+POSIXLY_CORRECT=y
+PPID=1
+PS4='+ '
+PWD=/media/sdcard1
+SDL_NOMOUSE=true
+SHELL=/bin/sh
+SHELLOPTS=braceexpand:hashall:interactive-comments:posix
+SHLVL=3
+TERM=vt102
+UID=0
+UMS_FILE=/userdata/ums_shared.img
+UMS_FSTYPE=vfat
+UMS_MOUNT=0
+UMS_MOUNTPOINT=/mnt/ums
+UMS_RO=0
+UMS_SIZE=256M
+USB_FUNCS=adb
+USER=root
+XDG_RUNTIME_DIR=/var/run
+_='=== set ==='
+d=/media/sdcard1
+storagemedia=mtd

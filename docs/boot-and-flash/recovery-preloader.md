@@ -1,6 +1,6 @@
 # Recovery preloader
 
-Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's pair. They are not an allowlist for every Flip. A stock-side helper that derives this behavior on the device, instead of flashing these hashes, is [preloader tools](preloader-tools.md). These logs are the hardware record for the recovery preloader produced inside Zlyme. Later the same day, that helper's already-repaired path wrote this same recovery image from the normal preloader below: one verified write, bad blocks 0, then a right-slot Zlyme boot with recovery armed. No second no-card serial capture was taken. The helper's direct-from-stock path was not in that run.
+Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's images. They are not an allowlist for every Flip. A stock-side helper that derives this behavior on the device, instead of flashing these hashes, is [preloader tools](preloader-tools.md). These two serial logs are the hardware record for the recovery preloader produced inside Zlyme, and they were not rewritten later. The standalone MASKROM helper then wrote this same recovery image twice: once from the repaired preloader `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`, and once from the saved original stock image `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922`. The stock path applied the `/pinctrl` repair (`6058 -> 6238`, +180) and did not take the `already has properties` branch. Each helper write was one verified write, bad blocks stayed 0, and there was no rollback. Zlyme then booted from the physical right-hand slot and read `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, with `mode=recovery` and `recovery=armed`. `disarm-recovery` restored `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`, with `mode=normal` and `recovery=ready`. No second no-card serial capture was taken. The raw helper records are [repaired path](../../logs/zlyme-fw-maskrom-repaired-20261008.txt), [direct from stock](../../logs/zlyme-fw-maskrom-direct-stock-20261008.txt), [restore](../../logs/zlyme-fw-restore-20261008.txt), and [stock readback](../../logs/zlyme-preloader-readback-20261008.txt).
 
 The image is the stock November 02 2024 SPL (`U-Boot SPL 2017.09 (Nov 02 2024 - 15:59:04)`) after the usual `/pinctrl` repair, with one further change: the SPL device tree boot order is only
 
@@ -49,7 +49,8 @@ Erasing the preloader is a different operation. With a bootable card installed, 
 
 | Image | SHA-256 |
 | --- | --- |
-| Normal / source preloader | `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d` |
+| Saved original stock preloader | `dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922` |
+| Normal / repaired source preloader | `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d` |
 | Recovery derivative | `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` |
 
 A full 2 MiB readback matched after arming, after the right-slot boot, and again after restoring the source. Bad blocks stayed 0. There was no ECC or I/O failure on those NAND transactions.

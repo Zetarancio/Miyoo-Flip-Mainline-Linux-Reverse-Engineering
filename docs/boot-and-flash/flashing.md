@@ -189,7 +189,7 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
-The recommended Zlyme install is to write `zlyme.img`, put it in the right-hand slot, and on an unprepared Flip boot stock once so the included `miyoo355_fw.img` can finish. Later updates are Settings → Update. The standalone multiboot helper is that same repair without a full Zlyme card: [preloader tools](preloader-tools.md).
+The recommended Zlyme install is to write `zlyme.img`, put it in the right-hand slot, and on an unprepared Flip boot stock once so the included `miyoo355_fw.img` can finish. Later updates are Settings → Update. The standalone helpers are that repair, the recovery preloader, and a restore of this unit's saved original, without writing a full Zlyme card: [preloader tools](preloader-tools.md). The 2026-10-08 measurements of those helpers are on that page. They are not extra install steps.
 
 The table below keeps the other ways to boot from SD. They are not substitutes for that install. Erasing the preloader is the historical method from the archived ROCKNIX fork. It removes internal stock boot. Host `xrock` is the PC recovery path once the boot ROM is already waiting.
 

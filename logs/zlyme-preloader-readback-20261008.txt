@@ -1,0 +1,26 @@
+pwd=/media/sdcard1
+CARD=/media/sdcard1
+PROC_MTD=/proc/mtd
+MTD=/dev/mtd5
+MTD_RO=/dev/mtd5ro
+MTD_SYSFS=/sys/class/mtd/mtd5
+=== /proc/mtd ===
+dev:    size   erasesize  name
+mtd0: 00100000 00020000 "vnvm"
+mtd1: 00400000 00020000 "uboot"
+mtd2: 02600000 00020000 "boot"
+mtd3: 04000000 00020000 "rootfs"
+mtd4: 01260000 00020000 "userdata"
+mtd5: 00200000 00020000 "spl"
+=== identity ===
+spl_line=mtd5:
+size_hex=00200000
+erase_hex=00020000
+name=spl
+size=2097152
+erasesize=131072
+writesize=2048
+oobsize=64
+bad_blocks=0
+read_bytes=2097152
+SHA=dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922

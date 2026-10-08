@@ -1,6 +1,6 @@
 # SD multiboot: how the preloader repair works
 
-> Technical page. Provenance, the `/pinctrl` repair, distro history, and the manual on-device app. For a Zlyme card, write `zlyme.img` and boot stock once. For a standalone helper, use [preloader tools](preloader-tools.md). You do not need this page to install Zlyme.
+> Technical page. Provenance, the `/pinctrl` repair, distro history, and the manual on-device app. For a Zlyme card, write `zlyme.img` and boot stock once. For a standalone helper, use [preloader tools](preloader-tools.md). You do not need this page to install Zlyme. The 2026-10-08 helper measurements are on that page. They are not steps here. The table below is a different record: which card U-Boot images the repaired SPL has loaded.
 
 Run an SD distro **and** keep stock on internal SPI NAND, with no card swap ritual and nothing erased. The device decides at power-on:
 

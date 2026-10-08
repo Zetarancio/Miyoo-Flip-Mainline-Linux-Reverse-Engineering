@@ -1,0 +1,32 @@
+21:09:31 --- Zlyme recovery-preloader helper ---
+21:09:31 battery 95%, on charger 1
+21:09:31 preloader reads as dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922
+device tree 6058 -> 6238 (+180), slack 662, both IDB copies resealed
+ok: /tmp/zlyme-patched.img
+boot order is /dwmmc@fe2b0000 only, both IDB copies resealed
+ok: /tmp/zlyme-new.img
+21:09:38 recovery image is f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367
+21:09:39 kept existing mtd5-original-dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922.img
+21:09:39 saved preloader-current-dfdd7d20d6fd3beb18350dcf8fa58740b40b4baaf39467d45076f949053a2922.img
+21:09:39 flash attempt 1
+Erasing 2048 Kibyte @ 0 --  0 % complete Erasing 2048 Kibyte @ 0 -- 100 % complete 
+Writing data to block 0 at offset 0x0
+Writing data to block 1 at offset 0x20000
+Writing data to block 2 at offset 0x40000
+Writing data to block 3 at offset 0x60000
+Writing data to block 4 at offset 0x80000
+Writing data to block 5 at offset 0xa0000
+Writing data to block 6 at offset 0xc0000
+Writing data to block 7 at offset 0xe0000
+Writing data to block 8 at offset 0x100000
+Writing data to block 9 at offset 0x120000
+Writing data to block 10 at offset 0x140000
+Writing data to block 11 at offset 0x160000
+Writing data to block 12 at offset 0x180000
+Writing data to block 13 at offset 0x1a0000
+Writing data to block 14 at offset 0x1c0000
+Writing data to block 15 at offset 0x1e0000
+21:09:40 readback verified
+21:09:40 removed miyoo355_fw.img from the card
+21:09:40 recovery preloader installed; power the device off before changing cards
+21:09:40 use a bootable card in the right-hand slot for normal boot

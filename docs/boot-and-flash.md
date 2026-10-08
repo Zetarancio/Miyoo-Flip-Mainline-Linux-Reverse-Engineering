@@ -57,7 +57,7 @@ Four different things get called MASKROM, and erasing the preloader is a fifth o
 | USB | Two USB-C: **upper** (top) = USB 2.0 host (`usb_host0_ehci` + `usb_host0_ohci` with PHY **480 MHz** clock, `usb2phy1_otg`, VBUS `vcc5v0_host`); **lower** (bottom) = charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`, no VBUS). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 
-The SD-slot row is Linux numbering. The right-hand slot is `/dwmmc@fe2b0000`, which Linux calls MMC1. The left-hand slot is `/dwmmc@fe2c0000`, which Linux calls MMC2. The vendor SPL logs that same right-hand controller as MMC2 (`Trying to boot from MMC2`). Those names are not interchangeable. Historical SPL lines stay as logged.
+The SD-slot row is Linux numbering. The right-hand slot is `/dwmmc@fe2b0000`, which Linux calls MMC1. The left-hand slot is `/dwmmc@fe2c0000`, which Linux calls MMC2. The vendor SPL logs that same right-hand controller as MMC2 (`Trying to boot from MMC2`). Those names are not interchangeable. Historical SPL lines stay as logged. Stock's `/dev/mmcblkN` index is a separate runtime fact and is not this map. On 2026-10-08 a helper card in the physical left slot was still exposed to the stock updater as a node matching `/dev/mmcblk1p*`. Why that node was chosen was not measured. The standalone helpers do not use the block-device index as a physical slot.
 
 Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm), [specs](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm). Serial: [serial.md](serial.md).
 

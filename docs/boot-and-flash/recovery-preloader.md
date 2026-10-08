@@ -1,6 +1,6 @@
 # Recovery preloader
 
-Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's pair. They are not an allowlist for every Flip. A stock-side helper that derives this behavior on the device, instead of flashing these hashes, is [preloader tools](preloader-tools.md). That helper is host-tested. These logs are the hardware record for the recovery preloader produced inside Zlyme.
+Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's pair. They are not an allowlist for every Flip. A stock-side helper that derives this behavior on the device, instead of flashing these hashes, is [preloader tools](preloader-tools.md). These logs are the hardware record for the recovery preloader produced inside Zlyme. Later the same day, that helper's already-repaired path wrote this same recovery image from the normal preloader below: one verified write, bad blocks 0, then a right-slot Zlyme boot with recovery armed. No second no-card serial capture was taken. The helper's direct-from-stock path was not in that run.
 
 The image is the stock November 02 2024 SPL (`U-Boot SPL 2017.09 (Nov 02 2024 - 15:59:04)`) after the usual `/pinctrl` repair, with one further change: the SPL device tree boot order is only
 

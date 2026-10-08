@@ -50,7 +50,9 @@ The standalone image derives that preloader on the device. It does not carry one
 
 The helper saves this unit's original preloader on the card before it writes, when it starts from an unrepaired stock preloader. If the preloader is already repaired, it requires the `mtd5-original-<sha256>.img` already saved by the multiboot installer, and it refuses when that file is missing, ambiguous, or does not match.
 
-This download is host-tested. It is not a separate hardware acceptance of the standalone file. The 2026-10-08 captures accepted the recovery preloader produced inside Zlyme, not this card image.
+After a verified write it removes `miyoo355_fw.img` and leaves stock's updater running. It does not reboot, and it does not decide which physical slot its own card is in. Power the Flip off before changing cards. A bootable card in the right-hand slot is the normal next boot.
+
+On 2026-10-08 this image's already-repaired path was hardware-accepted on one Flip. The live preloader was `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`. One write read back as `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, bad blocks stayed 0, and Zlyme then booted from the right-hand slot with recovery armed. Those are the same bytes as the [recovery preloader](recovery-preloader.md) measurement. No new no-card serial capture was taken. The helper card was physically in the left slot, and stock still exposed it as a node matching `/dev/mmcblk1p*`. That match is not a proven `mmcblk1` = right or `mmcblk2` = left map. The path that starts from an untouched stock preloader was not part of this run.
 
 Once this preloader is installed, stock itself does not start. Boot a supported OS card in the right-hand slot and use Settings → System → Advanced → Recovery → Disarm MASKROM recovery. The restore image in the next section is not that exit. This arming helper runs only when stock is what boots.
 
@@ -67,6 +69,8 @@ If stock is already running through some other arrangement, the helper can still
 It refuses when there is no such file, more than one, a bad name, or a bad image. It does not take a path to some other file. It does not flash a generic stock blob from a release, and it is not Zlyme's bundled stock fallback. A `preloader-current-*.img` saved as a rollback copy is not the original.
 
 It saves the preloader that is installed now, then writes. If that write does not read back, it tries to put the saved current image back. Those two outcomes are different: a restored previous image is a failed restore; a rollback that cannot be checked is a critical failure.
+
+After a verified write it removes `miyoo355_fw.img` and leaves stock's updater running. It does not reboot. Power the Flip off before changing cards.
 
 Host-tested. Not hardware-accepted as this standalone file.
 

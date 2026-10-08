@@ -138,7 +138,7 @@ bl31_v1.45_rocknix_disasm/     BL31 v1.45 disassembly + ELF (ROCKNIX rk3566)
 bl31_v1.44_vs_v1.45_diff.patch Diff of disassembly exports (v1.44 vs v1.45)
 logs/                          Boot logs + PMIC/debugfs dumps (reference)
 test-scripts/                  `miyoo-flip-power-dump.sh` — optional on-device capture
-preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the preloader → multiboot, and restore it) and PreloaderEraser (erase it → MASKROM) — see docs/boot-and-flash/sd-multiboot-apommel.md
+preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the preloader → multiboot, and restore it) and PreloaderEraser (historical erase tool; erasing does not guarantee USB MASKROM when another loader can boot) — see docs/boot-and-flash/sd-multiboot-apommel.md
 ```
 
 **Wiki:** The `docs/` tree is the device wiki and is maintained.
@@ -153,9 +153,13 @@ preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the p
 
 For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw SD-card image; [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) is the first stable release.
 
-1. Let the Flip boot from SD: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md) (recommended, keeps stock) or [erase the preloader](docs/boot-and-flash/stock-rocknix-without-disassembly.md).
-2. Write the card with the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases)), or write `zlyme.img` by hand with Balena Etcher or another raw-image writer. Either way the whole card is erased.
-3. Later OS updates happen inside Zlyme (**Settings → Update**).
+1. Write `zlyme.img` with the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases)) or a raw-image writer. Either way the whole card is erased.
+2. Put it in the right-hand slot.
+3. On an unprepared Flip, boot stock once and let the included `miyoo355_fw.img` finish.
+4. Boot Zlyme.
+5. Later updates are **Settings → Update**.
+
+Standalone and advanced preloader jobs are [Preloader tools](docs/boot-and-flash/preloader-tools.md). Do not erase the preloader as part of this install.
 
 Details: [Where to get images](docs/boot-and-flash.md#where-to-get-images) and [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
 

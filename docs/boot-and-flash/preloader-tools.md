@@ -52,15 +52,19 @@ The helper saves this unit's original preloader on the card before it writes, wh
 
 This download is host-tested. It is not a separate hardware acceptance of the standalone file. The 2026-10-08 captures accepted the recovery preloader produced inside Zlyme, not this card image.
 
-Once this preloader is installed, stock itself does not start unless the right-hand slot boots an OS that then runs stock. To put the saved original back from Zlyme, use Settings → System → Advanced → Recovery. This card helper runs when stock is what boots.
+Once this preloader is installed, stock itself does not start. Boot a supported OS card in the right-hand slot and use Settings → System → Advanced → Recovery → Disarm MASKROM recovery. The restore image in the next section is not that exit. This arming helper runs only when stock is what boots.
 
 ## 3. Restore this unit's original preloader
 
 `miyoo355_fw-restore.img`, renamed to `miyoo355_fw.img`.
 
-This writes the one `mtd5-original-<sha256>.img` that the multiboot or recovery helper saved on the card. The name's hash has to match the file. The DDR blob has to match the preloader that is installed, and the file has to be the original that produced that installed image, whether the installed image is the repaired preloader or the right-slot recovery preloader.
+This is the stock-side undo of the normal multiboot repair. Stock has to be running. Under that repaired preloader, internal stock still starts when the right-hand slot has no bootable card, so stock can run this file and write back this unit's saved `mtd5-original-<sha256>.img`. The name's hash has to match the file. The DDR blob has to match the installed preloader, and the file has to be the original that produced that installed image.
 
-It refuses when there is no such file, more than one, a bad name, or a bad image. It does not take a path to some other file. It does not flash a generic stock blob from a release. A `preloader-current-*.img` saved as a rollback copy is not the original.
+This is not the normal way to leave an armed recovery preloader. After that preloader is installed, a bootable card in the right-hand slot starts that card, and no bootable card there goes to the boot ROM. Stock does not start, so putting this file on a plain card does not undo recovery. Boot a supported OS card in the right-hand slot, start Zlyme, and use Settings → System → Advanced → Recovery → Disarm MASKROM recovery. If that card is not available, the physical MASKROM button and [xrock](flashing.md) are the recovery path.
+
+If stock is already running through some other arrangement, the helper can still recognize a recovery derivative of the saved original and write that original back. That check is defensive. It is not the ordinary path.
+
+It refuses when there is no such file, more than one, a bad name, or a bad image. It does not take a path to some other file. It does not flash a generic stock blob from a release, and it is not Zlyme's bundled stock fallback. A `preloader-current-*.img` saved as a rollback copy is not the original.
 
 It saves the preloader that is installed now, then writes. If that write does not read back, it tries to put the saved current image back. Those two outcomes are different: a restored previous image is a failed restore; a rollback that cannot be checked is a critical failure.
 

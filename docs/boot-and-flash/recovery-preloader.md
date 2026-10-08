@@ -8,7 +8,7 @@ The image is the stock November 02 2024 SPL (`U-Boot SPL 2017.09 (Nov 02 2024 - 
 /dwmmc@fe2b0000
 ```
 
-That is the right-hand SD controller. The DDR payload is the unit's own DDR blob. The SPL executable before the DTB is unchanged. The `/pinctrl` repair stays. Both RKNS copies match. The change is resealed SPL hashes, not a second loader.
+That is the right-hand SD controller. The vendor SPL logs it as MMC2. Linux calls the same controller MMC1. The DDR payload is the unit's own DDR blob. The SPL executable before the DTB is unchanged. The `/pinctrl` repair stays. Both RKNS copies match. The change is resealed SPL hashes, not a second loader.
 
 ## Right-hand card present
 

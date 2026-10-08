@@ -57,6 +57,8 @@ Four different things get called MASKROM, and erasing the preloader is a fifth o
 | USB | Two USB-C: **upper** (top) = USB 2.0 host (`usb_host0_ehci` + `usb_host0_ohci` with PHY **480 MHz** clock, `usb2phy1_otg`, VBUS `vcc5v0_host`); **lower** (bottom) = charge + gadget (`usb_host0_xhci`, `dr_mode = "otg"`, no VBUS). See [Board DTS — USB](drivers-and-dts/board-dts-pmic-ddr-updates.md#usb). |
 | UART | ttyS2 (fe660000), 1,500,000 baud, 3.3V |
 
+The SD-slot row is Linux numbering. The right-hand slot is `/dwmmc@fe2b0000`, which Linux calls MMC1. The left-hand slot is `/dwmmc@fe2c0000`, which Linux calls MMC2. The vendor SPL logs that same right-hand controller as MMC2 (`Trying to boot from MMC2`). Those names are not interchangeable. Historical SPL lines stay as logged.
+
 Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/website/handheld/miyoo_flip_pin.htm), [specs](https://steward-fu.github.io/website/handheld/miyoo_flip_spec.htm). Serial: [serial.md](serial.md).
 
 ---
@@ -67,10 +69,10 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw image for the OS card. [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) (2026-10-04) is the first stable release; earlier Zlyme GitHub releases are prereleases.
 
-1. **Let the Flip boot from SD first.** A current Zlyme card image carries `miyoo355_fw.img` at the root of its boot FAT. That file is [apommel](https://github.com/apommel/baseos-my355)'s installer, not a replacement preloader. Boot **stock** with the card inserted. Stock runs the installer, which reads this unit's own preloader, saves `mtd5-original-<sha256>.img`, patches the SPL `/pinctrl` node, and checks the write. Writing the card image does not itself modify NAND. The published zlyme44 image does not contain that file. Standalone helpers, including a multiboot image you rename to `miyoo355_fw.img`, are [preloader tools](boot-and-flash/preloader-tools.md). Until a release publishes them, use the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases) rather than a direct file link. The manual repair remains [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). Erasing the preloader is a different operation: [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md).
-2. **Write the card.** The recommended, convenient way is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer); download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases). Its first normal release is [V1.8.0](https://github.com/Zetarancio/zlymeOS-Installer/releases/tag/V1.8.0) (2026-10-04), with Windows, macOS and Linux builds. It fetches the latest Zlyme release, selects `zlyme.img`, and writes it as a raw image, erasing the whole card. It is forked from the [SpruceOS Installer](https://github.com/spruceUI/spruceOS-Installer); [SundownerSport](https://github.com/Sundownersport) kindly made the original Zlyme adaptation.
-3. **Or write it by hand.** Download `zlyme.img` from the [release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) and write it with [Balena Etcher](https://etcher.balena.io/) or another raw-image writer. This also erases the whole card.
-4. **Boot** with the card in the right-hand slot, next to power.
+1. **Write the card.** The convenient way is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer); download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases). Its first normal release is [V1.8.0](https://github.com/Zetarancio/zlymeOS-Installer/releases/tag/V1.8.0) (2026-10-04), with Windows, macOS and Linux builds. It fetches the latest Zlyme release, selects `zlyme.img`, and writes it as a raw image, erasing the whole card. It is forked from the [SpruceOS Installer](https://github.com/spruceUI/spruceOS-Installer); [SundownerSport](https://github.com/Sundownersport) kindly made the original Zlyme adaptation. Or download `zlyme.img` from the [release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) and write it with [Balena Etcher](https://etcher.balena.io/) or another raw-image writer.
+2. **Put it in the right-hand slot**, next to power.
+3. **On an unprepared Flip, boot stock once** and let the included `miyoo355_fw.img` finish. A current card image carries that file at the root of its boot FAT. It is [apommel](https://github.com/apommel/baseos-my355)'s installer, not a replacement preloader. Stock reads this unit's own preloader, saves `mtd5-original-<sha256>.img`, patches the SPL `/pinctrl` node, and checks the write. Writing the card image does not itself modify NAND. The published zlyme44 image does not contain that file. Standalone helpers, including a multiboot image you rename to `miyoo355_fw.img`, are [preloader tools](boot-and-flash/preloader-tools.md). Until a release publishes them, use the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases) rather than a direct file link. The manual repair remains [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). Erasing the preloader is a different operation: [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md).
+4. **Boot Zlyme** with the card in the right-hand slot.
 
 Later OS updates happen inside Zlyme (**Settings → Update**); the card does not need to be rewritten. Full steps: [Zlyme’s install guide](https://github.com/Zetarancio/zlyme#install).
 
@@ -109,7 +111,7 @@ The Specific image is shared with those other boards, so its default device tree
 
 **Proven configuration:** the stock SPI FIT contains TF-A **BL31**, **OP-TEE as BL32**, U-Boot, and an FDT. Known working SD and mainline boots documented here also included TF-A and OP-TEE, except Zlyme: its card FIT carries BL31 v1.44 and U-Boot with **no OP-TEE**, and it boots and resumes from deep suspend that way (observed in Zlyme, zlyme44 `337ccbce` and the deep-suspend acceptance on `b709719a`; no serial capture is kept in this wiki — [Zlyme](implementations/zlyme.md)). In the OP-TEE configuration BL31 hands off to the BL32 secure payload. This repository does not contain a controlled test showing that omitting OP-TEE necessarily fails, so this is not a universal hardware requirement.
 
-Boot flow: **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL. **SPL** tries boot sources (MMC2 → MMC1 → MTD) and loads U-Boot. **U-Boot** reads the boot partition (Android boot image: kernel + DTB). **Kernel** mounts rootfs from `/dev/mtdblock3`.
+Boot flow: **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL. **SPL** tries boot sources in vendor numbering (MMC2 → MMC1 → MTD) and loads U-Boot. Vendor MMC2 is `/dwmmc@fe2b0000`, the right-hand slot, which Linux calls MMC1. **U-Boot** reads the boot partition (Android boot image: kernel + DTB). **Kernel** mounts rootfs from `/dev/mtdblock3`.
 
 For deep analysis (FIT segment addresses, BL31 DDR strings, DDR scaling), see [SPI image analysis](stock-firmware-and-findings/spi-and-boot-chain.md).
 
@@ -125,15 +127,17 @@ The 128 MB SPI NAND is flashed via **xrock** over USB in MASKROM mode. The full 
 
 ## Booting from SD
 
-Three routes, in order of how much they cost you:
+The recommended install is a Zlyme card: write `zlyme.img`, use the right-hand slot, and on an unprepared Flip boot stock once so the included `miyoo355_fw.img` can finish. Later updates are Settings → Update. [Preloader tools](boot-and-flash/preloader-tools.md) is the standalone stock-side multiboot helper when you are not writing a full Zlyme card.
 
-| Route | Keeps stock? | Needs a PC? |
-|-------|--------------|-------------|
-| [**SD multiboot**](boot-and-flash/sd-multiboot-apommel.md) — repair the preloader | **yes** | no |
-| [**Preloader Eraser**](boot-and-flash/stock-rocknix-without-disassembly.md) — erase it from software | no | no |
-| [**xrock from MASKROM**](boot-and-flash/flashing.md#booting-from-sd) — zero it from a host | no | yes |
+These other routes are not that install:
 
-All three end with the bootrom or SPL loading U-Boot from the card instead of internal NAND when that card has a loader the ROM or SPL can use. The difference with no card inserted: multiboot still boots stock. The erase routes have no SPI preloader left, so USB MASKROM is what remains when no other loader is present. A card that still contains an idbloader can boot that loader instead.
+| Route | What it is |
+|-------|------------|
+| [SD multiboot](boot-and-flash/sd-multiboot-apommel.md) | Technical write-up and the older on-device repair app. Keeps stock. |
+| [Preloader Eraser](boot-and-flash/stock-rocknix-without-disassembly.md) | Historical. Removes the SPI preloader. Erasing does not guarantee USB MASKROM when another loader can boot. |
+| [xrock from MASKROM](boot-and-flash/flashing.md#booting-from-sd) | Host recovery once the boot ROM is already waiting. Needs a PC. |
+
+With the repaired preloader and no card, stock still starts. After an erase, a card that still contains an idbloader can boot that loader. USB MASKROM is what remains only when no other loader is present.
 
 ---
 

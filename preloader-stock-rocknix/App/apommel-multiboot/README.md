@@ -75,7 +75,7 @@ If only stock boots, the preloader cannot be written from there, so getting to m
 
 | # | Where | Run | Result |
 |---|-------|-----|--------|
-| 1 | **stock** | **[`PreloaderEraser`](../PreloaderEraser/)** | preloader erased → bootrom falls through to SD (and to MASKROM with no card) |
+| 1 | **stock** | **[`PreloaderEraser`](../PreloaderEraser/)** | preloader erased; a bootable card can start from its own loader. USB MASKROM is not guaranteed |
 | 2 | **ROCKNIX**, booted from the card | **`install-multiboot.sh`** in this folder | patched preloader written via `mtd0` → multiboot |
 
 Between the two steps the SPI preloader is gone. A bootable ROCKNIX card starts from its own idbloader. With no bootable card, USB MASKROM is the usual result and still depends on the cable and port. If you stop after step 1, that is the state you are in — a failed step 2 is not a dead end.

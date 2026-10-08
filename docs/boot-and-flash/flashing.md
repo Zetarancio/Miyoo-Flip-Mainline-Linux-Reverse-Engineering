@@ -147,7 +147,7 @@ xrock flash write 0 <stock-full-dump.img>
 ## Boot flow
 
 1. **Bootrom** reads IDBLOCK on SPI NAND, loads DDR init + SPL.
-2. **SPL** tries boot sources (e.g. MMC2 → MMC1 → MTD). Loads U-Boot.
+2. **SPL** tries boot sources in vendor numbering (MMC2 → MMC1 → MTD). Vendor MMC2 is the right-hand slot, `/dwmmc@fe2b0000`, which Linux calls MMC1. Loads U-Boot.
 3. **U-Boot** typically runs `boot_android`: reads boot partition, finds Android boot image (kernel + DTB).
 4. **Kernel** mounts rootfs from `/dev/mtdblock3` (squashfs or your rootfs type).
 
@@ -189,9 +189,9 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
-The current way to boot an SD operating system and keep stock is the repaired preloader, not a wipe. Write a Zlyme card, or use [preloader tools](preloader-tools.md). The steps further down that zero the preloader are the historical erase method from the archived ROCKNIX fork. They remove internal stock boot. They are not the Zlyme install.
+The recommended Zlyme install is to write `zlyme.img`, put it in the right-hand slot, and on an unprepared Flip boot stock once so the included `miyoo355_fw.img` can finish. Later updates are Settings → Update. The standalone multiboot helper is that same repair without a full Zlyme card: [preloader tools](preloader-tools.md).
 
-These are different operations. Do not treat them as one procedure.
+The table below keeps the other ways to boot from SD. They are not substitutes for that install. Erasing the preloader is the historical method from the archived ROCKNIX fork. It removes internal stock boot. Host `xrock` is the PC recovery path once the boot ROM is already waiting.
 
 | Path | What it does |
 |------|----------------|
@@ -209,7 +209,7 @@ To boot from an SD card under that historical erase method: zero the preloader s
 
 **Why write zeros:** `xrock flash erase 0 4096` does not clear the preloader (IDBLOCK is at raw NAND level). Use `dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096` then `xrock flash write 0 /tmp/zeros.img`.
 
-**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. The vendor SPL's MMC2 is `/dwmmc@fe2b0000`, the right-hand slot, not the left-hand slot. Mainline U-Boot's `mmc` index is a separate numbering. **GammaOS:** Same erase steps apply; zeroing the preloader avoids the SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
+**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. The vendor SPL's MMC2 is `/dwmmc@fe2b0000`, the right-hand slot. Linux numbers that same controller MMC1. The left-hand slot is Linux MMC2 at `/dwmmc@fe2c0000`. Mainline U-Boot's `mmc` index is a third numbering. Historical log lines stay as captured. **GammaOS:** Same erase steps apply; zeroing the preloader avoids the SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
 
 ---
 

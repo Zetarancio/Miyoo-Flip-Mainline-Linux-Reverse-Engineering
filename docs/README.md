@@ -25,6 +25,7 @@ Reference boot logs are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **h
 |------|---------|
 | [Boot and flash](boot-and-flash.md) | Hardware overview, boot chain, Zlyme install path, historical ROCKNIX image names, SD boot overview |
 | [→ Flashing](boot-and-flash/flashing.md) | MTD layout, xrock, MASKROM, backup, flash, boot.img, mtdparts |
+| [→ Recovery preloader](boot-and-flash/recovery-preloader.md) | November 02 SPL limited to the right-hand SD, and the measured download-mode result |
 | [→ SD multiboot](boot-and-flash/sd-multiboot-apommel.md) | apommel preloader repair: stock and an SD OS together |
 | [→ Erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md) | PreloaderEraser removes the SPI preloader. USB MASKROM needs no other valid loader |
 | [SPI and boot chain](stock-firmware-and-findings/spi-and-boot-chain.md) | SPI layout, FIT, BL31, V2 SIP DDR scaling |

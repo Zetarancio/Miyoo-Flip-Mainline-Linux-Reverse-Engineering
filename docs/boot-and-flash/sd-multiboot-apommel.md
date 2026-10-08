@@ -225,6 +225,7 @@ Under the erase method the bootrom loaded **Knulli's** idbloader at sector 64, s
 |-------|------|
 | Eraser, restoring stock, recovery | [Erase the preloader](stock-rocknix-without-disassembly.md) |
 | Partition layout, xrock, MASKROM | [Flashing guide](flashing.md) |
+| One-entry right-slot SPL | [Recovery preloader](recovery-preloader.md) |
 | Preloader region, IDB, FIT offsets | [SPI and boot chain](../stock-firmware-and-findings/spi-and-boot-chain.md) |
 | Stock OTA internals | [OTA update mechanism](../stock-firmware-and-findings/ota-update-mechanism.md) |
 | Boot chain overview | [Boot and flash](../boot-and-flash.md#boot-chain) |

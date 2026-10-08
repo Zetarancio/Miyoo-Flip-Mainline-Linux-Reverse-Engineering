@@ -88,6 +88,8 @@ These paths were measured on one Miyoo Flip on 2026-10-08. The hashes are that u
 | Right-slot Zlyme boot from that recovery image | Zlyme read `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367`, `mode=recovery`, `recovery=armed` |
 | Zlyme disarm | `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` back to `ed10591f62ae0b8845ac9bd6cf80c896a2b172d32c7c4ef6564d305e8662c13d`, `mode=normal`, `recovery=ready` |
 
+The 2026-10-08 hardware runs used the helper build from immediately before the fail-closed readback change. The release helper then requires each NAND readback to be a new full 2 MiB read. A failed or short read is not a verified write. The target transformations and the erase/write sequence were not changed. Another NAND cycle was not run for that correction.
+
 ### Not claimed
 
 This record does not accept every Miyoo Flip vendor SPL revision, an arbitrary unknown preloader, another unit's original backup, Restore-from-recovery as the ordinary exit, erase-preloader as deterministic MASKROM, or a generic `mmcblkN` number for a physical slot.

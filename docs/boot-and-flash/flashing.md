@@ -193,6 +193,7 @@ These are different operations. Do not treat them as one procedure.
 
 | Path | What it does |
 |------|----------------|
+| Recovery preloader | [Recovery preloader](recovery-preloader.md). Zlyme derives a right-slot-only SPL boot order from the installed preloader. A bootable right card still boots. No bootable right card resets to the BootROM. This is not the physical MASKROM button, not `rbrom`, and not the removed Zlyme marker experiments. |
 | Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. Writing the card does not modify NAND by itself. |
 | Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, done by hand or by the older on-device app. Historical and recovery reference. |
 | Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access). Removes the SPI preloader. The next power-on enters USB MASKROM only when the boot ROM has no other valid loader. A bootable SD idbloader can boot instead. A Zlyme erase that does not complete tries to write the previous preloader back. A failed Zlyme restore does the same. Neither result is USB MASKROM. |

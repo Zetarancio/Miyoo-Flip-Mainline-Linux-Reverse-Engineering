@@ -1,5 +1,7 @@
 # MASKROM and SD boot by erasing the preloader
 
+> This page is the erase method. Zlyme's product recovery path is the [recovery preloader](recovery-preloader.md), which keeps the preloader and changes only its boot order. Erasing the preloader is not that path. The physical MASKROM button and stock `rbrom` are also different. Failed Zlyme reset-marker experiments are not a product path.
+
 > **This does not brick the device.** The SoC **bootrom** and **USB recovery (MASKROM)** are not stored in SPI. Worst case you have no convenient internal boot until you recover from a PC — that is **annoying**, not **permanent**.
 >
 > **You can always recover the usual way:** open the shell, use the **MASKROM** button (or test point), connect **USB**, and flash with **`xrock`** / **`rkdeveloptool`** like any other Miyoo Flip restore — same as [Flashing](flashing.md).

@@ -23,7 +23,7 @@ This supersedes the erase-based method for dual boot. The [Preloader Eraser](sto
 
 apommel found that Miyoo's **`fdtgrep`** run left **`/pinctrl`** in the SPL device tree as an empty skeleton. No pinctrl driver binds to it, so **`dwmmc@fe2b0000`**'s `pinctrl-0` is never applied, the SD pins are never muxed, and the SPL cannot read a card — even though its code is perfectly capable of doing so. Restoring **nine properties** on that node fixes it.
 
-What makes it worth adopting is what it leaves alone. The **DDR blob, the SPL code and the boot order all stay exactly as Miyoo shipped them.** It repairs the vendor's own preloader rather than replacing it, which is why internal stock boot survives — and why the official OTA survives it too.
+What makes it worth adopting is what it leaves alone. The **DDR blob, the SPL code and the boot order all stay exactly as Miyoo shipped them.** It repairs the vendor's own preloader rather than replacing it, which is why internal stock boot survives — and why the official OTA survives it too. The later [recovery preloader](recovery-preloader.md) is a separate derivative: it keeps that DDR blob and SPL executable, and changes only the boot order to the right-hand slot.
 
 Thanks to apommel for doing the hard part, and for writing it up clearly enough that it could be reproduced and verified independently.
 

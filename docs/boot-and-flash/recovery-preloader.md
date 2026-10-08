@@ -53,3 +53,26 @@ Erasing the preloader is a different operation. With a bootable card installed, 
 | Recovery derivative | `f7d9a25255080ac19e88df88d1232bf45a90bdf2e86c9f7e23b73d32a003f367` |
 
 A full 2 MiB readback matched after arming, after the right-slot boot, and again after restoring the source. Bad blocks stayed 0. There was no ECC or I/O failure on those NAND transactions.
+
+## Serial records
+
+These two captures are the 2026-10-08 closure logs, taken at 1,500,000 8N1, receive only:
+
+- [Recovery preloader, no right card](../../logs/boot_log_ZLYME_recovery-preloader-maskrom-20261008.txt)
+- [Recovery preloader, right-slot Zlyme boot](../../logs/boot_log_ZLYME_right-slot-normal-20261008.txt)
+
+```text
+recovery preloader + right bootable card
+→ MMC2 → normal OS boot
+
+recovery preloader + no bootable right card
+→ MMC2 failure → all devices failed → reset to BootROM/MASKROM
+```
+
+The no-card log shows the vendor DDR blob, `U-Boot SPL 2017.09 (Nov 02 2024 - 15:59:04)`, `Trying to boot from MMC2`, `Card did not respond to voltage select!`, `mmc_init: -95`, `SPL: failed to boot from all boot devices`, and `# Reset the board to bootrom #`. This unit printed that sequence three times. No other boot source was attempted. While that log was at the BootROM line, the host enumerated USB `2207:350a`.
+
+The right-slot log shows the same DDR and SPL, a successful FIT handoff, production Zlyme U-Boot (`U-Boot 2026.01`) with no countdown, extlinux, the kernel, and `zlyme login:`.
+
+The recovery image is a deterministic device-tree-only derivative of this unit's patched preloader. The DDR payload and the SPL executable are preserved. Only the boot order changes. The hashes above are this unit's evidence, not a universal allowlist.
+
+These are not the physical MASKROM button, not stock U-Boot `rbrom`, and not the removed Zlyme reset-marker experiments. Those are separate. The button and `xrock` procedure stay in [Flashing](flashing.md). The failed marker experiments are not a product path.

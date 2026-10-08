@@ -60,7 +60,7 @@ picocom -b 1500000 /dev/ttyUSB0
 screen /dev/ttyUSB0 1500000
 ```
 
-Reference boot logs in **`logs/`**: `logs/boot_log_ROCKNIX.txt` (mainline), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock).
+Reference boot logs in **`logs/`**: `logs/boot_log_ROCKNIX.txt` (mainline), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF_AND_DEBUG.txt` (stock + debug), `logs/boot_log_STOCK_INCLUDE_SLEEP_POWEROFF.txt` (stock). The 2026-10-08 Zlyme recovery-preloader captures are `logs/boot_log_ZLYME_recovery-preloader-maskrom-20261008.txt` (no right card, BootROM) and `logs/boot_log_ZLYME_right-slot-normal-20261008.txt` (right card, normal boot). What those logs prove is on the [recovery preloader](boot-and-flash/recovery-preloader.md) page.
 
 ---
 

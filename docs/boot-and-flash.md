@@ -16,9 +16,16 @@ How the Miyoo Flip boots, where distribution images come from, how to flash the 
 
 **Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zlyme](#zlyme) (maintained); historical ROCKNIX images from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** — [archived fork](#archived-rocknix-fork). Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
 
-Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for this board. **Stock** stays bootable from NAND with no card. ROCKNIX, **SpruceOS**, and apommel's MinUI base do. **Zlyme**'s card has the same layout, but a multiboot boot of it is not recorded yet. Cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
+Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for this board. **Stock** stays bootable from NAND with no card. ROCKNIX, **SpruceOS**, and apommel's MinUI base do. **Zlyme**'s card has the same layout. A right-slot boot under the [recovery preloader](boot-and-flash/recovery-preloader.md) is recorded. Cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
 
 **Not a brick:** you can **always** recover with **USB MASKROM** (and, if needed, **disassemble** and use the hardware MASKROM button) + **`xrock`** — [Flashing](boot-and-flash/flashing.md).
+
+Four different things get called MASKROM. They are not interchangeable:
+
+1. The physical MASKROM button, which forces the boot ROM. [Flashing](boot-and-flash/flashing.md).
+2. Stock U-Boot `rbrom`, which sets the BootROM download flag and resets. It does not erase the preloader.
+3. Historical Zlyme experiments that tried to do that from Linux, or with a boot-file marker. Those failed and are not a product path.
+4. The [recovery preloader](boot-and-flash/recovery-preloader.md): a deterministic change of the vendor SPL boot order to the right-hand slot only. A bootable card there still boots. No bootable card there resets to the BootROM.
 
 ---
 

@@ -1,31 +1,40 @@
 # Boot and flash
 
-How the Miyoo Flip boots, where distribution images come from, how to flash the SPI NAND, and how to boot from SD.
+How the Miyoo Flip boots, where images come from, how to flash the SPI NAND, and how to boot from SD.
 
 ---
 
-## Stock ↔ ROCKNIX (no disassembly)
+## Install Zlyme
 
-**Without** removing screws for MASKROM:
+Write `zlyme.img` and put the card in the right-hand slot, next to the power button. On a Flip that has never been prepared for SD boot, turn it on so stock can run the `miyoo355_fw.img` included on that card. Stock updates this unit's preloader. The next boot from the right-hand slot starts Zlyme. Writing the card does not itself modify NAND. Full steps: [Zlyme's install guide](https://github.com/Zetarancio/zlyme#install).
 
-| | |
-|--|--|
-| **Both at once (recommended for a Zlyme card that contains `miyoo355_fw.img`)** | Write the card, boot **stock**, and let stock run apommel's installer from that file. No card → **stock**. A bootable card → **SD**. The older manual steps stay in [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). |
-| **No internal preloader** | SD-card app **erases** the SPI **preloader**. With no other valid loader the device powers on in **MASKROM**. A bootable SD loader can boot instead. Removes internal stock boot. |
-| **Back to stock only** | **`restore-preloader.sh`** on ROCKNIX writes a stock preloader back → reboot → **stock** from NAND. |
+You do not need the apommel internals page for that install. [Preloader tools](boot-and-flash/preloader-tools.md) is the page for the three standalone helpers (SD boot, recovery preloader, restore this unit's original). [SD multiboot](boot-and-flash/sd-multiboot-apommel.md) keeps the technical explanation and the manual app.
 
-**Articles:** [SD multiboot via a repaired preloader](boot-and-flash/sd-multiboot-apommel.md) · [MASKROM and SD boot by erasing the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zlyme](#zlyme) (maintained); historical ROCKNIX images from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** — [archived fork](#archived-rocknix-fork). Helper files: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix).
+With the normal repaired preloader: no card boots stock from NAND; a bootable card in the right-hand slot boots that OS. The published zlyme44 image does not contain `miyoo355_fw.img`. For that image, use the standalone helper once it is on the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases), or the manual steps on the multiboot page.
 
-Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for this board. **Stock** stays bootable from NAND with no card. ROCKNIX, **SpruceOS**, and apommel's MinUI base do. **Zlyme**'s card has the same layout. A right-slot boot under the [recovery preloader](boot-and-flash/recovery-preloader.md) is recorded. Cards made for **GammaLoader** (Knulli, GammaOS) do not — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
+## Other boot and recovery paths
 
-**Not a brick:** you can **always** recover with **USB MASKROM** (and, if needed, **disassemble** and use the hardware MASKROM button) + **`xrock`** — [Flashing](boot-and-flash/flashing.md).
+These are not the Zlyme install.
 
-Four different things get called MASKROM. They are not interchangeable:
+| Path | When it applies |
+|------|-----------------|
+| [Recovery preloader](boot-and-flash/recovery-preloader.md) | Right-hand slot only. A bootable card there still boots. No bootable card there resets to the boot ROM. |
+| [Erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md) | Historical path used to reach USB MASKROM or an SD loader by removing the SPI preloader. A blank preloader is not USB MASKROM while another loader can boot. |
+| [Physical MASKROM and xrock](boot-and-flash/flashing.md) | Last resort, from a PC, when the Flip will not boot. |
+
+**Articles:** [Preloader tools](boot-and-flash/preloader-tools.md) · [SD multiboot](boot-and-flash/sd-multiboot-apommel.md) · [Erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md). Images: [Zlyme](#zlyme) (maintained). Historical ROCKNIX images from [Zetarancio/distribution](https://github.com/Zetarancio/distribution) branch **`flip`** are an [archived fork](#archived-rocknix-fork), not the current install path.
+
+Multiboot puts U-Boot **on the card**, so each SD distro must ship one built for this board. **Stock** stays bootable from NAND with no card while the normal repaired preloader is installed. ROCKNIX, **SpruceOS**, and apommel's MinUI base were tested on that path. **Zlyme** was observed the same way on 2026-10-07. Cards made for **GammaLoader** (Knulli, GammaOS) do not boot under the repaired preloader — [why](boot-and-flash/sd-multiboot-apommel.md#distro-compatibility).
+
+**Not a brick:** you can recover with **USB MASKROM** (and, if needed, **disassemble** and use the hardware MASKROM button) plus **`xrock`** — [Flashing](boot-and-flash/flashing.md).
+
+Four different things get called MASKROM, and erasing the preloader is a fifth operation that is easy to mix up with them. They are not interchangeable:
 
 1. The physical MASKROM button, which forces the boot ROM. [Flashing](boot-and-flash/flashing.md).
 2. Stock U-Boot `rbrom`, which sets the BootROM download flag and resets. It does not erase the preloader.
 3. Historical Zlyme experiments that tried to do that from Linux, or with a boot-file marker. Those failed and are not a product path.
 4. The [recovery preloader](boot-and-flash/recovery-preloader.md): a deterministic change of the vendor SPL boot order to the right-hand slot only. A bootable card there still boots. No bootable card there resets to the BootROM.
+5. Erasing the preloader. That removes the SPI preloader. It is not USB MASKROM while another loader can still boot. [Erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md).
 
 ---
 
@@ -58,7 +67,7 @@ Pinout and board photos: [steward-fu pin mapping](https://steward-fu.github.io/w
 
 The maintained OS is [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw image for the OS card. [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) (2026-10-04) is the first stable release; earlier Zlyme GitHub releases are prereleases.
 
-1. **Let the Flip boot from SD first.** A current Zlyme card image carries `miyoo355_fw.img` at the root of its boot FAT. That file is [apommel](https://github.com/apommel/baseos-my355)'s installer, not a replacement preloader. Boot **stock** with the card inserted. Stock runs the installer, which reads this unit's own preloader, saves `mtd5-original-<sha256>.img`, patches the SPL `/pinctrl` node, and checks the write. Writing the card image does not itself modify NAND. The published zlyme44 image does not contain that file; for that image, or for a manual repair, use [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). A standalone download of only the installer is planned for the accepted zlyme44.2 release; until that asset exists, use the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases) rather than a direct file link. Erasing the preloader is a different operation from USB MASKROM: [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md).
+1. **Let the Flip boot from SD first.** A current Zlyme card image carries `miyoo355_fw.img` at the root of its boot FAT. That file is [apommel](https://github.com/apommel/baseos-my355)'s installer, not a replacement preloader. Boot **stock** with the card inserted. Stock runs the installer, which reads this unit's own preloader, saves `mtd5-original-<sha256>.img`, patches the SPL `/pinctrl` node, and checks the write. Writing the card image does not itself modify NAND. The published zlyme44 image does not contain that file. Standalone helpers, including a multiboot image you rename to `miyoo355_fw.img`, are [preloader tools](boot-and-flash/preloader-tools.md). Until a release publishes them, use the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases) rather than a direct file link. The manual repair remains [SD multiboot](boot-and-flash/sd-multiboot-apommel.md). Erasing the preloader is a different operation: [erase the preloader](boot-and-flash/stock-rocknix-without-disassembly.md).
 2. **Write the card.** The recommended, convenient way is the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer); download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases). Its first normal release is [V1.8.0](https://github.com/Zetarancio/zlymeOS-Installer/releases/tag/V1.8.0) (2026-10-04), with Windows, macOS and Linux builds. It fetches the latest Zlyme release, selects `zlyme.img`, and writes it as a raw image, erasing the whole card. It is forked from the [SpruceOS Installer](https://github.com/spruceUI/spruceOS-Installer); [SundownerSport](https://github.com/Sundownersport) kindly made the original Zlyme adaptation.
 3. **Or write it by hand.** Download `zlyme.img` from the [release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) and write it with [Balena Etcher](https://etcher.balena.io/) or another raw-image writer. This also erases the whole card.
 4. **Boot** with the card in the right-hand slot, next to power.

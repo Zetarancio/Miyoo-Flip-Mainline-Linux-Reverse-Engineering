@@ -1,6 +1,6 @@
-# SD multiboot via a repaired preloader
+# SD multiboot: how the preloader repair works
 
-> Current recommendation for a Zlyme card that already contains `miyoo355_fw.img`: boot stock and let stock run that installer. This page stays the manual and historical procedure, including the on-device `apommel-multiboot` app. The method is still apommel's.
+> Technical page. Provenance, the `/pinctrl` repair, distro history, and the manual on-device app. For a Zlyme card, write `zlyme.img` and boot stock once. For a standalone helper, use [preloader tools](preloader-tools.md). You do not need this page to install Zlyme.
 
 Run an SD distro **and** keep stock on internal SPI NAND, with no card swap ritual and nothing erased. The device decides at power-on:
 
@@ -29,9 +29,9 @@ Thanks to apommel for doing the hard part, and for writing it up clearly enough 
 
 ### Standalone installer
 
-`miyoo355_fw.img` is that same installer, packaged so stock can run it. The implementation and the source of the method stay **[apommel/baseos-my355](https://github.com/apommel/baseos-my355)**. Zlyme's image build produces the downloadable copy from the pinned commit `e09d37bb0f03c34e564d61bd02164f332d8515a8`. The file is usable without Zlyme. Its only job is to repair this unit's own preloader so the stock SPL can read an SD card. It does not install Zlyme, and it does not replace the preloader with a foreign image.
+`miyoo355_fw.img` is that same installer, packaged so stock can run it. The implementation and the source of the method stay **[apommel/baseos-my355](https://github.com/apommel/baseos-my355)**. Zlyme's image build produces it from the pinned commit `e09d37bb0f03c34e564d61bd02164f332d8515a8`. The release name `miyoo355_fw-multiboot.img` is the same bytes. Stock only runs a file named `miyoo355_fw.img`, so a downloaded copy has to be renamed. How to choose among the multiboot, recovery, and restore images is [preloader tools](preloader-tools.md). The file does not install Zlyme, and it does not replace the preloader with a foreign image.
 
-A copy of only that file is planned as a release asset once zlyme44.2 is accepted and published. Until that file exists on a release, start from the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases). There is no direct download link yet. This wiki does not store the generated image.
+Until those assets are on a zlyme44.2 release, start from the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases). This wiki does not store the generated image.
 
 ---
 
@@ -95,7 +95,7 @@ Once patched, **the card owns U-Boot proper.** Each distro must therefore ship a
 | **ROCKNIX** | yes, tested | ships a Miyoo Flip `u-boot.itb` at sector 16384 |
 | **SpruceOS** | yes, tested | card U-Boot the stock SPL can load |
 | **apommel's MinUI base** ([baseos-my355](https://github.com/apommel/baseos-my355)) | yes | the method's own target; card built for the repaired SPL |
-| **Zlyme** ([zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221)) | expected, not recorded | ships a mainline U-Boot FIT built for the Flip in the GPT `uboot` partition at sector 16384. Zlyme's development unit has booted Zlyme cards through a NAND preloader since 2026-09-10 (Zlyme `docs/LOGBOOK.md`), but no capture shows that unit runs this repaired preloader, so the row is not marked tested |
+| **Zlyme** ([zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221)) | yes, observed 2026-10-07 on a development card | That card carried `miyoo355_fw.img`. Stock ran it, the installer rebooted, and Zlyme booted from the right-hand slot. The published zlyme44 image does not contain that file. The U-Boot FIT is the Flip's, in the GPT `uboot` partition at sector 16384. |
 | **Knulli** | no | ships an **rk3568-evb** U-Boot intended for its own SPL |
 | **GammaOS** | expected no | same model — expects **GammaLoader** in NAND |
 

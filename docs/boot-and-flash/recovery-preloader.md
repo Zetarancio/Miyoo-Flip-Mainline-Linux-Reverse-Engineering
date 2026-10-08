@@ -1,6 +1,6 @@
 # Recovery preloader
 
-Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's pair. They are not an allowlist for every Flip.
+Measured on 2026-10-08 on one Miyoo Flip. The hashes below are that unit's pair. They are not an allowlist for every Flip. A stock-side helper that derives this behavior on the device, instead of flashing these hashes, is [preloader tools](preloader-tools.md). That helper is host-tested. These logs are the hardware record for the recovery preloader produced inside Zlyme.
 
 The image is the stock November 02 2024 SPL (`U-Boot SPL 2017.09 (Nov 02 2024 - 15:59:04)`) after the usual `/pinctrl` repair, with one further change: the SPL device tree boot order is only
 

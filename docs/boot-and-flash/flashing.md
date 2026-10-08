@@ -189,25 +189,27 @@ rm /tmp/zero_128mb.img
 
 ## Booting from SD
 
+The current way to boot an SD operating system and keep stock is the repaired preloader, not a wipe. Write a Zlyme card, or use [preloader tools](preloader-tools.md). The steps further down that zero the preloader are the historical erase method from the archived ROCKNIX fork. They remove internal stock boot. They are not the Zlyme install.
+
 These are different operations. Do not treat them as one procedure.
 
 | Path | What it does |
 |------|----------------|
-| Recovery preloader | [Recovery preloader](recovery-preloader.md). Zlyme derives a right-slot-only SPL boot order from the installed preloader. A bootable right card still boots. No bootable right card resets to the BootROM. This is not the physical MASKROM button, not `rbrom`, and not the removed Zlyme marker experiments. |
-| Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. Writing the card does not modify NAND by itself. |
-| Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, done by hand or by the older on-device app. Historical and recovery reference. |
+| Recovery preloader | [Recovery preloader](recovery-preloader.md). The vendor SPL boot order is the right-hand slot only. A bootable right card still boots. No bootable right card resets to the BootROM. The stock-side helper that derives this on the device is [preloader tools](preloader-tools.md). This is not the physical MASKROM button, not `rbrom`, and not the removed Zlyme marker experiments. |
+| Stock-assisted card | A card whose boot FAT contains `miyoo355_fw.img`. Boot stock. Stock runs apommel's installer, which backs up and patches this unit's own preloader. A fresh Zlyme card already includes that file. The standalone names, which you rename to `miyoo355_fw.img`, are [preloader tools](preloader-tools.md). Writing the card does not modify NAND by itself. |
+| Manual repaired preloader | [SD multiboot](sd-multiboot-apommel.md). Same apommel repair, as a technical explanation and the older on-device app. |
 | Erase the preloader | [Preloader Eraser](stock-rocknix-without-disassembly.md#preloader-eraser--maskrom-access). Removes the SPI preloader. The next power-on enters USB MASKROM only when the boot ROM has no other valid loader. A bootable SD idbloader can boot instead. A Zlyme erase that does not complete tries to write the previous preloader back. A failed Zlyme restore does the same. Neither result is USB MASKROM. |
 | Host `xrock` | This page. USB MASKROM recovery from a PC, including writing a saved preloader back. |
 
 The procedure below is the **`xrock` from MASKROM** equivalent, for when you are already on a PC or the device will not boot at all. Like the eraser, zeroing the preloader destroys internal boot.
 
-To boot from an SD card (e.g. ROCKNIX) instead of internal SPI NAND: zero the preloader so the bootrom falls through to SD. Optionally erase boot and uboot so internal storage is unused.
+To boot from an SD card under that historical erase method: zero the preloader so the boot ROM falls through to SD. Optionally erase boot and uboot so internal storage is unused. The archived ROCKNIX fork used this. A repaired preloader does not.
 
 **Boot scenarios:** With **zeroed preloader** + mainline SD → device boots from SD. With zeroed preloader and no SD → device stays in bootrom/MASKROM (not a brick). With stock/GammaOS preloader, U-Boot usually boots internal first.
 
 **Why write zeros:** `xrock flash erase 0 4096` does not clear the preloader (IDBLOCK is at raw NAND level). Use `dd if=/dev/zero of=/tmp/zeros.img bs=512 count=4096` then `xrock flash write 0 /tmp/zeros.img`.
 
-**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. SPL often loads from MMC2 (left slot), U-Boot from MMC1 (right) — [slot map](../boot-and-flash.md#hardware-overview). **GammaOS:** Same steps apply; zeroing preloader avoids SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
+**Procedure:** (1) MASKROM + load loader + `xrock flash`. (2) `xrock flash erase 14336 77824` (boot). (3) `xrock flash erase 6144 8192` (uboot). (4) Write zeros to sectors 0–4095 (see above). (5) Insert SD, power on. The vendor SPL's MMC2 is `/dwmmc@fe2b0000`, the right-hand slot, not the left-hand slot. Mainline U-Boot's `mmc` index is a separate numbering. **GammaOS:** Same erase steps apply; zeroing the preloader avoids the SPL MMC timeout. **Restore internal:** `xrock flash write 0 preloader_backup.img` and `xrock flash write 6144 uboot_backup.img` (or full stock dump).
 
 ---
 

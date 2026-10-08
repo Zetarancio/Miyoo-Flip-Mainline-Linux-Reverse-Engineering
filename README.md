@@ -18,11 +18,13 @@ Archiving the fork does not retire its measurements. The last wiki stamp of that
 
 ---
 
-## Stock + SD distro at once, without opening the device
+## Stock + SD at once, without opening the device
 
-**Multiboot** (recommended) repairs the SPI preloader instead of erasing it. At power-on: **no card** → stock from internal NAND; **bootable card in the right-hand slot** → that OS. Recorded as tested: **stock**, ROCKNIX, SpruceOS, apommel's MinUI base. Zlyme's card fits the same layout, but a multiboot boot of Zlyme is not recorded yet ([distro table](docs/boot-and-flash/sd-multiboot-apommel.md#distro-compatibility)). Official firmware updates survive the patch. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
+Write a Zlyme card and boot stock once so the included installer can repair this unit's preloader. No card then boots stock. A bootable card in the right-hand slot boots that OS. The standalone helpers are [preloader tools](docs/boot-and-flash/preloader-tools.md). The `/pinctrl` repair, provenance, and the older manual app are [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md).
 
-Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md). Recovery: [Flashing](docs/boot-and-flash/flashing.md).
+Observed on that repaired preloader: **stock**, the archived ROCKNIX fork, SpruceOS, and apommel's MinUI base. Zlyme was observed the same way on 2026-10-07 from a development card. Official firmware updates do not rewrite the preloader. Method by **[apommel](https://github.com/apommel/baseos-my355)**.
+
+Physical MASKROM plus `xrock` is the last resort: [Flashing](docs/boot-and-flash/flashing.md).
 
 ---
 
@@ -54,7 +56,7 @@ Install, restore, MASKROM, and which distros work: [SD multiboot](docs/boot-and-
 | ----- | ---------- | -------- |
 | **Implementations** | [implementations/](docs/implementations/README.md) — Zlyme, archived ROCKNIX, stock | [Zlyme](docs/implementations/zlyme.md), [ROCKNIX fork](docs/implementations/rocknix.md), [Stock](docs/implementations/stock.md) |
 | **Input** | [hardware/input.md](docs/hardware/input.md) — UART stick, GPIO, hall, rumble | — |
-| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, boot chain | [**SD multiboot**](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Erase the preloader (MASKROM)](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
+| **Boot and flash** | [boot-and-flash.md](docs/boot-and-flash.md) — specs, boot chain | [**Preloader tools**](docs/boot-and-flash/preloader-tools.md), [SD multiboot](docs/boot-and-flash/sd-multiboot-apommel.md), [Flashing](docs/boot-and-flash/flashing.md), [Erase the preloader](docs/boot-and-flash/stock-rocknix-without-disassembly.md) |
 | **RK3566 reference** | [rk3566-reference.md](docs/rk3566-reference.md) — SoC overview | [Datasheet](docs/rk3566-reference/datasheet-specs.md), [TRM 1](docs/rk3566-reference/trm-part1-registers-dpll.md), [TRM 2](docs/rk3566-reference/trm-part2-dmc-hwffc-dcf.md), [Unused pins](docs/rk3566-reference/unused-pins-power-saving.md) |
 | **Stock firmware** | [stock-firmware-and-findings.md](docs/stock-firmware-and-findings.md) — dumps, overview | [BSP/DDR findings](docs/stock-firmware-and-findings/bsp-and-ddr-findings.md), [SPI/boot chain](docs/stock-firmware-and-findings/spi-and-boot-chain.md) |
 | **Drivers and DTS** | [drivers-and-dts.md](docs/drivers-and-dts.md) — DTS evolution, drivers | [Board DTS](docs/drivers-and-dts/board-dts-pmic-ddr-updates.md), [Drivers](docs/drivers-and-dts/drivers.md), [DTS porting](docs/drivers-and-dts/dts-porting.md), [Display](docs/drivers-and-dts/display.md), [WiFi power-off](docs/drivers-and-dts/wifi-bt-power-off.md), [Suspend](docs/drivers-and-dts/suspend-and-vdd-logic.md) |

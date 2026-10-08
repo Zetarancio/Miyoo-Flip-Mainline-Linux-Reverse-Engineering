@@ -6,12 +6,12 @@
 >
 > **You can always recover the usual way:** open the shell, use the **MASKROM** button (or test point), connect **USB**, and flash with **`xrock`** / **`rkdeveloptool`** like any other Miyoo Flip restore — same as [Flashing](flashing.md).
 
-**If what you want is stock and an SD distro at the same time, you are on the wrong page.** A current Zlyme card that already contains `miyoo355_fw.img` is prepared by booting stock so stock can run that installer. [SD multiboot via a repaired preloader](sd-multiboot-apommel.md) is the manual form of the same repair. Restoring `mtd5-original-*.img` puts the saved original preloader back. This page is the erase path. Erase removes the SPI preloader. It is not a reboot into USB download. Host recovery from a PC is [Flashing](flashing.md).
+**If what you want is stock and an SD distro at the same time, you are on the wrong page.** Write a Zlyme card, or use the [preloader tools](preloader-tools.md). [SD multiboot](sd-multiboot-apommel.md) is the technical explanation of the same repair. Restoring `mtd5-original-*.img` puts the saved original preloader back. This page is the erase path. Erase removes the SPI preloader. It is not a reboot into USB download. Host recovery from a PC is [Flashing](flashing.md).
 
 Erasing still has two jobs, and this page covers both:
 
 - **removing the SPI preloader.** With no other valid loader, the next power-on is usually USB MASKROM. A bootable SD idbloader can boot instead. This is not a software reboot into USB download.
-- getting a **stock-only** unit far enough to install the multiboot patch, which the app can only write from a Linux that exposes the preloader as MTD (the archived ROCKNIX fork did; stock does not)
+- getting a **stock-only** unit onto the repaired preloader. The stock-side `miyoo355_fw.img` installer does that when stock exposes the preloader as `mtd5` / `spl`. That is how the 2026-10-07 Zlyme card install ran. The older on-device app needed a Linux with that same MTD node; the archived ROCKNIX fork provided one. Stock firmware that does not expose the region cannot run the older app. See [preloader tools](preloader-tools.md).
 
 Miyoo Flip images from the **archived** ROCKNIX fork are GitHub Actions artifacts on **[Zetarancio/distribution](https://github.com/Zetarancio/distribution)** branch **`flip`**. Those builds are not maintained. If you still use one: download the **`ROCKNIX-image-RK3566-YYYYMMDD`** zip (not the update tar), take **`*-Specific.img.gz`** from inside it, decompress it, and flash the **`.img`** — not the `.gz`. There is no separate Flip artifact. Layout and an example from build 245: [Where to get images](../boot-and-flash.md#where-to-get-images). Tools: [`preloader-stock-rocknix/`](https://github.com/Zetarancio/Miyoo-Flip-Mainline-Linux-Reverse-Engineering/tree/main/preloader-stock-rocknix) in this repo. The directory name is historical.
 

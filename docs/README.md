@@ -63,7 +63,7 @@ Reference boot logs are in **`logs/`**. **`logs/boot_log_ROCKNIX.txt`** is a **h
 | Page | Content |
 |------|---------|
 | [Overview](implementations/README.md) | Hardware truth vs implementation status |
-| [Zlyme](implementations/zlyme.md) | **Active** OS. Status snapshot: zlyme44 (`337ccbce`) |
+| [Zlyme](implementations/zlyme.md) | **Active** OS. Published stable release: zlyme44.2 (`9b7d91d5`, 2026-10-11). The hardware table there remains the zlyme44 (`337ccbce`) acceptance |
 | [ROCKNIX fork](implementations/rocknix.md) | **Archived** historical implementation |
 | [Stock](implementations/stock.md) | Vendor firmware versions |
 

@@ -31,7 +31,7 @@ Thanks to apommel for doing the hard part, and for writing it up clearly enough 
 
 `miyoo355_fw.img` is that same installer, packaged so stock can run it. The implementation and the source of the method stay **[apommel/baseos-my355](https://github.com/apommel/baseos-my355)**. Zlyme's image build produces it from the pinned commit `e09d37bb0f03c34e564d61bd02164f332d8515a8`. The release name `miyoo355_fw-multiboot.img` is the same bytes. Stock only runs a file named `miyoo355_fw.img`, so a downloaded copy has to be renamed. How to choose among the multiboot, recovery, and restore images is [preloader tools](preloader-tools.md). The file does not install Zlyme, and it does not replace the preloader with a foreign image.
 
-Until those assets are on a zlyme44.2 release, start from the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases). This wiki does not store the generated image.
+Those assets are on the [zlyme44.2 release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-38098037074). This wiki does not store the generated image.
 
 ---
 
@@ -95,7 +95,7 @@ Once patched, **the card owns U-Boot proper.** Each distro must therefore ship a
 | **ROCKNIX** | yes, tested | ships a Miyoo Flip `u-boot.itb` at sector 16384 |
 | **SpruceOS** | yes, tested | card U-Boot the stock SPL can load |
 | **apommel's MinUI base** ([baseos-my355](https://github.com/apommel/baseos-my355)) | yes | the method's own target; card built for the repaired SPL |
-| **Zlyme** ([zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221)) | yes, observed 2026-10-07 on a development card | That card carried `miyoo355_fw.img`. Stock ran it, the installer rebooted, and Zlyme booted from the right-hand slot. The published zlyme44 image does not contain that file. The U-Boot FIT is the Flip's, in the GPT `uboot` partition at sector 16384. |
+| **Zlyme** ([zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221)) | yes, observed 2026-10-07 on a development card | That card carried `miyoo355_fw.img`. Stock ran it, the installer rebooted, and Zlyme booted from the right-hand slot. The published zlyme44 image does not contain that file. The published zlyme44.2 image does. The 2026-10-07 row stays that development-card observation. The U-Boot FIT is the Flip's, in the GPT `uboot` partition at sector 16384. |
 | **Knulli** | no | ships an **rk3568-evb** U-Boot intended for its own SPL |
 | **GammaOS** | expected no | same model — expects **GammaLoader** in NAND |
 

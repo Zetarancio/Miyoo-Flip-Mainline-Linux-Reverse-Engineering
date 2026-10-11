@@ -12,7 +12,7 @@ Stock looks for a file named exactly **`miyoo355_fw.img`**. Any other name is ig
 
 The release names are therefore descriptive. Before the card goes into the Flip, rename the one file you chose to `miyoo355_fw.img`. Put that file where stock can see it (the root of a FAT volume on either card). Do not put more than one of these images on the card under that name.
 
-Until a zlyme44.2 release publishes the files, use the [Zlyme releases page](https://github.com/Zetarancio/zlyme/releases). This page does not link a file that is not published yet. The names to expect are:
+The files are on the [zlyme44.2 release](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-38098037074). This wiki does not store the generated images. The names are:
 
 | Release file | Role |
 |--------------|------|

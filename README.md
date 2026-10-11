@@ -151,7 +151,7 @@ preloader-stock-rocknix/       Two SD-card apps: apommel-multiboot (repair the p
 
 ## Quick start
 
-For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw SD-card image; [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) is the first stable release.
+For the maintained Miyoo Flip OS, use [Zlyme](https://github.com/Zetarancio/zlyme). Zlyme stable releases publish **`zlyme.img`**, a raw SD-card image. [zlyme44](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-37164297221) is the first stable release. The current published release is [zlyme44.2 (2026-10-11)](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-38098037074).
 
 1. Write `zlyme.img` with the [Zlyme Installer](https://github.com/Zetarancio/zlymeOS-Installer) (download it from its [Releases page](https://github.com/Zetarancio/zlymeOS-Installer/releases)) or a raw-image writer. Either way the whole card is erased.
 2. Put it in the right-hand slot.

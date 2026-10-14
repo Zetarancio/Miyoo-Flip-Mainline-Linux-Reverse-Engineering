@@ -198,6 +198,16 @@ Enabling the companion **without its PHY clock** is not enough. `rk356x-base.dts
 
 The lower port staying host-capable for a bus-powered device is a **charger-driver** gap (stock raises `OTG_SWITCH` when ID is grounded; mainline `rk817_charger` does not), not a DTS one. `vcc5v0_host` is on-demand (`off-in-suspend`, not stock's always-on) so probe does not energise the rail before the PHY asks for it.
 
+### Lower controller, one Flip, 2026-10-14
+
+One development boot. Not a proof that this device tree is right for every RK3566 board, cable, or kernel.
+
+`snps,dis_u2_susphy_quirk` is inherited. Upstream Linux 7.2.10 puts it on `usb@fcc00000` in `rk356x-base.dtsi`. The Flip board file does not add it. After the removal below, the booted tree still had the property. A stopped read of `GUSB2PHYCFG(0)` was `0x40101508`, so bit 6 was clear. That property was not removed by itself, so the reading does not prove it is required.
+
+`snps,dis_enblslpm_quirk` is not that inherited property. The May 2025 stock unpack sets it on `dwc3@fcc00000` in [`miyoo355_20250527_0.dts`](../../miyoo355_fw_20250527/unpack/miyoo355_20250527_0.dts). A Zlyme development board file had added the same property on `&usb_host0_xhci`. [Zlyme `7caa0871a82f784ffd8889face036fd3955cbf8f`](https://github.com/Zetarancio/zlyme/commit/7caa0871a82f784ffd8889face036fd3955cbf8f) deletes that line. The image built from it, `zlyme-my355-20261014-7caa0871a82f.tar`, booted with the property absent from `/proc/device-tree/usb@fcc00000`. The same stopped register read had bit 8 set, which is the DWC3 driver's choice when the property is absent. Later on that boot, with the cable left in place, disposable files copied both ways through the gadget, including a file on the second card, and the checksums matched. That session did not press B or open the tool again. Clearing bit 8 is not established as a requirement.
+
+A later development image on the same unit, `zlyme-my355-20261014-522e4573010a.tar`, squashfs `ac46ac3783ed4d9bcc9bbceed1d6b023c65a878cd50561b11dc119980d06c24c`, still omits `snps,dis_enblslpm_quirk` and still inherits `snps,dis_u2_susphy_quirk`. `uname` was Linux 7.2.10. The maintainer accepts that image for ordinary gadget use: the computer enumerated high-speed `1d6b:0100`, copies matched both ways, and a second start with the cable left in place enumerated again. After the tool stopped, that device was gone. Unplugging and plugging the cable back during one session was not measured. The `7caa087` image remains the rollback for that limit. Starting an MTP gadget, and binding the controller only when the PHY reports a data host, are Zlyme userspace choices. Linux 7.2.10 here is a development boot. The published release is still [zlyme44.2](https://github.com/Zetarancio/zlyme/releases/tag/zlyme-38098037074).
+
 ---
 
 ## Other DTS details

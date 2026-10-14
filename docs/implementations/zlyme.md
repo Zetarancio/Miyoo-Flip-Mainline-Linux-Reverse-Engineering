@@ -22,6 +22,12 @@ zlyme44 remains the first stable release: tag [`zlyme-37164297221`](https://gith
 
 Where a mechanism was hardware-accepted on an earlier Zlyme runtime, that runtime is named. Each of those commits named under the zlyme44 table is an ancestor of `337ccbce`.
 
+## Development images after zlyme44.2
+
+Not a release, and not a replacement for the table below. Published stable stays zlyme44.2.
+
+On 2026-10-14 one Flip booted a development kernel, Linux 7.2.10. That boot is not the published runtime `9b7d91d5`. The lower USB-C observations, including removal of `snps,dis_enblslpm_quirk` and the limits of the accepted gadget session, are on the [USB page](../drivers-and-dts/board-dts-pmic-ddr-updates.md#lower-controller-one-flip-2026-10-14).
+
 ## Implementation status at zlyme44 (`337ccbce`)
 
 Observed in Zlyme unless a line says otherwise. Patch numbers are Zlyme’s filenames, not the archived fork’s; the same number can mean a different patch in each tree.
